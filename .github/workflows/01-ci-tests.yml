@@ -198,37 +198,37 @@ jobs:
       #     "
       #   continue-on-error: true
 
-      # # Debug
-      # - name: Check migration logs
-      #   run: |
-      #     echo "Checking migration logs..."
-      #     docker logs crm-app-db-migrate
-      #   continue-on-error: true
+      # Debug
+      - name: Check migration logs
+        run: |
+          echo "Checking migration logs..."
+          docker logs crm-app-db-migrate
+        continue-on-error: true
 
-      # # Debug
-      # - name: Check all databases for the user
-      #   run: |
-      #     echo "Listing all databases for user..."
-      #     docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -c "\l"
-      #   continue-on-error: true
+      # Debug
+      - name: Check all databases for the user
+        run: |
+          echo "Listing all databases for user..."
+          docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -c "\l"
+        continue-on-error: true
 
-      # # Debug
-      # - name: Check database tables
-      #   run: |
-      #     echo "Listing tables in the TEST database..."
-      #     docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "\dt"
-      #   continue-on-error: true
+      # Debug
+      - name: Check database tables
+        run: |
+          echo "Listing tables in the TEST database..."
+          docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "\dt"
+        continue-on-error: true
 
-      # # Debug
-      # - name: Check test data exists in table
-      #   run: |
-      #     echo "Listing all rows in the test_items_two table..."
-      #     docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM test_items_two;"
-      #   continue-on-error: true
+      # Debug
+      - name: Check test data exists in table
+        run: |
+          echo "Listing all rows in the test_items_two table..."
+          docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM test_items_two;"
+        continue-on-error: true
 
-      # - name: Run Integration Tests
-      #   run: |
-      #     docker-compose -f docker-compose.ci.yml exec server npm run test:integration:ci
+      - name: Run Integration Tests
+        run: |
+          docker-compose -f docker-compose.ci.yml exec server npm run test:integration:ci
 
       # - name: Upload Integration Test Results
       #   uses: actions/upload-artifact@v4
