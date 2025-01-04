@@ -154,22 +154,25 @@ jobs:
           done
           echo "Services are ready!"
 
-      # - name: Create test database if it doesn't exist
-      #   run: |
-      #     echo "Checking if test database exists..."
-      #     if [ "$(docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = 'crm_app_db_test'")" != "1" ]; then
-      #       echo "Test database does not exist. Creating it now..."
-      #       docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -c "CREATE DATABASE crm_app_db_test;"
-      #     else
-      #       echo "Test database already exists."
-      #     fi
-      #   shell: bash
-
       - name: Create test database if it doesn't exist
         run: |
-          echo "Creating test database if it doesn't exist..."
-          docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'crm_app_db_test') THEN EXECUTE 'CREATE DATABASE crm_app_db_test'; END IF; END \$\$;"
+          echo "Checking if test database exists..."
+          if [ "$(docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = 'crm_app_db_test'")" != "1" ]; then
+            echo "Test database does not exist. Creating it now..."
+            docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -c "CREATE DATABASE crm_app_db_test;"
+          else
+            echo "Test database already exists."
+          fi
+        shell: bash
         continue-on-error: true
+
+      # - name: Create test database if it doesn't exist
+      #   run: |
+      #     echo "Creating test database if it doesn't exist..."
+      #     docker exec crm-app-postgresql-db \
+      #       sh -c "psql -U ${{ secrets.POSTGRES_USER }} -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'crm_app_db_test'\" \
+      #       | grep -q 1 || psql -U ${{ secrets.POSTGRES_USER }} -d postgres -c \"CREATE DATABASE crm_app_db_test\""
+      #   continue-on-error: true
 
       - name: Run generate migration files TEST-DB
         run: |
@@ -191,10 +194,17 @@ jobs:
         run: |
           echo "Seeding data into test database..."
           docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "
+          -- Insert Mock Data for Test items
           INSERT INTO test_items (id, content, important) VALUES
           ('1', 'Test Word 1', true),
           ('2', 'Test Word 2', false),
           ('3', 'Test Word 3', true);
+
+          -- Insert Mock Data for Customers
+          INSERT INTO customers (customer_id, first_name, last_name, email, phone, address, city, postal_code, country)
+          VALUES
+          (gen_random_uuid(), 'John', 'Doe', 'john.doe@example.com', '555-1234', '123 Main St', 'New York', '10001', 'USA'),
+          (gen_random_uuid(), 'Jane', 'Smith', 'jane.smith@example.com', '555-5678', '456 Oak Ave', 'San Francisco', '94105', 'USA');
           "
         continue-on-error: true
 
@@ -222,8 +232,11 @@ jobs:
       # Debug
       - name: Check test data exists in table
         run: |
-          echo "Listing all rows in the test_items_two table..."
-          docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM test_items_two;"
+          echo "Listing all rows in the test_items table..."
+          docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM test_items;"
+          
+          echo "Listing all rows in the customers table..."
+          docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM customers;"
         continue-on-error: true
 
       - name: Run Integration Tests
@@ -238,33 +251,33 @@ jobs:
           path: ./integration-tests/results
 
       ## test db issue
-      # e2e-tests:
-      #   needs: [integration-tests]
-      #   runs-on: ubuntu-latest
-      #   timeout-minutes: 5
+  e2e-tests:
+    needs: [integration-tests]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
 
-      #   steps:
-      #     - name: Checkout code
-      #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      #     - name: Set up Node.js
-      #       uses: actions/setup-node@v4
-      #       with:
-      #         node-version: "20"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-      # - name: Install Playwright dependencies
-      #   run: npm install
-      #   working-directory: ./playwright-e2e
+      - name: Install Playwright dependencies
+        run: npm install
+        working-directory: ./playwright-e2e
 
-      # - name: Install Playwright Browsers
-      #   # run: npx playwright install --with-deps
-      #   run: yarn playwright install --with-deps
-      #   working-directory: ./playwright-e2e
-      #   continue-on-error: true
+      - name: Install Playwright Browsers
+        # run: npx playwright install --with-deps
+        run: yarn playwright install --with-deps
+        working-directory: ./playwright-e2e
+        continue-on-error: true
 
-      # - name: Run E2E tests ########### muista korjata db ongelma
-      #   run: npm run test:e2e
-      #   continue-on-error: true
+      - name: Run E2E tests ########### muista korjata db ongelma
+        run: npm run test:e2e
+        continue-on-error: true
 
       # - name: Upload E2E Test Results
       #   uses: actions/upload-artifact@v4
