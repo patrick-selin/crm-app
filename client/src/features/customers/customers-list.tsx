@@ -15,8 +15,8 @@ const CustomersList = () => {
 
   return (
     <div>
-      {/* <h2>Customers</h2>
-      <div>SORT, FILTERs, SEARCH by name</div> */}
+      <h2>Customers</h2>
+      {/* <div>SORT, FILTERs, SEARCH by name</div> */}
       <div>
         <Table>
           <Table.Thead>
