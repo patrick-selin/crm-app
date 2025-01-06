@@ -5,12 +5,29 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
-import { getCustomersSummary, addCustomer } from "./customers-api";
-import { Customer } from "../../../../shared/schemas/customer-schema";
+import {
+  getCustomers,
+  getCustomersSummary,
+  addCustomer,
+} from "./customers-api";
+import {
+  Customer,
+  CustomerSummary,
+} from "../../../../shared/schemas/customer-schemas";
 
 export const useCustomers = (): UseQueryResult<Customer[], Error> => {
   return useQuery({
     queryKey: ["customers"],
+    queryFn: getCustomers,
+  });
+};
+
+export const useCustomersSummary = (): UseQueryResult<
+  CustomerSummary[],
+  Error
+> => {
+  return useQuery({
+    queryKey: ["customersSummary"],
     queryFn: getCustomersSummary,
   });
 };

@@ -3,14 +3,15 @@ import { customers } from "../../db/schemas/customers";
 import { orders } from "../../db/schemas/orders";
 import { db } from "../../db/db";
 import { sql, eq } from "drizzle-orm";
-// import zod schema
+import { z } from "zod";
+import { CustomerSummarySchema } from "../../../../shared/schemas/customer-schemas";
 
 export const getAllCustomers = async () => {
   return await db.select().from(customers);
 };
 
 export const getCustomersWithMetrics = async () => {
-  return await db
+  const rawResults = await db
     .select({
       customerId: customers.customerId,
       firstName: customers.firstName,
@@ -29,6 +30,18 @@ export const getCustomersWithMetrics = async () => {
     .leftJoin(orders, eq(customers.customerId, orders.customerId))
     .groupBy(customers.customerId)
     .orderBy(sql`MAX(${orders.orderDate}) DESC`);
+
+    const processedResults = rawResults.map((result) => ({
+      ...result,
+      lastOrderDate: result.lastOrderDate ? new Date(result.lastOrderDate) : null, // Convert to Date
+      numOfOrders: Number(result.numOfOrders), // Convert to Number
+      totalSpent: parseFloat(result.totalSpent), // Convert to Float
+    }));
+
+  // // Validate with Zod
+  // const parsedResults = z.array(CustomerSummarySchema).parse(processedResults);
+
+  return processedResults;
 };
 
 // /customers/:id

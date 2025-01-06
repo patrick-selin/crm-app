@@ -3,18 +3,18 @@ import { useCustomers } from "./customers-queries";
 import { Table } from "@mantine/core";
 
 const CustomersList = () => {
-  const { data: customers, isLoading, error } = useCustomers();
+  const { data: customersSummary, isLoading, error } = useCustomers();
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error fetching customers.</p>;
 
-  const rows = customers?.map((customer) => (
+  const rows = customersSummary?.map((customer) => (
     <Table.Tr key={customer.customerId}>
       <Table.Td>{customer.firstName} {customer.lastName}</Table.Td>
       <Table.Td>{customer.email}</Table.Td>
-      {/* <Table.Td>{customer.lastOrder || "N/A"}</Table.Td>
-      <Table.Td>{customer.num_orders}</Table.Td>
-      <Table.Td>{customer.total_spent.toFixed(2)}</Table.Td> */}
+      {/* <Table.Td>{customer.lastOrderDate || "N/A"}</Table.Td>
+      <Table.Td>{customer.}</Table.Td> */}
+      {/* <Table.Td>{customer.totalSpent.toFixed(2)}</Table.Td> */}
     </Table.Tr>
   ));
 
