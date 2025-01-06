@@ -5,7 +5,6 @@ const Customers = () => {
   return (
     <div>
       <CustomersList />
-      {/* <CustomersListTest /> */}
     </div>
   );
 };
