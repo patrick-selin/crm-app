@@ -1,6 +1,9 @@
 // features/customers/customers-list.tsx
+import { useState } from "react";
+import { useCustomers } from "./customers-queries";
 import { Table } from "@mantine/core";
 import mockCustomers from "../../utils/mockCustomersData";
+
 
 const CustomersList = () => {
   const rows = mockCustomers.map((customer) => (

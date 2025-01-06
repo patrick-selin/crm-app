@@ -1,3 +1,4 @@
+// customer-controller.ts
 import { Request, Response } from "express";
 import * as customerService from "./customer-service";
 
