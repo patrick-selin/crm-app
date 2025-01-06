@@ -1,18 +1,20 @@
 // features/customers/customers-list.tsx
-import { useState } from "react";
 import { useCustomers } from "./customers-queries";
 import { Table } from "@mantine/core";
-import mockCustomers from "../../utils/mockCustomersData";
-
 
 const CustomersList = () => {
-  const rows = mockCustomers.map((customer) => (
-    <Table.Tr key={customer.name}>
-      <Table.Td>{customer.name}</Table.Td>
+  const { data: customers, isLoading, error } = useCustomers();
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching customers.</p>;
+
+  const rows = customers?.map((customer) => (
+    <Table.Tr key={customer.customerId}>
+      <Table.Td>{customer.firstName} {customer.lastName}</Table.Td>
       <Table.Td>{customer.email}</Table.Td>
-      <Table.Td>{customer.last_order || "N/A"}</Table.Td>
+      {/* <Table.Td>{customer.lastOrder || "N/A"}</Table.Td>
       <Table.Td>{customer.num_orders}</Table.Td>
-      <Table.Td>{customer.total_spent.toFixed(2)}</Table.Td>
+      <Table.Td>{customer.total_spent.toFixed(2)}</Table.Td> */}
     </Table.Tr>
   ));
 

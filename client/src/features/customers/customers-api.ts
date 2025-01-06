@@ -2,9 +2,9 @@
 import axios from "axios";
 import { Customer } from "../../../../shared/schemas/customer-schema";
 
-const baseUrl = `${import.meta.env.VITE_BASE_URL}/customers`;
+const baseUrl = `${import.meta.env.VITE_BASE_URL}/customers/summary`;
 
-export const getCustomers = async (): Promise<Customer[]> => {
+export const getCustomersSummary = async (): Promise<Customer[]> => {
   const response = await axios.get(baseUrl);
   return response.data;
 };
