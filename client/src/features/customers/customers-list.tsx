@@ -1,22 +1,27 @@
 // features/customers/customers-list.tsx
+import { useCustomers } from "./customers-queries";
 import { Table } from "@mantine/core";
-import mockCustomers from "../../utils/mockCustomersData";
 
 const CustomersList = () => {
-  const rows = mockCustomers.map((customer) => (
-    <Table.Tr key={customer.name}>
-      <Table.Td>{customer.name}</Table.Td>
+  const { data: customersSummary, isLoading, error } = useCustomers();
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching customers.</p>;
+
+  const rows = customersSummary?.map((customer) => (
+    <Table.Tr key={customer.customerId}>
+      <Table.Td>{customer.firstName} {customer.lastName}</Table.Td>
       <Table.Td>{customer.email}</Table.Td>
-      <Table.Td>{customer.last_order || "N/A"}</Table.Td>
-      <Table.Td>{customer.num_orders}</Table.Td>
-      <Table.Td>{customer.total_spent.toFixed(2)}</Table.Td>
+      {/* <Table.Td>{customer.lastOrderDate || "N/A"}</Table.Td>
+      <Table.Td>{customer.}</Table.Td> */}
+      {/* <Table.Td>{customer.totalSpent.toFixed(2)}</Table.Td> */}
     </Table.Tr>
   ));
 
   return (
     <div>
-      {/* <h2>Customers</h2>
-      <div>SORT, FILTERs, SEARCH by name</div> */}
+      <h2>Customers</h2>
+      {/* <div>SORT, FILTERs, SEARCH by name</div> */}
       <div>
         <Table>
           <Table.Thead>

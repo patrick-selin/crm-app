@@ -18,7 +18,6 @@ app.use(morganMiddleware);
 app.use("/api1", healthCheckRoutes);
 app.use("/api1", testRoutes);
 app.use("/api1/customers", customerRoutes);
-// app.use("/", healthCheckRoutes);
 
 // middleware
 app.use(unknownEndpoint);
