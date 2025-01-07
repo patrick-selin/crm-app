@@ -275,27 +275,27 @@ jobs:
         working-directory: ./playwright-e2e
         continue-on-error: true
 
-      # Debug
-      - name: Debug
-        run: |
-          echo "Waiting for services to be ready..."
-          until curl -s http://localhost/api1/health; do
-            echo "Waiting for backend to be ready..."
-            sleep 8
-          done
-          echo "Services are ready!"
-        continue-on-error: true
+      # # Debug
+      # - name: Debug
+      #   run: |
+      #     echo "Waiting for services to be ready..."
+      #     until curl -s http://localhost/api1/health; do
+      #       echo "Waiting for backend to be ready..."
+      #       sleep 8
+      #     done
+      #     echo "Services are ready!"
+      #   continue-on-error: true
 
-      # Debug
-      - name: Debug
-        run: |
-          echo "Waiting for services to be ready..."
-          until curl -s http://localhost/api1/customers; do
-            echo "Waiting for backend to be ready..."
-            sleep 8
-          done
-          echo "Services are ready!"
-        continue-on-error: true
+      # # Debug
+      # - name: Debug
+      #   run: |
+      #     echo "Waiting for services to be ready..."
+      #     until curl -s http://localhost/api1/customers; do
+      #       echo "Waiting for backend to be ready..."
+      #       sleep 8
+      #     done
+      #     echo "Services are ready!"
+      #   continue-on-error: true
 
       - name: Run E2E tests ########### muista korjata db ongelma
         run: npm run test:e2e
