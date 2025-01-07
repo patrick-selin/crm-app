@@ -23,5 +23,12 @@ export const CustomerSummarySchema = CustomerSchema.extend({
   totalSpent: z.number().nonnegative(),
 });
 
+export const AddCustomerSchema = CustomerSchema.omit({
+  customerId: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type Customer = z.infer<typeof CustomerSchema>;
 export type CustomerSummary = z.infer<typeof CustomerSummarySchema>;
+export type AddCustomer = z.infer<typeof AddCustomerSchema>;

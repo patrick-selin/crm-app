@@ -4,7 +4,7 @@ import { orders } from "../../db/schemas/orders";
 import { db } from "../../db/db";
 import { sql, eq } from "drizzle-orm";
 import { z } from "zod";
-import { CustomerSummarySchema } from "../../../src/schemas/customer-schemas";
+import { AddCustomerSchema, CustomerSummarySchema } from "../../../src/schemas/customer-schemas";
 
 export const getAllCustomers = async () => {
   console.log("Fetching all customers...");
@@ -74,9 +74,20 @@ export const getCustomersWithMetrics = async () => {
     } else {
       console.error("Unknown error occurred:", error);
     }
-    throw error; // Re-throw the error if needed
+    throw error;
   }
 };
 
+
+export const addCustomer = async (customerData: unknown) => {
+  const validatedCustomer = AddCustomerSchema.parse(customerData);
+
+  const [newCustomer] = await db
+    .insert(customers)
+    .values(validatedCustomer)
+    .returning();
+
+  return newCustomer;
+}
 // /customers/:id
 // /customers/:id/orders
