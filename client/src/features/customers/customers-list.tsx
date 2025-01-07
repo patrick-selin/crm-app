@@ -1,20 +1,23 @@
 // features/customers/customers-list.tsx
-import { useCustomers } from "./customers-queries";
+import { useCustomersSummary } from "./customers-queries";
 import { Table } from "@mantine/core";
 
 const CustomersList = () => {
-  const { data: customersSummary, isLoading, error } = useCustomers();
+  const { data: customersSummary, isLoading, error } = useCustomersSummary();
+  console.log(customersSummary);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error fetching customers.</p>;
 
   const rows = customersSummary?.map((customer) => (
     <Table.Tr key={customer.customerId}>
-      <Table.Td>{customer.firstName} {customer.lastName}</Table.Td>
+      <Table.Td>
+        {customer.firstName} {customer.lastName}
+      </Table.Td>
       <Table.Td>{customer.email}</Table.Td>
-      {/* <Table.Td>{customer.lastOrderDate || "N/A"}</Table.Td>
-      <Table.Td>{customer.}</Table.Td> */}
-      {/* <Table.Td>{customer.totalSpent.toFixed(2)}</Table.Td> */}
+      <Table.Td>{customer.lastOrderDate || "N/A"}</Table.Td>
+      <Table.Td>{customer.numOfOrders}</Table.Td>
+      <Table.Td>{customer.totalSpent.toFixed(2)}</Table.Td>
     </Table.Tr>
   ));
 

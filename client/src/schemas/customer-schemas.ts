@@ -11,7 +11,7 @@ export const CustomerSchema = z.object({
   postalCode: z.string().optional(),
   country: z.string().optional(),
   createdAt: z.date(),
-  updatedAt: z.date(),
+  updatedAt: z.date().nullable(),
 });
 
 export const CustomerSummarySchema = CustomerSchema.extend({
@@ -23,5 +23,12 @@ export const CustomerSummarySchema = CustomerSchema.extend({
   totalSpent: z.number().nonnegative(),
 });
 
+export const AddCustomerSchema = CustomerSchema.omit({
+  customerId: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type Customer = z.infer<typeof CustomerSchema>;
 export type CustomerSummary = z.infer<typeof CustomerSummarySchema>;
+export type AddCustomer = z.infer<typeof AddCustomerSchema>;

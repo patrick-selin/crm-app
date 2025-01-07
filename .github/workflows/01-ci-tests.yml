@@ -234,7 +234,7 @@ jobs:
         run: |
           echo "Listing all rows in the test_items table..."
           docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM test_items;"
-          
+
           echo "Listing all rows in the customers table..."
           docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM customers;"
         continue-on-error: true
@@ -274,6 +274,28 @@ jobs:
         run: yarn playwright install --with-deps
         working-directory: ./playwright-e2e
         continue-on-error: true
+
+      # # Debug
+      # - name: Debug
+      #   run: |
+      #     echo "Waiting for services to be ready..."
+      #     until curl -s http://localhost/api1/health; do
+      #       echo "Waiting for backend to be ready..."
+      #       sleep 8
+      #     done
+      #     echo "Services are ready!"
+      #   continue-on-error: true
+
+      # # Debug
+      # - name: Debug
+      #   run: |
+      #     echo "Waiting for services to be ready..."
+      #     until curl -s http://localhost/api1/customers; do
+      #       echo "Waiting for backend to be ready..."
+      #       sleep 8
+      #     done
+      #     echo "Services are ready!"
+      #   continue-on-error: true
 
       - name: Run E2E tests ########### muista korjata db ongelma
         run: npm run test:e2e

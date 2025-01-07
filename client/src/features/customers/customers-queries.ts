@@ -13,7 +13,7 @@ import {
 import {
   Customer,
   CustomerSummary,
-} from "../../../../shared/schemas/customer-schemas";
+} from "../../../src/schemas/customer-schemas";
 
 export const useCustomers = (): UseQueryResult<Customer[], Error> => {
   return useQuery({
