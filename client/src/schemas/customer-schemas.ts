@@ -11,7 +11,7 @@ export const CustomerSchema = z.object({
   postalCode: z.string().optional(),
   country: z.string().optional(),
   createdAt: z.date(),
-  updatedAt: z.date(),
+  updatedAt: z.date().nullable(),
 });
 
 export const CustomerSummarySchema = CustomerSchema.extend({

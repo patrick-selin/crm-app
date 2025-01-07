@@ -4,7 +4,7 @@ import { orders } from "../../db/schemas/orders";
 import { db } from "../../db/db";
 import { sql, eq } from "drizzle-orm";
 import { z } from "zod";
-import { CustomerSummarySchema } from "../../../../shared/schemas/customer-schemas";
+import { CustomerSummarySchema } from "../../../src/schemas/customer-schemas";
 
 export const getAllCustomers = async () => {
   console.log("Fetching all customers...");
@@ -13,29 +13,32 @@ export const getAllCustomers = async () => {
 
 export const getCustomersWithMetrics = async () => {
   console.log("Fetching customers with metrics...");
-  const rawResults = await db
-    .select({
-      customerId: customers.customerId,
-      firstName: customers.firstName,
-      lastName: customers.lastName,
-      email: customers.email,
-      phone: customers.phone,
-      city: customers.city,
-      postalCode: customers.postalCode,
-      country: customers.country,
-      createdAt: customers.createdAt,
-      lastOrderDate: sql`MAX(${orders.orderDate})`.as("lastOrderDate"),
-      numOfOrders: sql`COUNT(${orders.orderId})`.as("numOfOrders"),
-      totalSpent: sql`SUM(${orders.totalAmount})`.as("totalSpent"),
-    })
-    .from(customers)
-    .leftJoin(orders, eq(customers.customerId, orders.customerId))
-    .groupBy(customers.customerId)
-    .orderBy(sql`MAX(${orders.orderDate}) DESC`);
+
+  try {
+    const rawResults = await db
+      .select({
+        customerId: customers.customerId,
+        firstName: customers.firstName,
+        lastName: customers.lastName,
+        email: customers.email,
+        phone: customers.phone,
+        city: customers.city,
+        postalCode: customers.postalCode,
+        country: customers.country,
+        createdAt: customers.createdAt,
+        updatedAt: customers.updatedAt,
+        lastOrderDate: sql`MAX(${orders.orderDate})`.as("lastOrderDate"),
+        numOfOrders: sql`COUNT(${orders.orderId})`.as("numOfOrders"),
+        totalSpent: sql`SUM(${orders.totalAmount})`.as("totalSpent"),
+      })
+      .from(customers)
+      .leftJoin(orders, eq(customers.customerId, orders.customerId))
+      .groupBy(customers.customerId)
+      .orderBy(sql`MAX(${orders.orderDate}) DESC`);
+
+    console.log("Raw Results:", rawResults);
 
     const processedResults = rawResults.map((result) => {
-      console.log("Raw result before processing:", result);
-    
       const processed = {
         ...result,
         lastOrderDate:
@@ -51,17 +54,28 @@ export const getCustomersWithMetrics = async () => {
             ? parseFloat(result.totalSpent)
             : 0.0,
       };
-    
+
       console.log("Processed result:", processed);
       return processed;
     });
 
-  // Validate with Zod
-  // const parsedResults = z.array(CustomerSummarySchema).parse(processedResults);
-  // console.log("Raw Results:", rawResults);
-  console.log("Processed Results:", processedResults);
-  // console.log("Raw Results:", parsedResults);
-  return processedResults; // HUOM
+    console.log("Processed Results:", processedResults);
+
+    // Validate with Zod
+    const parsedResults = z
+      .array(CustomerSummarySchema)
+      .parse(processedResults);
+    console.log("Parsed Results:", parsedResults);
+
+    return parsedResults;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error in getCustomersWithMetrics:", error.message);
+    } else {
+      console.error("Unknown error occurred:", error);
+    }
+    throw error; // Re-throw the error if needed
+  }
 };
 
 // /customers/:id
