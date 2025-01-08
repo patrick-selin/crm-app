@@ -2,43 +2,39 @@
 // importtaa errorit
 
 // src/middleware/errorHandler.ts
-import { Request, Response, NextFunction } from 'express';
-import { ZodError } from 'zod';
-import logger from '../utils/logger';
-import { BaseError } from '../errors/BaseError';
+import { Request, Response, NextFunction } from "express";
+import { ZodError } from "zod";
+import logger from "../utils/logger";
+import { AppError, HttpStatusCodes } from "../utils/errors/app-errors";
 
-/**
- * Express error-handling middleware. Must include four parameters (err, req, res, next).
- */
+// Express error-handling middleware
 export function errorHandler(
   err: unknown,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): Response | void {
-  // 1. Handle Zod validation errors
+  // Zod validation errors
   if (err instanceof ZodError) {
-    logger.warn('Validation error occurred', {
+    logger.warn("Validation error occurred", {
       method: req.method,
       url: req.url,
       details: err.issues,
     });
 
-    // Return 422 (Unprocessable Entity) or 400 (Bad Request),
-    // whichever you prefer for validation issues:
-    return res.status(422).json({
-      error: 'Validation Error',
+    return res.status(HttpStatusCodes.BAD_REQUEST).json({
+      error: "Validation Error",
       details: err.issues.map((issue) => ({
-        path: issue.path.join('.'),
+        path: issue.path.join("."),
         message: issue.message,
       })),
-      statusCode: 422,
+      statusCode: HttpStatusCodes.BAD_REQUEST,
     });
   }
 
-  // 2. Handle our custom application errors (BaseError)
-  if (err instanceof BaseError) {
-    logger.error('Application Error:', {
+  // 2. Handle custom application errors (AppError or its subclasses)
+  if (err instanceof AppError) {
+    logger.error(`Application Error: ${err.name}`, {
       method: req.method,
       url: req.url,
       message: err.message,
@@ -46,22 +42,22 @@ export function errorHandler(
     });
 
     return res.status(err.statusCode).json({
-      error: err.message,
+      error: err.name,
+      message: err.message,
       statusCode: err.statusCode,
     });
   }
 
   // 3. Handle unknown or unexpected errors
-  logger.error('Unexpected Error:', {
+  logger.error("Unexpected Error:", {
     method: req.method,
     url: req.url,
     error: err,
-    // If err is an Error, log stack:
     stack: err instanceof Error ? err.stack : undefined,
   });
 
-  return res.status(500).json({
-    error: 'Internal Server Error',
-    statusCode: 500,
+  return res.status(HttpStatusCodes.INTERNAL_ERROR).json({
+    error: "Internal Server Error",
+    statusCode: HttpStatusCodes.INTERNAL_ERROR,
   });
 }

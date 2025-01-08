@@ -21,6 +21,6 @@ app.use("/api/v1", testRoutes);
 app.use("/api/v1/customers", customerRoutes);
 // middleware
 app.use(unknownEndpoint);
-// app.use(errorHandler);
+app.use(errorHandler);
 
 export default app;
