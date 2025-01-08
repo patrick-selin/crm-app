@@ -68,7 +68,7 @@ services:
       - ./client:/usr/src/app
       - /usr/src/app/node_modules
     environment:
-      VITE_BASE_URL: /api1
+      VITE_BASE_URL: /api/v1
 
   nginx:
     image: nginx:1.27.1

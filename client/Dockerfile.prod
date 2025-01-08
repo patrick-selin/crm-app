@@ -8,7 +8,7 @@ RUN yarn install
 
 COPY . .
 
-ENV VITE_BASE_URL=/api1
+ENV VITE_BASE_URL=/api/v1
 RUN npm run build
 
 FROM nginx:1.27.1
