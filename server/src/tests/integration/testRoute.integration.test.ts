@@ -8,10 +8,10 @@ beforeAll(() => {
   process.env.NODE_ENV = "test";
 });
 
-describe("POST /api1/test", () => {
+describe("POST /api/v1/test", () => {
   it("should create a new test item in the test database", async () => {
     const response = await request(app)
-      .post("/api1/test")
+      .post("/api/v1/test")
       .send({ content: "Test item content 44", important: true })
       .set("Content-Type", "application/json");
 
