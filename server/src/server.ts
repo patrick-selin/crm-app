@@ -3,7 +3,7 @@
 import express, { Application } from "express";
 import cors from "cors";
 import morganMiddleware from "./middleware/morgan";
-import { unknownEndpoint } from "./middleware/unknownEndpoint";
+import { unknownEndpoint } from "./middleware/unknown-endpoint";
 import healthCheckRoutes from "./routes/healthRoutes";
 import testRoutes from "./routes/testRoutes";
 import customerRoutes from "./features/customers/customer-routes";
