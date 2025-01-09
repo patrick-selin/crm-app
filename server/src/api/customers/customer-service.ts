@@ -13,6 +13,10 @@ import {
 } from "../../schemas/customer-schemas";
 import { ConflictError } from "../../utils/errors/app-errors";
 
+const isPostgresUniqueViolation = (error: any): boolean => {
+  return error;
+};
+
 export const getAllCustomers = async () => {
   logger.info("Service: Fetching all customers...");
   const results = await db.select().from(customers);
@@ -113,9 +117,15 @@ export const addCustomer = async (customerData: unknown) => {
   }
 };
 
-function isPostgresUniqueViolation(error: any): boolean {
-  return error;
-}
+export const deleteCustomer = async (id: string) => {
+  logger.info(`Service: Deleting customer ID = ${id}`);
+  const result = await db
+    .delete(customers)
+    .where(eq(customers.customerId, id))
+    .returning();
+
+  return result.length > 0;
+};
 
 // /customers/:id
 // /customers/:id/orders

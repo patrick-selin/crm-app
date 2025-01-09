@@ -1,0 +1,59 @@
+### GET all test items
+GET http://localhost/api/v1/test HTTP/1.1
+
+###
+### POST testItem
+POST http://localhost/api/v1/test HTTP/1.1
+content-type: application/json
+
+{
+    "content": "Sample Test Content 22stag",
+    "important": true
+}
+
+### GET health
+GET http://localhost:80/api/v1/health HTTP/1.1
+
+### GET /customers
+GET http://localhost:80/api/v1/customers HTTP/1.1
+
+### GET /customers/summary
+GET http://localhost:80/api/v1/customers/summary HTTP/1.1
+
+
+### GET /customers/:id
+GET http://localhost:80/api/v1/customers/5bab37bc-fc43-4207-b998-dfb76502e54b HTTP/1.1
+
+### POST /customers
+POST http://localhost:80/api/v1/customers HTTP/1.1
+content-type: application/json
+
+{
+  "firstName": "Jukka45",
+  "lastName": "Poika2",
+  "email": "jukka52@example.fi",
+  "phone": "2401234567",
+  "address": "Heippakatu 12",
+  "city": "Helsinki",
+  "postalCode": "00100",
+  "country": "Suomi"
+}
+
+### DELETE /customers/:id
+DELETE http://localhost:80/api/v1/customers/3ca36680-71da-4bd4-8ca7-b4c674886814 HTTP/1.1
+content-type: application/json
+
+
+### 
+### aws staging
+### POST testItem
+POST http://ec2-13-60-156-45.eu-north-1.compute.amazonaws.com/api/v1/test HTTP/1.1
+content-type: application/json
+
+{
+    "content": "Sample Test Content live57stag",
+    "important": true,
+    "wiolw": 3
+}
+
+

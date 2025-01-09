@@ -12,21 +12,36 @@ import {
 
 const customerRoutes = Router();
 
+// List all customers
 customerRoutes.get("/", customerController.listAllCustomers);
+
+// List customers with metrics
 customerRoutes.get("/summary", customerController.listCustomersWithMetrics);
 
+// Get a customer by ID
 customerRoutes.get(
   "/:id",
   validateParams(CustomerIdSchema),
   customerController.getCustomerById
 );
-// GET /api/v1/customers/:id/orders
+
+// Get orders for a customer
+//
+
+// Create a new customer
 customerRoutes.post(
   "/",
   validateBody(CreateCustomerSchema),
   customerController.createCustomer
 );
-// PUT /api/v1/customers/:id
-// DELETE /api/v1/customers/:id
+// Update a customer
+//
+
+// Delete a customer
+customerRoutes.delete(
+    "/:id",
+    validateParams(CustomerIdSchema),
+    customerController.deleteCustomer
+  );
 
 export default customerRoutes;
