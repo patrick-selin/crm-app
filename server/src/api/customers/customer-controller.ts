@@ -5,8 +5,8 @@ import logger from "../../utils/logger";
 import { ZodError } from "zod";
 import {
   ValidationError,
-  BadRequestError,
-  NotFoundError,
+  // BadRequestError,
+  // NotFoundError,
 } from "../../utils/errors/app-errors";
 
 export const listAllCustomers = async (
