@@ -10,10 +10,10 @@ export const CustomerSchema = z.object({
   address: z.string(),
   city: z.string(),
   postalCode: z.string(),
-  // TEST: z.string(), // testing
+
   country: z.string().optional(),
-  createdAt: z.date(),
-  updatedAt: z.date().nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date().nullable(),
 });
 
 export const CustomerSummarySchema = CustomerSchema.extend({
@@ -25,12 +25,18 @@ export const CustomerSummarySchema = CustomerSchema.extend({
   totalSpent: z.number().nonnegative(),
 });
 
-export const AddCustomerSchema = CustomerSchema.omit({
+export const CreateCustomerSchema = CustomerSchema.omit({
   customerId: true,
   createdAt: true,
   updatedAt: true,
 });
 
+export const UpdateCustomerSchema = CustomerSchema.partial();
+
+export const CustomerIdSchema = z.object({
+  id: z.string().uuid(),
+});
+
 export type Customer = z.infer<typeof CustomerSchema>;
 export type CustomerSummary = z.infer<typeof CustomerSummarySchema>;
-export type AddCustomer = z.infer<typeof AddCustomerSchema>;
+export type AddCustomer = z.infer<typeof CreateCustomerSchema>;
