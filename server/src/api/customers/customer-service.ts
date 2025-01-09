@@ -11,7 +11,7 @@ import {
   CustomerSummarySchema,
   CreateCustomerSchema,
 } from "../../schemas/customer-schemas";
-import { ConflictError } from "../../utils/errors/app-errors";
+import { ConflictError, BadRequestError } from "../../utils/errors/app-errors";
 
 const isPostgresUniqueViolation = (error: any): boolean => {
   return error;
@@ -117,6 +117,32 @@ export const addCustomer = async (customerData: unknown) => {
   }
 };
 
+const UpdateCustomerSchema = CustomerSchema.omit({
+  customerId: true, // can't change the ID
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const updateCustomer = async (id: string, data: unknown) => {
+  logger.info(`Service: Updating customer ID = ${id}`);
+  const validatedData = UpdateCustomerSchema.partial().parse(data);
+
+  if (Object.keys(validatedData).length === 0) {
+    throw new BadRequestError(
+      "No update data provided",
+      "The request body is empty or contains no valid fields"
+    );
+  }
+
+  const [updated] = await db
+    .update(customers)
+    .set({ ...validatedData })
+    .where(eq(customers.customerId, id))
+    .returning();
+
+  return updated ? CustomerSchema.parse(updated) : null;
+};
+
 export const deleteCustomer = async (id: string) => {
   logger.info(`Service: Deleting customer ID = ${id}`);
   const result = await db
@@ -126,6 +152,3 @@ export const deleteCustomer = async (id: string) => {
 
   return result.length > 0;
 };
-
-// /customers/:id
-// /customers/:id/orders

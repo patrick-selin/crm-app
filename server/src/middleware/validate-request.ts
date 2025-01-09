@@ -25,21 +25,21 @@ export function validateBody(schema: ZodSchema<any>) {
 }
 
 export const validateParams = (schema: ZodSchema<any>) => {
-    return (req: Request, _res: Response, next: NextFunction) => {
-      try {
-        schema.parse(req.params);
-        next();
-      } catch (error) {
-        if (error instanceof ZodError) {
-          return next(
-            new ValidationError(
-              "Invalid request parameters",
-              "Request parameter validation failed",
-              error.issues
-            )
-          );
-        }
-        next(error);
+  return (req: Request, _res: Response, next: NextFunction) => {
+    try {
+      schema.parse(req.params);
+      next();
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return next(
+          new ValidationError(
+            "Invalid request parameters",
+            "Request parameter validation failed",
+            error.issues
+          )
+        );
       }
-    };
+      next(error);
+    }
   };
+};

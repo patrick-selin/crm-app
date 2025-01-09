@@ -93,6 +93,28 @@ export const createCustomer = async (
   }
 };
 
+export const updateCustomer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    logger.info("Controller invoked: updateCustomer");
+    const { id } = req.params;
+    const updatedCustomer = await customerService.updateCustomer(id, req.body);
+
+    if (!updatedCustomer) {
+      throw new NotFoundError("Customer not found", `ID = ${id}`);
+    }
+
+    res.status(200).json(updatedCustomer);
+  } catch (error) {
+    logger.error("Controller error in updateCustomer:", { error });
+    next(error);
+  }
+};
+
+
 export const deleteCustomer = async (
   req: Request,
   res: Response,
