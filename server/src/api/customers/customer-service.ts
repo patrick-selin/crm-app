@@ -9,7 +9,7 @@ import { z } from "zod";
 import {
   CustomerSchema,
   CustomerSummarySchema,
-  AddCustomerSchema,
+  CreateCustomerSchema,
 } from "../../schemas/customer-schemas";
 import { ConflictError } from "../../utils/errors/app-errors";
 
@@ -31,6 +31,7 @@ export const getCustomersWithMetrics = async () => {
         lastName: customers.lastName,
         email: customers.email,
         phone: customers.phone,
+        address: customers.address,
         city: customers.city,
         postalCode: customers.postalCode,
         country: customers.country,
@@ -76,10 +77,21 @@ export const getCustomersWithMetrics = async () => {
   }
 };
 
+export const getCustomerById = async (id: string) => {
+  logger.info(`Service: Fetching customer by ID = ${id}`);
+
+  const [customer] = await db
+    .select()
+    .from(customers)
+    .where(eq(customers.customerId, id));
+
+  return customer ? CustomerSchema.parse(customer) : null;
+};
+
 export const addCustomer = async (customerData: unknown) => {
   try {
     logger.info("Service: Creating a new customer...");
-    const validatedCustomer = AddCustomerSchema.parse(customerData);
+    const validatedCustomer = CreateCustomerSchema.parse(customerData);
 
     const [newCustomer] = await db
       .insert(customers)

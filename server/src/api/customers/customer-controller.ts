@@ -1,12 +1,13 @@
 // customer-controller.ts
 import { Request, Response, NextFunction } from "express";
 import * as customerService from "./customer-service";
+import { CustomerIdSchema } from "../../schemas/customer-schemas";
 import logger from "../../utils/logger";
 import { ZodError } from "zod";
 import {
   ValidationError,
   // BadRequestError,
-  // NotFoundError,
+  NotFoundError,
 } from "../../utils/errors/app-errors";
 
 export const listAllCustomers = async (
@@ -40,6 +41,33 @@ export const listCustomersWithMetrics = async (
     next(error);
   }
 };
+
+export const getCustomerById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    logger.info("Controller invoked: getCustomerById");
+    const parsed = CustomerIdSchema.parse(req.params);
+    const { id } = parsed; 
+
+    const customer = await customerService.getCustomerById(id);
+
+    if (!customer) {
+      throw new NotFoundError(
+        "Customer not found",
+        `No record found for customer ID = ${id}`
+      );
+    }
+
+    res.status(200).json(customer);
+  } catch (error) {
+    logger.error("Controller error in getCustomerById:", { error });
+    next(error);
+  }
+};
+
 
 export const createCustomer = async (
   req: Request,
