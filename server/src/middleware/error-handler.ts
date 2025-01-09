@@ -1,7 +1,4 @@
 // src/middleware/error-handler.ts
-// importtaa errorit
-
-// src/middleware/errorHandler.ts
 import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
 import logger from "../utils/logger";
@@ -14,7 +11,7 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ): Response | void {
-  // Zod validation errors
+  //  Zod validation errors
   if (err instanceof ZodError) {
     logger.warn("Validation error occurred", {
       method: req.method,
@@ -32,23 +29,23 @@ export function errorHandler(
     });
   }
 
-  // 2. Handle custom application errors (AppError or its subclasses)
+  // 2. Custom AppError
   if (err instanceof AppError) {
     logger.error(`Application Error: ${err.name}`, {
       method: req.method,
       url: req.url,
-      message: err.message,
+      devMessage: err.devMessage,
       statusCode: err.statusCode,
     });
 
     return res.status(err.statusCode).json({
-      error: err.name,
-      message: err.message,
+      error: err.name, // E.g. "BAD_REQUEST", "VALIDATION_ERROR"
+      message: err.userMessage,
       statusCode: err.statusCode,
     });
   }
 
-  // 3. Handle unknown or unexpected errors
+  // Unknown or Unexpected errors
   logger.error("Unexpected Error:", {
     method: req.method,
     url: req.url,

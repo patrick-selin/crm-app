@@ -13,71 +13,71 @@ export class AppError extends Error {
   public statusCode: number;
   public isOperational: boolean;
   public errorStack?: unknown;
-  public logError?: unknown;
 
-  /**
-   * @param {string} name
-   * @param {number} statusCode
-   * @param {string} message
-   * @param {boolean} isOperational
-   * @param {unknown} errorStack
-   * @param {unknown} loggingErrorResponse
-   */
+  public devMessage?: string;
+  public userMessage?: string;
+
   constructor(
     name: string,
     statusCode: number = HttpStatusCodes.INTERNAL_ERROR,
-    message = "Something went wrong",
+    userMessage = "Something went wrong",
+    devMessage = "An unexpected error occurred",
     isOperational = true,
-    errorStack?: unknown,
-    loggingErrorResponse?: unknown
+    errorStack?: unknown
   ) {
-    super(message);
-
+    super(devMessage);
     Object.setPrototypeOf(this, new.target.prototype);
-
     this.name = name;
     this.statusCode = statusCode;
     this.isOperational = isOperational;
     this.errorStack = errorStack;
-    this.logError = loggingErrorResponse;
 
+    this.devMessage = devMessage;
+    this.userMessage = userMessage;
     Error.captureStackTrace(this, this.constructor);
   }
 }
 
-// API Specific Errors
 export class APIError extends AppError {
   constructor(
     name: string,
     statusCode: number = HttpStatusCodes.INTERNAL_ERROR,
-    message = "Internal Server Error",
+    userMessage = "Internal Server Error",
+    devMessage = "An unexpected server error occurred",
     isOperational = true
   ) {
-    super(name, statusCode, message, isOperational);
+    super(name, statusCode, userMessage, devMessage, isOperational);
   }
 }
 
-// Client-side input problems
 export class BadRequestError extends AppError {
-  constructor(message = "Bad Request", loggingErrorResponse?: unknown) {
+  constructor(
+    userMessage = "Bad Request",
+    devMessage = "Invalid request parameters",
+    errorStack?: unknown
+  ) {
     super(
       "BAD_REQUEST",
       HttpStatusCodes.BAD_REQUEST,
-      message,
+      userMessage,
+      devMessage,
       true,
-      undefined,
-      loggingErrorResponse
+      errorStack
     );
   }
 }
 
-// Validation failures.
 export class ValidationError extends AppError {
-  constructor(message = "Validation Error", errorStack?: unknown) {
+  constructor(
+    userMessage = "Validation Error",
+    devMessage = "Schema validation failed",
+    errorStack?: unknown
+  ) {
     super(
       "VALIDATION_ERROR",
       HttpStatusCodes.BAD_REQUEST,
-      message,
+      userMessage,
+      devMessage,
       true,
       errorStack
     );

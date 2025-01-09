@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { getAllTestItems } from "./testService";
-import { MockDbClient } from "../../types/db";
+import { getAllTestItems } from "../../api/test-route/test-service";
+import { MockDbClient } from "../../../types/db";
 
 describe("getAllTestItems", () => {
   it("should return a list of test items", async () => {

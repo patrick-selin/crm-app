@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import * as customerService from "./customer-service";
 import logger from "../../utils/logger";
 import { ZodError } from "zod";
+import { ValidationError } from "../../utils/errors/app-errors";
 
 export const getAllCustomers = async (
   _req: Request,
@@ -46,7 +47,9 @@ export const addCustomer = async (
     res.status(201).json(newCustomer);
   } catch (error) {
     if (error instanceof ZodError) {
-      return next(error);
+      return next(
+        new ValidationError("Invalid customer data", JSON.stringify(error.issues))
+      );
     }
 
     next(error);

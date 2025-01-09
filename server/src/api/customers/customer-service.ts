@@ -5,7 +5,7 @@ import { db } from "../../db/db";
 import { sql, eq } from "drizzle-orm";
 import logger from "../../utils/logger";
 import { z } from "zod";
-import { AddCustomerSchema, CustomerSummarySchema } from "../../../src/schemas/customer-schemas";
+import { AddCustomerSchema, CustomerSummarySchema } from "../../schemas/customer-schemas";
 
 export const getAllCustomers = async () => {
   console.log("Fetching all customers...");

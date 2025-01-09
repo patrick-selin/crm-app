@@ -1,7 +1,7 @@
 // testController.js
 import { Request, Response } from "express";
-import { getAllTestItems, createTestItem } from "../services/testService";
-import { db } from "../db/db";
+import { getAllTestItems, createTestItem } from "../../api/test-route/test-service";
+import { db } from "../../db/db";
 
 export const getTestItems = async (
   _req: Request,
