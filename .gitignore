@@ -15,6 +15,7 @@ server/coverage/
 .env
 
 /logs
+/log
 *.log
 
 .vscode

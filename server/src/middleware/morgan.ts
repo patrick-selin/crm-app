@@ -1,10 +1,12 @@
+// src/middleware/morganMiddleware.ts
 import morgan, { StreamOptions } from "morgan";
 import { Request, Response } from "express";
-
-import Logger from "./logger";
+import logger from "../utils/logger";
 
 const stream: StreamOptions = {
-  write: (message) => Logger.http(message),
+  write: (message) => {
+    logger.http(message.trim());
+  },
 };
 
 const skip = () => {
@@ -12,9 +14,10 @@ const skip = () => {
   return env !== "development";
 };
 
-morgan.token("req-body", (req: Request, _res: Response) =>
-  JSON.stringify(req.body)
-);
+
+morgan.token("req-body", (req: Request, _res: Response) => {
+  return JSON.stringify(req.body);
+});
 
 const morganMiddleware = morgan(
   ":method :url :status :res[content-length] - :response-time ms :req-body",

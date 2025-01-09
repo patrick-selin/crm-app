@@ -2,7 +2,7 @@
 
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import * as schema from "./schemas/schema";
+import * as schema from "../api/test-route/test-schema";
 import { config } from "../config/config";
 import { DbClient } from "../../types/db";
 import fs from "fs";
@@ -12,7 +12,7 @@ const databaseUrl =
 
 console.log("DB.ts tiedosto ==========");
 console.log(`NODE env :: ${config.NODE_ENV}`);
-// console.log(`databaseUrl on :: ${databaseUrl}`);
+console.log(`databaseUrl on :: ${databaseUrl}`);
 console.log("+++++++++");
 // const queryClient = postgres(databaseUrl);
 const sslConfig =
