@@ -8,6 +8,7 @@ import {
 import {
   CreateCustomerSchema,
   CustomerIdSchema,
+  UpdateCustomerSchema,
 } from "../../schemas/customer-schemas";
 
 const customerRoutes = Router();
@@ -34,14 +35,20 @@ customerRoutes.post(
   validateBody(CreateCustomerSchema),
   customerController.createCustomer
 );
+
 // Update a customer
-//
+customerRoutes.put(
+  "/:id",
+  validateParams(CustomerIdSchema),
+  validateBody(UpdateCustomerSchema),
+  customerController.updateCustomer
+);
 
 // Delete a customer
 customerRoutes.delete(
-    "/:id",
-    validateParams(CustomerIdSchema),
-    customerController.deleteCustomer
-  );
+  "/:id",
+  validateParams(CustomerIdSchema),
+  customerController.deleteCustomer
+);
 
 export default customerRoutes;

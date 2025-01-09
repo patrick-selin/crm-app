@@ -16,6 +16,10 @@ app.use(cors());
 app.use(express.json());
 app.use(morganMiddleware);
 //routes
+app.use((req, _res, next) => {
+  console.log(`Incoming Request: ${req.method} ${req.url}`);
+  next();
+});
 app.use("/api/v1/health", healthCheckRoutes);
 app.use("/api/v1/test", testRoutes);
 app.use("/api/v1/customers", customerRoutes);
