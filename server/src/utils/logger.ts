@@ -1,6 +1,6 @@
 // src/utils/logger.ts
 // new
-import { createLogger, format, transports } from 'winston';
+import { createLogger, format, transports } from "winston";
 
 /* Winston Log Levels
 **********************
@@ -15,25 +15,22 @@ logger.silly("Potentially noisy, low-priority log");
 
 const { combine, timestamp, printf, colorize, errors } = format;
 
-const logFormat = printf(({ level, message, timestamp, stack }) => {
+const logFormat = printf(({ level, message, timestamp, stack, ...meta }) => {
   if (stack) {
     return `${timestamp} [${level}]: ${stack}`;
   }
-  return `${timestamp} [${level}]: ${message}`;
+  return `${timestamp} [${level}]: ${message} | meta: ${JSON.stringify(meta)}`;
 });
 
 const logger = createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  level: process.env.NODE_ENV === "production" ? "info" : "debug",
   format: combine(
-    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     errors({ stack: true }),
-    colorize(),               
+    colorize(),
     logFormat
   ),
-  transports: [
-    new transports.Console(),
-
-  ],
+  transports: [new transports.Console()],
 });
 
 export default logger;

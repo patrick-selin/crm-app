@@ -1,20 +1,28 @@
 // customer-service.ts
-import { customers } from "../../db/schemas/customers";
-import { orders } from "../../db/schemas/orders";
 import { db } from "../../db/db";
 import { sql, eq } from "drizzle-orm";
+import { customers } from "../../db/schemas/customers";
+import { orders } from "../../db/schemas/orders";
 import logger from "../../utils/logger";
+
 import { z } from "zod";
-import { AddCustomerSchema, CustomerSummarySchema } from "../../schemas/customer-schemas";
+import {
+  CustomerSchema,
+  CustomerSummarySchema,
+  AddCustomerSchema,
+} from "../../schemas/customer-schemas";
+import { ConflictError } from "../../utils/errors/app-errors";
 
 export const getAllCustomers = async () => {
-  console.log("Fetching all customers...");
-  return await db.select().from(customers);
+  logger.info("Service: Fetching all customers...");
+  const results = await db.select().from(customers);
+  const validated = z.array(CustomerSchema).parse(results);
+
+  return validated;
 };
 
 export const getCustomersWithMetrics = async () => {
-  console.log("Fetching customers with metrics...");
-
+  logger.info("Service: Fetching customers with metrics...");
   try {
     const rawResults = await db
       .select({
@@ -57,33 +65,45 @@ export const getCustomersWithMetrics = async () => {
       return processed;
     });
 
-    // Validate with Zod
     const parsedResults = z
       .array(CustomerSummarySchema)
       .parse(processedResults);
 
     return parsedResults;
-
   } catch (error) {
-    if (error instanceof Error) {
-      logger.error("Error in getCustomersWithMetrics:", error.message);
-    } else {
-      logger.error("Unknown error occurred:", error);
+    logger.error("Service error in getCustomersWithMetrics:", { error });
+    throw error;
+  }
+};
+
+export const addCustomer = async (customerData: unknown) => {
+  try {
+    logger.info("Service: Creating a new customer...");
+    const validatedCustomer = AddCustomerSchema.parse(customerData);
+
+    const [newCustomer] = await db
+      .insert(customers)
+      .values(validatedCustomer)
+      .returning();
+
+    logger.info("New customer created:", newCustomer);
+    return newCustomer;
+  } catch (error) {
+    const e = error as Error;
+    if (isPostgresUniqueViolation(error)) {
+      throw new ConflictError(
+        "A customer with this email already exists",
+        `Unique constraint violation: ${e.message}`,
+        e.stack
+      );
     }
     throw error;
   }
 };
 
-
-export const addCustomer = async (customerData: unknown) => {
-  const validatedCustomer = AddCustomerSchema.parse(customerData);
-
-  const [newCustomer] = await db
-    .insert(customers)
-    .values(validatedCustomer)
-    .returning();
-
-  return newCustomer;
+function isPostgresUniqueViolation(error: any): boolean {
+  return error;
 }
+
 // /customers/:id
 // /customers/:id/orders

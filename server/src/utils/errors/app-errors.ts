@@ -5,6 +5,7 @@ export enum HttpStatusCodes {
   BAD_REQUEST = 400,
   UN_AUTHORISED = 403,
   NOT_FOUND = 404,
+  CONFLICT = 409,
   INTERNAL_ERROR = 500,
 }
 
@@ -76,6 +77,40 @@ export class ValidationError extends AppError {
     super(
       "VALIDATION_ERROR",
       HttpStatusCodes.BAD_REQUEST,
+      userMessage,
+      devMessage,
+      true,
+      errorStack
+    );
+  }
+}
+
+export class NotFoundError extends AppError {
+  constructor(
+    userMessage = "Resource not found",
+    devMessage = "No matching record in database",
+    errorStack?: unknown
+  ) {
+    super(
+      "NOT_FOUND",
+      HttpStatusCodes.NOT_FOUND,
+      userMessage,
+      devMessage,
+      true,
+      errorStack
+    );
+  }
+}
+
+export class ConflictError extends AppError {
+  constructor(
+    userMessage = "Conflict: resource already exists",
+    devMessage = "Unique constraint violation",
+    errorStack?: unknown
+  ) {
+    super(
+      "CONFLICT",
+      HttpStatusCodes.CONFLICT,
       userMessage,
       devMessage,
       true,

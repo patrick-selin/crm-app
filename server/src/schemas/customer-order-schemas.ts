@@ -1,4 +1,4 @@
-// shared/schemas/customer-order-schema.ts
+// shared/schemas/customer-order-schemas.ts
 import { z } from "zod";
 
 export const CustomerOrderSchema = z.object({

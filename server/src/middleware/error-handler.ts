@@ -39,7 +39,7 @@ export function errorHandler(
     });
 
     return res.status(err.statusCode).json({
-      error: err.name, // E.g. "BAD_REQUEST", "VALIDATION_ERROR"
+      error: err.name,
       message: err.userMessage,
       statusCode: err.statusCode,
     });
