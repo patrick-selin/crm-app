@@ -11,7 +11,6 @@ export const OrderSchema = z.object({
   updatedAt: z.date(),
 });
 
-// Paginated orders schema
 export const PaginatedOrdersSchema = z.object({
   orders: z.array(OrderSchema),
   total: z.number().nonnegative(),
@@ -19,6 +18,9 @@ export const PaginatedOrdersSchema = z.object({
   limit: z.number().positive(),
 });
 
-// Exports
+export const OrderIdSchema = z.object({
+  orderId: z.string().uuid(),
+});
+
 export type Order = z.infer<typeof OrderSchema>;
 export type PaginatedOrders = z.infer<typeof PaginatedOrdersSchema>;

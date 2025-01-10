@@ -10,6 +10,7 @@ import {
   CustomerIdSchema,
   UpdateCustomerSchema,
 } from "../../schemas/customer-schemas";
+import { OrderIdSchema } from "../../schemas/order-schemas";
 
 const customerRoutes = Router();
 
@@ -26,7 +27,22 @@ customerRoutes.get(
   customerController.getCustomerById
 );
 
-// Get orders for a customer
+// Get all orders for a customer
+customerRoutes.get(
+  "/:id/orders",
+  validateParams(CustomerIdSchema),
+  customerController.getCustomerOrders
+);
+
+// Get specific order scoped under customers
+customerRoutes.get(
+  "/orders/:orderId",
+  validateParams(OrderIdSchema),
+  customerController.getOrderDetails
+);
+
+// 
+// /customers/:id/orders/:orderId
 //
 
 // Create a new customer
