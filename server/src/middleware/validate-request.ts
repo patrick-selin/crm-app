@@ -15,7 +15,10 @@ export function validateBody(schema: ZodSchema<any>) {
           new ValidationError(
             "Invalid request body",
             "Request body schema validation failed",
-            error.issues
+            error.issues.map((issue) => ({
+              path: issue.path.join("."),
+              message: issue.message,
+            }))
           )
         );
       }
@@ -34,8 +37,11 @@ export const validateParams = (schema: ZodSchema<any>) => {
         return next(
           new ValidationError(
             "Invalid request parameters",
-            "Request parameter validation failed",
-            error.issues
+            "Validation failed for one or more parameters",
+            error.issues.map((issue) => ({
+              path: issue.path.join("."),
+              message: issue.message,
+            }))
           )
         );
       }

@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as customerService from "./customer-service";
 import { CustomerIdSchema } from "../../schemas/customer-schemas";
+import { OrderIdSchema } from "../../schemas/order-schemas";
 import logger from "../../utils/logger";
 import { ZodError } from "zod";
 import {
@@ -68,7 +69,6 @@ export const getCustomerById = async (
   }
 };
 
-
 export const getCustomerOrders = async (
   req: Request,
   res: Response,
@@ -87,30 +87,30 @@ export const getCustomerOrders = async (
   }
 };
 
-
-
-
-export const getOrderDetails = async (
+export const getCustomerOrderDetails = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    logger.info("Controller invoked: getOrderDetails");
-    const { orderId } = req.params;
+    logger.info("Controller invoked: getCustomerOrderDetails");
+    const { id: customerId, orderId } = req.params;
 
-    const orderDetails = await customerService.getOrderDetails(orderId);
+    const orderDetails = await customerService.getCustomerOrderDetails(
+      customerId,
+      orderId
+    );
 
     if (!orderDetails) {
       throw new NotFoundError(
         "Order not found",
-        `No record found for order ID = ${orderId}`
+        `No record found for order ID = ${orderId} under customer ID = ${customerId}`
       );
     }
 
     res.status(200).json(orderDetails);
   } catch (error) {
-    logger.error("Controller error in getOrderDetails:", { error });
+    logger.error("Controller error in getCustomerOrderDetails:", { error });
     next(error);
   }
 };
@@ -132,11 +132,6 @@ export const listCustomerOrders = async (
     next(error);
   }
 };
-
-
-
-
-
 
 export const createCustomer = async (
   req: Request,

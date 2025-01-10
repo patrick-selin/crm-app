@@ -36,14 +36,10 @@ customerRoutes.get(
 
 // Get specific order scoped under customers
 customerRoutes.get(
-  "/orders/:orderId",
-  validateParams(OrderIdSchema),
-  customerController.getOrderDetails
-);
-
-// 
-// /customers/:id/orders/:orderId
-//
+    "/:id/orders/:orderId",
+    validateParams(CustomerIdSchema.and(OrderIdSchema)),
+    customerController.getCustomerOrderDetails
+  );
 
 // Create a new customer
 customerRoutes.post(
