@@ -9,4 +9,7 @@ export const products = pgTable("products", {
   category: varchar("category", { length: 50 }),
   productImage: varchar("product_image", { length: 255 }),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
 });

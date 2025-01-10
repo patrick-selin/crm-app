@@ -26,8 +26,8 @@ GET http://localhost:80/api/v1/customers/9182a36b-77e3-484f-b7c2-1c0c0194e4a5 HT
 ### GET /customers/:id/orders
 GET http://localhost:80/api/v1/customers/9182a36b-77e3-484f-b7c2-1c0c0194e4a5/orders HTTP/1.1
 
-### GET /customers/orders/:orderId // todo
-GET http://localhost:80/api/v1/customers/orders/e551617b-6756-4a78-b574-b6d8913fae05 HTTP/1.1
+### GET /customers/:id/orders/:orderId" // todo
+GET http://localhost:80/api/v1/customers/9182a36b-77e3-484f-b7c2-1c0c0194e4a5/orders/e551617b-6756-4a78-b574-b6d8913fae05 HTTP/1.1
 
 ### POST /customers
 POST http://localhost:80/api/v1/customers HTTP/1.1

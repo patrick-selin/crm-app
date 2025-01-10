@@ -1,10 +1,9 @@
 // customer-service.ts
 import { db } from "../../db/db";
-import { sql, eq } from "drizzle-orm";
+import { sql, eq, and } from "drizzle-orm";
 import { customers } from "../../db/schemas/customers";
 import { orders } from "../../db/schemas/orders";
 import { orderItems } from "../../db/schemas/order-items";
-import { products } from "../../db/schemas/products";
 import logger from "../../utils/logger";
 
 import { z } from "zod";
@@ -13,8 +12,9 @@ import {
   CustomerSummarySchema,
   CreateCustomerSchema,
   CustomerOrderSchema,
-  UpdateCustomerSchema
+  UpdateCustomerSchema,
 } from "../../schemas/customer-schemas";
+import { OrderSchema, OrderItemSchema } from "../../schemas/order-schemas";
 import { ConflictError, BadRequestError } from "../../utils/errors/app-errors";
 
 const isPostgresUniqueViolation = (error: any): boolean => {
@@ -45,9 +45,17 @@ export const getCustomersWithMetrics = async () => {
         country: customers.country,
         createdAt: customers.createdAt,
         updatedAt: customers.updatedAt,
-        lastOrderDate: sql`MAX(${orders.orderDate})`.as("lastOrderDate"),
-        numOfOrders: sql`COUNT(${orders.orderId})`.as("numOfOrders"),
-        totalSpent: sql`SUM(${orders.totalAmount})`.as("totalSpent"),
+        lastOrderDate: sql`COALESCE(MAX(${orders.orderDate}), NULL)`.as(
+          "lastOrderDate"
+        ),
+        numOfOrders:
+          sql`COALESCE(CAST(COUNT(${orders.orderId}) AS INTEGER), 0)`.as(
+            "numOfOrders"
+          ),
+        totalSpent:
+          sql`COALESCE(CAST(SUM(${orders.totalAmount}) AS DECIMAL), 0)`.as(
+            "totalSpent"
+          ),
       })
       .from(customers)
       .leftJoin(orders, eq(customers.customerId, orders.customerId))
@@ -57,28 +65,16 @@ export const getCustomersWithMetrics = async () => {
     const processedResults = rawResults.map((result) => {
       const processed = {
         ...result,
-        lastOrderDate:
-          typeof result.lastOrderDate === "string"
-            ? new Date(result.lastOrderDate).toISOString()
-            : "N/A",
-        numOfOrders:
-          typeof result.numOfOrders === "string"
-            ? parseInt(result.numOfOrders, 10)
-            : 0,
-        totalSpent:
-          typeof result.totalSpent === "string"
-            ? parseFloat(result.totalSpent)
-            : 0.0,
+        lastOrderDate: result.lastOrderDate
+          ? result.lastOrderDate
+          : "No orders",
+        numOfOrders: result.numOfOrders,
+        totalSpent: Number(result.totalSpent),
       };
-
       return processed;
     });
 
-    const parsedResults = z
-      .array(CustomerSummarySchema)
-      .parse(processedResults);
-
-    return parsedResults;
+    return z.array(CustomerSummarySchema).parse(processedResults);
   } catch (error) {
     logger.error("Service error in getCustomersWithMetrics:", { error });
     throw error;
@@ -98,7 +94,10 @@ export const getCustomerById = async (id: string) => {
 
 export const getOrdersByCustomerId = async (customerId: string) => {
   logger.info(`Service: Fetching orders for customer ID = ${customerId}`);
-  return await db.select().from(orders).where(eq(orders.customerId, customerId));
+  return await db
+    .select()
+    .from(orders)
+    .where(eq(orders.customerId, customerId));
 };
 
 export const getCustomerOrders = async (customerId: string) => {
@@ -127,49 +126,46 @@ export const getCustomerOrders = async (customerId: string) => {
   return validatedOrders;
 };
 
-//
-export const getOrderDetails = async (orderId: string) => {
-  logger.info(`Service: Fetching details for order ID = ${orderId}`);
-
-  // Fetch the order
-  const order = await db
+export const getCustomerOrderDetails = async (
+  customerId: string,
+  orderId: string
+) => {
+  logger.info(
+    `Service: Fetching details for order ID = ${orderId}, customer ID = ${customerId}`
+  );
+  const [order] = await db
     .select()
     .from(orders)
-    .where(eq(orders.orderId, orderId))
-    .limit(1);
-    logger.info(`LOG____order :: ${JSON.stringify(order)}`);
-  if (!order.length) {
+    .where(and(eq(orders.orderId, orderId), eq(orders.customerId, customerId)));
+
+  if (!order) {
     return null;
   }
 
-  const items = await db
-    .select({
-      orderItemId: orderItems.orderItemId,
-      productId: orderItems.productId,
-      quantity: orderItems.quantity,
-      price: orderItems.price,
-      productName: products.name,
-    })
+  const processedOrder = {
+    ...order,
+    totalAmount: parseFloat(order.totalAmount),
+    paymentStatus: order.paymentStatus,
+    orderDate: order.orderDate,
+    createdAt: order.createdAt,
+    updatedAt: order.updatedAt,
+  };
+
+  const rawItems = await db
+    .select()
     .from(orderItems)
-    .leftJoin(products, eq(orderItems.productId, products.productId))
     .where(eq(orderItems.orderId, orderId));
 
-  // Transform the data into the desired structure
+  const processedItems = rawItems.map((item) => ({
+    ...item,
+    price: parseFloat(item.price),
+  }));
+
   return {
-    ...order[0], // Include order-level fields
-    items: items.map((item) => ({
-      orderItemId: item.orderItemId,
-      productId: item.productId,
-      productName: item.productName,
-      quantity: item.quantity,
-      price: parseFloat(item.price), // Convert decimal to number
-    })),
+    order: OrderSchema.parse(processedOrder),
+    items: processedItems.map((item) => OrderItemSchema.parse(item)),
   };
 };
-
-
-
-
 
 export const addCustomer = async (customerData: unknown) => {
   try {

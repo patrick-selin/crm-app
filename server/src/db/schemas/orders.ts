@@ -18,4 +18,7 @@ export const orders = pgTable("orders", {
     .notNull(),
   orderDate: timestamp("order_date").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
 });

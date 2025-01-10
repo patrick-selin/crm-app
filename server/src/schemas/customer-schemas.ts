@@ -18,8 +18,8 @@ export const CustomerSchema = z.object({
 
 export const CustomerSummarySchema = CustomerSchema.extend({
   lastOrderDate: z.union([
-    z.string().datetime({ offset: true }),
-    z.literal("N/A"),
+    z.coerce.date(),
+    z.literal("No orders"),
   ]),
   numOfOrders: z.number().nonnegative(),
   totalSpent: z.number().nonnegative(),
