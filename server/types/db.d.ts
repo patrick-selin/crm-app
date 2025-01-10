@@ -1,6 +1,6 @@
 import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { Mock } from "vitest";
-import * as schema from "../src/api/test-route/test-schema";
+import * as schema from "../src/db/schemas/test-schema";
 
 export type DbClient = PostgresJsDatabase<typeof schema>;
 

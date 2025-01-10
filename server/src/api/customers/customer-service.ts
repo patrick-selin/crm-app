@@ -112,10 +112,7 @@ export const getCustomerOrders = async (customerId: string) => {
       orderId: order.orderId,
       totalAmount: parseFloat(order.totalAmount),
       paymentStatus: order.paymentStatus,
-      orderDate:
-        typeof order.orderDate === "string"
-          ? new Date(order.orderDate).toISOString()
-          : order.orderDate,
+      orderDate: order.orderDate,
     };
   });
 

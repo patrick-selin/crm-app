@@ -2,7 +2,7 @@
 
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import * as schema from "../api/test-route/test-schema";
+import * as schema from "./schemas/test-schema";
 import { config } from "../config/config";
 import { DbClient } from "../../types/db";
 import fs from "fs";

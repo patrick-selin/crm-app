@@ -2,14 +2,9 @@
 import { Request, Response, NextFunction } from "express";
 import * as customerService from "./customer-service";
 import { CustomerIdSchema } from "../../schemas/customer-schemas";
-import { OrderIdSchema } from "../../schemas/order-schemas";
 import logger from "../../utils/logger";
 import { ZodError } from "zod";
-import {
-  ValidationError,
-  // BadRequestError,
-  NotFoundError,
-} from "../../utils/errors/app-errors";
+import { ValidationError, NotFoundError } from "../../utils/errors/app-errors";
 
 export const listAllCustomers = async (
   _req: Request,
