@@ -12,7 +12,7 @@
     "test:unit:client": "docker-compose -f docker-compose.dev.yml exec client npm run test:unit",
     "test:unit:server": "docker-compose -f docker-compose.dev.yml exec server npm run test:unit",
     "test:integration": "docker-compose -f docker-compose.dev.yml exec server npm run test:integration",
-    "test:integration:ci": "docker-compose -f docker-compose.dev.yml exec server npm run test:integration:ci",
+    "test:integration:ci": "docker-compose -f docker-compose.ci.yml exec server npm run test:integration:ci",
     "test:e2e": "cd playwright-e2e && npm run test",
     "test:e2e:report": "cd playwright-e2e && npm run test:report"
   },

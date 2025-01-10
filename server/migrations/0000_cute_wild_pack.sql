@@ -2,12 +2,12 @@ CREATE TABLE IF NOT EXISTS "customers" (
 	"customer_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"first_name" varchar(100) NOT NULL,
 	"last_name" varchar(100) NOT NULL,
-	"email" varchar(150) NOT NULL,
+	"email" varchar(100) NOT NULL,
 	"phone" varchar(15),
 	"address" text,
-	"city" varchar(100),
-	"postal_code" varchar(20),
-	"country" varchar(100),
+	"city" varchar(50),
+	"postal_code" varchar(5),
+	"country" varchar(50),
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
 	CONSTRAINT "customers_email_unique" UNIQUE("email")
@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS "orders" (
 	"total_amount" numeric(10, 2) NOT NULL,
 	"payment_status" varchar(20) DEFAULT 'Pending' NOT NULL,
 	"order_date" timestamp DEFAULT now(),
-	"created_at" timestamp DEFAULT now()
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "products" (
@@ -39,7 +40,14 @@ CREATE TABLE IF NOT EXISTS "products" (
 	"category" varchar(50),
 	"product_image" varchar(255),
 	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
 	CONSTRAINT "products_sku_unique" UNIQUE("sku")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "test_items" (
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"content" varchar(255),
+	"important" boolean
 );
 --> statement-breakpoint
 DO $$ BEGIN
