@@ -37,6 +37,14 @@ export const CustomerIdSchema = z.object({
   id: z.string().uuid(),
 });
 
+export const CustomerOrderSchema = z.object({
+  orderId: z.string().uuid(),
+  totalAmount: z.number().nonnegative(),
+  paymentStatus: z.enum(["Completed", "Pending", "Overdue"]),
+  orderDate: z.date(),
+});
+
 export type Customer = z.infer<typeof CustomerSchema>;
 export type CustomerSummary = z.infer<typeof CustomerSummarySchema>;
 export type AddCustomer = z.infer<typeof CreateCustomerSchema>;
+export type UpdateCustomer = z.infer<typeof UpdateCustomerSchema>;

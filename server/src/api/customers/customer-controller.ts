@@ -50,7 +50,7 @@ export const getCustomerById = async (
   try {
     logger.info("Controller invoked: getCustomerById");
     const parsed = CustomerIdSchema.parse(req.params);
-    const { id } = parsed; 
+    const { id } = parsed;
 
     const customer = await customerService.getCustomerById(id);
 
@@ -67,6 +67,75 @@ export const getCustomerById = async (
     next(error);
   }
 };
+
+
+export const getCustomerOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    logger.info("Controller invoked: getCustomerOrders");
+    const { id } = req.params;
+    logger.info(`controller ID`);
+
+    const orders = await customerService.getCustomerOrders(id);
+    res.status(200).json(orders);
+  } catch (error) {
+    logger.error("Controller error in getCustomerOrders:", { error });
+    next(error);
+  }
+};
+
+
+
+
+export const getOrderDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    logger.info("Controller invoked: getOrderDetails");
+    const { orderId } = req.params;
+
+    const orderDetails = await customerService.getOrderDetails(orderId);
+
+    if (!orderDetails) {
+      throw new NotFoundError(
+        "Order not found",
+        `No record found for order ID = ${orderId}`
+      );
+    }
+
+    res.status(200).json(orderDetails);
+  } catch (error) {
+    logger.error("Controller error in getOrderDetails:", { error });
+    next(error);
+  }
+};
+
+//
+export const listCustomerOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    logger.info("Controller invoked: listCustomerOrders");
+    const { customerId } = req.params;
+
+    const orders = await customerService.getOrdersByCustomerId(customerId);
+    res.status(200).json(orders);
+  } catch (error) {
+    logger.error("Controller error in listCustomerOrders:", { error });
+    next(error);
+  }
+};
+
+
+
+
 
 
 export const createCustomer = async (
@@ -113,7 +182,6 @@ export const updateCustomer = async (
     next(error);
   }
 };
-
 
 export const deleteCustomer = async (
   req: Request,
