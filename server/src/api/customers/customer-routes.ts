@@ -4,18 +4,25 @@ import * as customerController from "./customer-controller";
 import {
   validateBody,
   validateParams,
+  validateQuery,
 } from "../../middleware/validate-request";
 import {
   CreateCustomerSchema,
   CustomerIdSchema,
   UpdateCustomerSchema,
+  CustomersQuerySchema,
+
 } from "../../schemas/customer-schemas";
 import { OrderIdSchema } from "../../schemas/order-schemas";
 
 const customerRoutes = Router();
 
 // List all customers
-customerRoutes.get("/", customerController.listAllCustomers);
+customerRoutes.get(
+  "/",
+    validateQuery(CustomersQuerySchema),
+  customerController.listAllCustomersWithParams
+);
 
 // List customers with metrics
 customerRoutes.get("/summary", customerController.listCustomersWithMetrics);
@@ -36,10 +43,11 @@ customerRoutes.get(
 
 // Get specific order scoped under customers
 customerRoutes.get(
-    "/:id/orders/:orderId",
-    validateParams(CustomerIdSchema.and(OrderIdSchema)),
-    customerController.getCustomerOrderDetails
-  );
+  "/:id/orders/:orderId",
+  validateParams(CustomerIdSchema.and(OrderIdSchema)),
+  customerController.getCustomerOrderDetails
+);
+
 
 // Create a new customer
 customerRoutes.post(

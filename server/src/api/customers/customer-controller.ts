@@ -6,14 +6,30 @@ import logger from "../../utils/logger";
 import { ZodError } from "zod";
 import { ValidationError, NotFoundError } from "../../utils/errors/app-errors";
 
-export const listAllCustomers = async (
-  _req: Request,
+export const listAllCustomersWithParams = async (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     logger.info("Controller invoked: listAllCustomers");
-    const customers = await customerService.getAllCustomers();
+    logger.info("Query Parameters:", req.query);
+
+    const { search, sort, page, limit, ...queryFilters } = req.query as any;
+
+    const filters = Object.keys(queryFilters).reduce((acc, key) => {
+      acc[key] = queryFilters[key] as string;
+      return acc;
+    }, {} as Record<string, string>);
+
+    const customers = await customerService.getAllCustomersWithParams({
+      search: search as string,
+      sort: sort as string,
+      page: page,
+      limit: limit,
+      filters,
+    });
+
     logger.info("Customers retrieved:", customers);
     res.status(200).json(customers);
   } catch (error) {
@@ -110,7 +126,6 @@ export const getCustomerOrderDetails = async (
   }
 };
 
-//
 export const listCustomerOrders = async (
   req: Request,
   res: Response,

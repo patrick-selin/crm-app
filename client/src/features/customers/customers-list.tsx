@@ -4,7 +4,7 @@ import { Table } from "@mantine/core";
 
 const CustomersList = () => {
   const { data: customersSummary, isLoading, error } = useCustomersSummary();
-  console.log(customersSummary);
+  // console.log(customersSummary);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error fetching customers.</p>;
@@ -40,7 +40,7 @@ const CustomersList = () => {
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
       </div>
-      {/* <p>PAGINATION</p> */}
+      {/* <p>PAGINATION numbers </p> */}
     </div>
   );
 };

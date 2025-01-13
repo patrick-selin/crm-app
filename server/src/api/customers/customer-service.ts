@@ -21,12 +21,86 @@ const isPostgresUniqueViolation = (error: any): boolean => {
   return error;
 };
 
-export const getAllCustomers = async () => {
-  logger.info("Service: Fetching all customers...");
-  const results = await db.select().from(customers);
-  const validated = z.array(CustomerSchema).parse(results);
+export const getAllCustomersWithParams = async ({
+  search,
+  sort,
+  page,
+  limit,
+  filters,
+}: {
+  search?: string;
+  sort?: string;
+  page: number;
+  limit: number;
+  filters?: Record<string, string>;
+}) => {
+  logger.info("Service: Fetching all customers with params...");
 
-  return validated;
+  const offset = (page - 1) * limit;
+
+  const baseConditions = [];
+
+  // Search
+  if (search) {
+    baseConditions.push(
+      sql`${customers.firstName} ILIKE ${`%${search}%`} OR ${
+        customers.lastName
+      } ILIKE ${`%${search}%`} OR ${customers.email} ILIKE ${`%${search}%`} OR ${
+        customers.city
+      } ILIKE ${`%${search}%`}`
+    );
+  }
+
+  // Filters
+  
+  if (filters) {
+    for (const [key, value] of Object.entries(filters)) {
+      baseConditions.push(sql`${sql.identifier(key)} = ${value}`);
+    }
+  }
+
+  const conditions = baseConditions.length ? and(...baseConditions) : undefined;
+
+  // Base query
+  const query = db
+    .select()
+    .from(customers)
+    .where(conditions)
+    .offset(offset)
+    .limit(limit);
+
+  // Sorting
+  if (sort) {
+    const sortMapping: Record<string, string> = {
+      firstName: "first_name",
+      lastName: "last_name",
+      totalSpent: "total_spent",
+    };
+
+    const [column, direction] = sort.split(":");
+    const dbColumn = sortMapping[column] || column;
+
+    query.orderBy(
+      sql`${sql.identifier(dbColumn)} ${sql.raw(direction.toUpperCase())}`
+    );
+  }
+
+  const results = await query;
+
+  // Fetch total count
+  const totalResult = await db
+    .select({ count: sql<number>`COUNT(*)` })
+    .from(customers)
+    .where(conditions);
+
+  const total = totalResult[0]?.count ?? 0;
+
+  return {
+    total,
+    page,
+    limit,
+    data: z.array(CustomerSchema).parse(results),
+  };
 };
 
 export const getCustomersWithMetrics = async () => {
@@ -38,13 +112,6 @@ export const getCustomersWithMetrics = async () => {
         firstName: customers.firstName,
         lastName: customers.lastName,
         email: customers.email,
-        phone: customers.phone,
-        address: customers.address,
-        city: customers.city,
-        postalCode: customers.postalCode,
-        country: customers.country,
-        createdAt: customers.createdAt,
-        updatedAt: customers.updatedAt,
         lastOrderDate: sql`COALESCE(MAX(${orders.orderDate}), NULL)`.as(
           "lastOrderDate"
         ),
