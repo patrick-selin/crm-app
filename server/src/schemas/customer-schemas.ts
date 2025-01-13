@@ -101,3 +101,4 @@ export type Customer = z.infer<typeof CustomerSchema>;
 export type CustomerSummary = z.infer<typeof CustomerSummarySchema>;
 export type AddCustomer = z.infer<typeof CreateCustomerSchema>;
 export type UpdateCustomer = z.infer<typeof UpdateCustomerSchema>;
+export type CustomersQuery = z.infer<typeof CustomersQuerySchema>;
