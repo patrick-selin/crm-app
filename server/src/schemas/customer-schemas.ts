@@ -21,6 +21,7 @@ export const CustomerSummarySchema = z.object({
   lastName: z.string().min(1),
   email: z.string().email(),
   lastOrderDate: z.union([z.coerce.date(), z.literal("No orders")]),
+
   numOfOrders: z.number().nonnegative(),
   totalSpent: z.number().nonnegative(),
 });
@@ -100,4 +101,3 @@ export type Customer = z.infer<typeof CustomerSchema>;
 export type CustomerSummary = z.infer<typeof CustomerSummarySchema>;
 export type AddCustomer = z.infer<typeof CreateCustomerSchema>;
 export type UpdateCustomer = z.infer<typeof UpdateCustomerSchema>;
-export type CustomersQuery = z.infer<typeof CustomersQuerySchema>;

@@ -29,7 +29,6 @@ export function validateBody(schema: ZodSchema<any>) {
 
 export const validateParams = (schema: ZodSchema<any>) => {
   return (req: Request, _res: Response, next: NextFunction) => {
-    console.log("Query Parameters:", req.query);
     try {
       schema.parse(req.params);
       next();
@@ -69,6 +68,7 @@ export const validateQuery = (schema: ZodSchema<any>) => {
             }))
           )
         );
+
       }
       next(error);
     }
