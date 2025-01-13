@@ -5,6 +5,7 @@ import AppLayout from "../layouts/app-layout";
 import Home from "../pages/home";
 import Dashboard from "../pages/dashboard";
 import Customers from "../pages/customers";
+import CustomerDetail from "../features/customers/customer-detail";
 import Sales from "../pages/sales";
 import Products from "../pages/products";
 import Analytics from "../pages/analytics";
@@ -35,6 +36,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Customers />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "customers/:id",
+        element: (
+          <ProtectedRoute>
+            <CustomerDetail />
           </ProtectedRoute>
         ),
       },

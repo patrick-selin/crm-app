@@ -9,11 +9,14 @@ import {
   getCustomers,
   getCustomersSummary,
   addCustomer,
+  getCustomer,
+  getCustomerOrders,
 } from "./customers-api";
 import {
   Customer,
   CustomerSummary,
 } from "../../../src/schemas/customer-schemas";
+import { Order } from "../../../src/schemas/order-schemas";
 
 export const useCustomers = (): UseQueryResult<Customer[], Error> => {
   return useQuery({
@@ -31,6 +34,24 @@ export const useCustomersSummary = (): UseQueryResult<
     queryFn: getCustomersSummary,
   });
 };
+
+export const useCustomer = (id: string): UseQueryResult<Customer, Error> => {
+    return useQuery({
+      queryKey: ["customer", id],
+      queryFn: () => getCustomer(id),
+      enabled: !!id,
+    });
+  };
+
+  export const useCustomerOrders = (
+    id: string
+  ): UseQueryResult<Order[], Error> => {
+    return useQuery({
+      queryKey: ["customerOrders", id],
+      queryFn: () => getCustomerOrders(id),
+      enabled: !!id,
+    });
+  };  
 
 export const useAddCustomer = () => {
   const queryClient = useQueryClient();
