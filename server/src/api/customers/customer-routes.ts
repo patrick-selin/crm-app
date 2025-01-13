@@ -21,9 +21,10 @@ const customerRoutes = Router();
 customerRoutes.get(
   "/",
   validateQuery(CustomersQuerySchema),
-  customerController.listAllCustomersWithParams
+  customerController.listCustomers
 );
 
+// List all customers, with order summary
 customerRoutes.get(
   "/summary",
   validateQuery(CustomersSummaryQuerySchema),

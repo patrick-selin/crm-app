@@ -21,7 +21,7 @@ const isPostgresUniqueViolation = (error: any): boolean => {
   return error;
 };
 
-export const getAllCustomersWithParams = async ({
+export const getCustomers = async ({
   search,
   sort,
   page,
@@ -207,8 +207,6 @@ export const getCustomersWithMetrics = async ({
     data: z.array(CustomerSummarySchema).parse(processedResults),
   };
 };
-
-// export const getCustomersWithMetrics = async () => {
 //   logger.info("Service: Fetching customers with metrics...");
 //   try {
 //     const rawResults = await db
@@ -264,14 +262,6 @@ export const getCustomerById = async (id: string) => {
   return customer ? CustomerSchema.parse(customer) : null;
 };
 
-export const getOrdersByCustomerId = async (customerId: string) => {
-  logger.info(`Service: Fetching orders for customer ID = ${customerId}`);
-  return await db
-    .select()
-    .from(orders)
-    .where(eq(orders.customerId, customerId));
-};
-
 export const getCustomerOrders = async (customerId: string) => {
   logger.info(`Service: Fetching orders for customerId = ${customerId}`);
   const rawOrders = await db
@@ -294,6 +284,7 @@ export const getCustomerOrders = async (customerId: string) => {
 
   return validatedOrders;
 };
+
 
 export const getCustomerOrderDetails = async (
   customerId: string,
@@ -335,6 +326,16 @@ export const getCustomerOrderDetails = async (
     items: processedItems.map((item) => OrderItemSchema.parse(item)),
   };
 };
+
+// TEMP-------
+// export const getOrdersByCustomerId = async (customerId: string) => {
+//   logger.info(`Service: Fetching orders for customer ID = ${customerId}`);
+//   return await db
+//     .select()
+//     .from(orders)
+//     .where(eq(orders.customerId, customerId));
+// };
+// -------
 
 export const addCustomer = async (customerData: unknown) => {
   try {

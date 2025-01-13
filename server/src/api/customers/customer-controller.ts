@@ -6,7 +6,7 @@ import logger from "../../utils/logger";
 import { ZodError } from "zod";
 import { ValidationError, NotFoundError } from "../../utils/errors/app-errors";
 
-export const listAllCustomersWithParams = async (
+export const listCustomers = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -22,7 +22,7 @@ export const listAllCustomersWithParams = async (
       return acc;
     }, {} as Record<string, string>);
 
-    const customers = await customerService.getAllCustomersWithParams({
+    const customers = await customerService.getCustomers({
       search: search as string,
       sort: sort as string,
       page: page,
@@ -67,6 +67,7 @@ export const listCustomersWithMetrics = async (
     next(error);
   }
 };
+
 export const getCustomerById = async (
   req: Request,
   res: Response,
@@ -92,6 +93,7 @@ export const getCustomerById = async (
     next(error);
   }
 };
+
 
 export const getCustomerOrders = async (
   req: Request,
@@ -139,22 +141,26 @@ export const getCustomerOrderDetails = async (
   }
 };
 
-export const listCustomerOrders = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    logger.info("Controller invoked: listCustomerOrders");
-    const { customerId } = req.params;
+// TEMP-------
 
-    const orders = await customerService.getOrdersByCustomerId(customerId);
-    res.status(200).json(orders);
-  } catch (error) {
-    logger.error("Controller error in listCustomerOrders:", { error });
-    next(error);
-  }
-};
+// export const listCustomerOrders = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     logger.info("Controller invoked: listCustomerOrders");
+//     const { customerId } = req.params;
+
+//     const orders = await customerService.getOrdersByCustomerId(customerId);
+//     res.status(200).json(orders);
+//   } catch (error) {
+//     logger.error("Controller error in listCustomerOrders:", { error });
+//     next(error);
+//   }
+// };
+// -------
+
 
 export const createCustomer = async (
   req: Request,
