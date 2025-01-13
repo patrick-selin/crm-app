@@ -5,16 +5,17 @@ import {
   CustomerSummary,
 } from "../../../src/schemas/customer-schemas";
 
-const baseUrl = `${import.meta.env.VITE_BASE_URL}/customers/`;
+const baseUrl = `${import.meta.env.VITE_BASE_URL}`;
 
 export const getCustomers = async (): Promise<Customer[]> => {
-  const response = await axios.get(baseUrl);
-  return response.data;
+  const response = await axios.get(`${baseUrl}customers`);
+  return response.data.data;
 };
 
 export const getCustomersSummary = async (): Promise<CustomerSummary[]> => {
-  const response = await axios.get(`${baseUrl}/summary`);
-  return response.data;
+  const response = await axios.get(`${baseUrl}/customers/summary`);
+  //   console.log(response.data.data);
+  return response.data.data;
 };
 
 export const addCustomer = async (
