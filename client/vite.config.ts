@@ -2,7 +2,6 @@ import { defineConfig } from "vitest/config";
 
 import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
@@ -10,12 +9,13 @@ export default defineConfig({
   },
   test: {
     environment: "jsdom",
+    globals: true,
   },
   build: {
     outDir: "dist",
     rollupOptions: {
       output: {
-        format: "es", // For ES module output
+        format: "es",
       },
     },
     sourcemap: true,

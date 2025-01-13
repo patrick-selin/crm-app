@@ -22,6 +22,37 @@ export const listAllCustomers = async (
   }
 };
 
+export const listAllCustomersWithParams = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    logger.info("Controller invoked: listAllCustomers");
+
+    const { search, sort, page, limit, ...queryFilters } = req.query;
+
+    const filters = Object.keys(queryFilters).reduce((acc, key) => {
+      acc[key] = queryFilters[key] as string;
+      return acc;
+    }, {} as Record<string, string>);
+
+    const customers = await customerService.getAllCustomersWithParams({
+      search: search as string,
+      sort: sort as string,
+      page: parseInt(page as string, 10) || 1,
+      limit: parseInt(limit as string, 10) || 10,
+      filters,
+    });
+
+    logger.info("Customers retrieved:", customers);
+    res.status(200).json(customers);
+  } catch (error) {
+    logger.error("Controller error in listAllCustomers:", { error });
+    next(error);
+  }
+};
+
 export const listCustomersWithMetrics = async (
   _req: Request,
   res: Response,
@@ -110,7 +141,6 @@ export const getCustomerOrderDetails = async (
   }
 };
 
-//
 export const listCustomerOrders = async (
   req: Request,
   res: Response,

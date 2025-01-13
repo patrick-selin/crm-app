@@ -72,3 +72,18 @@ content-type: application/json
 }
 
 
+
+### GET /customers
+GET http://localhost:80/api/v1/customers HTTP/1.1
+
+### GET /customers, search params
+GET http://localhost:80/api/v1/customers?sort=firstName:desc&page=1&limit=10 HTTP/1.1
+
+# /customers?search=frank&sort=lastName:asc&page=1&limit=10
+
+# Query Parameters
+
+#     Search: /customers?search=John
+#     Sorting: /customers?sort=firstName:ASCs
+#     Filters: /customers?country=USA
+#     Pagination: /customers?page=2&limit=10

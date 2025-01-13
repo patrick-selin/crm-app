@@ -15,7 +15,7 @@ import { OrderIdSchema } from "../../schemas/order-schemas";
 const customerRoutes = Router();
 
 // List all customers
-customerRoutes.get("/", customerController.listAllCustomers);
+customerRoutes.get("/", customerController.listAllCustomersWithParams);
 
 // List customers with metrics
 customerRoutes.get("/summary", customerController.listCustomersWithMetrics);
@@ -36,10 +36,10 @@ customerRoutes.get(
 
 // Get specific order scoped under customers
 customerRoutes.get(
-    "/:id/orders/:orderId",
-    validateParams(CustomerIdSchema.and(OrderIdSchema)),
-    customerController.getCustomerOrderDetails
-  );
+  "/:id/orders/:orderId",
+  validateParams(CustomerIdSchema.and(OrderIdSchema)),
+  customerController.getCustomerOrderDetails
+);
 
 // Create a new customer
 customerRoutes.post(

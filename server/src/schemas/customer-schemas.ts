@@ -10,17 +10,13 @@ export const CustomerSchema = z.object({
   address: z.string(),
   city: z.string(),
   postalCode: z.string(),
-
   country: z.string().optional(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date().nullable(),
 });
 
 export const CustomerSummarySchema = CustomerSchema.extend({
-  lastOrderDate: z.union([
-    z.coerce.date(),
-    z.literal("No orders"),
-  ]),
+  lastOrderDate: z.union([z.coerce.date(), z.literal("No orders")]),
   numOfOrders: z.number().nonnegative(),
   totalSpent: z.number().nonnegative(),
 });
@@ -42,6 +38,23 @@ export const CustomerOrderSchema = z.object({
   totalAmount: z.number().nonnegative(),
   paymentStatus: z.enum(["Completed", "Pending", "Overdue"]),
   orderDate: z.date(),
+});
+
+export const CustomersQuerySchema = z.object({
+  search: z.string().optional(),
+  sort: z
+    .string()
+    .regex(/^\w+:(asc|desc)$/i)
+    .optional(),
+  page: z.preprocess(
+    (val) => parseInt(val as string, 10),
+    z.number().int().min(1).default(1)
+  ),
+  limit: z.preprocess(
+    (val) => parseInt(val as string, 10),
+    z.number().int().min(1).max(100).default(10)
+  ),
+  filters: z.record(z.string()).optional(),
 });
 
 export type Customer = z.infer<typeof CustomerSchema>;
