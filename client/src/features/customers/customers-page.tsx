@@ -1,57 +1,45 @@
 // features/customers/customers-page.tsx
-import { useCustomersSummary } from "./customers-queries";
-import { Table } from "@mantine/core";
+import { Tabs, Button, Group, Modal } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import CustomersSummaryTable from "./customers-summary-table";
+import CustomersTable from "./customers-table";
+import AddCustomerModal from "./add-customer-modal";
 
-const CustomersList = () => {
-  const { data: customersSummary, isLoading, error } = useCustomersSummary();
-  // console.log(customersSummary);
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error fetching customers.</p>;
-  console.log(customersSummary);
-
-  const rows = customersSummary?.map((customer) => (
-    <Table.Tr key={customer.customerId}>
-      <Table.Td>
-        {customer.firstName} {customer.lastName}
-      </Table.Td>
-      <Table.Td>{customer.email}</Table.Td>
-      <Table.Td>
-        {customer.lastOrderDate && customer.lastOrderDate !== "No orders"
-          ? new Date(customer.lastOrderDate).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })
-          : "N/A"}
-      </Table.Td>
-      <Table.Td>{customer.numOfOrders}</Table.Td>
-      <Table.Td>{customer.totalSpent.toFixed(2)}</Table.Td>
-    </Table.Tr>
-  ));
+const CustomersPage = () => {
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <div>
-      <h2>Customers</h2>
-      {/* <div>SORT, FILTERs, SEARCH by name</div> */}
-      <div>
-        <Table>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Name</Table.Th>
-              <Table.Th>Email</Table.Th>
-              <Table.Th>Last Order</Table.Th>
-              {/* Payment status: "Paid", "Pending", "Overdue". */}
-              <Table.Th>Number of Orders</Table.Th>
-              <Table.Th>Total Spent</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
-        </Table>
-      </div>
-      {/* <p>PAGINATION numbers </p> */}
+      <Group>
+        <h1>Customers</h1>
+        <Modal
+          opened={opened}
+          onClose={close}
+          title="Add new customer"
+          centered
+        >
+          <AddCustomerModal />
+        </Modal>
+        <Button variant="primary" onClick={open}>
+          Add New Customer
+        </Button>
+      </Group>
+
+      {/* <Tabs value={activeTab} onTabChange={setActiveTab}> */}
+      <Tabs defaultValue="summary">
+        <Tabs.List>
+          <Tabs.Tab value="summary">Customer Summary</Tabs.Tab>
+          <Tabs.Tab value="details">All Customers</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panel value="summary">
+          <CustomersSummaryTable />
+        </Tabs.Panel>
+        <Tabs.Panel value="details">
+          <CustomersTable />
+        </Tabs.Panel>
+      </Tabs>
     </div>
   );
 };
 
-export default CustomersList;
+export default CustomersPage;
