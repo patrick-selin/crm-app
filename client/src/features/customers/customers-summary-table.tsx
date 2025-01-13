@@ -1,15 +1,22 @@
 // features/customers/customers-summary-table.tsx
 import { Table } from "@mantine/core";
 import { useCustomersSummary } from "./customers-queries";
+import { useNavigate } from "react-router";
+import classes from "./customers-summary-table.module.css";
 
 const CustomersSummaryTable = () => {
   const { data: customersSummary, isLoading, error } = useCustomersSummary();
+  const navigate = useNavigate();
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error fetching customers.</p>;
 
   const rows = customersSummary?.map((customer) => (
-    <Table.Tr key={customer.customerId}>
+    <Table.Tr
+      key={customer.customerId}
+      className={classes.tablerow}
+      onClick={() => navigate(`/customers/${customer.customerId}`)}
+    >
       <Table.Td>
         {customer.firstName} {customer.lastName}
       </Table.Td>
