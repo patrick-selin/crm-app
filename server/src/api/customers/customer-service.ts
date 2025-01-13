@@ -60,6 +60,7 @@ export const getAllCustomersWithParams = async ({
   }
 
   // Filters
+  
   if (filters) {
     for (const [key, value] of Object.entries(filters)) {
       baseConditions.push(sql`${sql.identifier(key)} = ${value}`);

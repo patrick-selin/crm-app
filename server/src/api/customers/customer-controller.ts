@@ -29,8 +29,9 @@ export const listAllCustomersWithParams = async (
 ) => {
   try {
     logger.info("Controller invoked: listAllCustomers");
+    logger.info("Query Parameters:", req.query);
 
-    const { search, sort, page, limit, ...queryFilters } = req.query;
+    const { search, sort, page, limit, ...queryFilters } = req.query as any;
 
     const filters = Object.keys(queryFilters).reduce((acc, key) => {
       acc[key] = queryFilters[key] as string;

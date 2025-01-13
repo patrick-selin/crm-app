@@ -40,22 +40,32 @@ export const CustomerOrderSchema = z.object({
   orderDate: z.date(),
 });
 
-export const CustomersQuerySchema = z.object({
-  search: z.string().optional(),
-  sort: z
-    .string()
-    .regex(/^\w+:(asc|desc)$/i)
-    .optional(),
-  page: z.preprocess(
-    (val) => parseInt(val as string, 10),
-    z.number().int().min(1).default(1)
-  ),
-  limit: z.preprocess(
-    (val) => parseInt(val as string, 10),
-    z.number().int().min(1).max(100).default(10)
-  ),
-  filters: z.record(z.string()).optional(),
-});
+export const CustomersQuerySchema = z
+  .object({
+    search: z.string().optional(),
+    sort: z
+      .string()
+      .regex(
+        /^(city|country|numOfOrders|firstName|lastName):(asc|desc)$/i,
+        "Sort format should be 'column:asc' or 'column:desc'"
+      )
+      .optional(),
+    page: z
+      .preprocess(
+        (val) => parseInt(val as string, 10),
+        z.number().int().min(1).default(1)
+      )
+      .optional(),
+    limit: z
+      .preprocess(
+        (val) => parseInt(val as string, 10),
+        z.number().int().min(1).max(100).default(10)
+      )
+      .optional(),
+      city: z.string().optional(),
+    country: z.string().optional(),
+  })
+  .strict();
 
 export type Customer = z.infer<typeof CustomerSchema>;
 export type CustomerSummary = z.infer<typeof CustomerSummarySchema>;

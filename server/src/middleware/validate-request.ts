@@ -29,6 +29,7 @@ export function validateBody(schema: ZodSchema<any>) {
 
 export const validateParams = (schema: ZodSchema<any>) => {
   return (req: Request, _res: Response, next: NextFunction) => {
+    console.log("Query Parameters:", req.query);
     try {
       schema.parse(req.params);
       next();
@@ -38,6 +39,29 @@ export const validateParams = (schema: ZodSchema<any>) => {
           new ValidationError(
             "Invalid request parameters",
             "Validation failed for one or more parameters",
+            error.issues.map((issue) => ({
+              path: issue.path.join("."),
+              message: issue.message,
+            }))
+          )
+        );
+      }
+      next(error);
+    }
+  };
+};
+
+export const validateQuery = (schema: ZodSchema<any>) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    try {
+      schema.parse(req.query);
+      next();
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return next(
+          new ValidationError(
+            "Invalid query parameters",
+            "Validation failed for one or more query parameters",
             error.issues.map((issue) => ({
               path: issue.path.join("."),
               message: issue.message,
