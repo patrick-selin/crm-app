@@ -11,6 +11,7 @@ import {
   CustomerIdSchema,
   UpdateCustomerSchema,
   CustomersQuerySchema,
+  CustomersSummaryQuerySchema,
 } from "../../schemas/customer-schemas";
 import { OrderIdSchema } from "../../schemas/order-schemas";
 
@@ -19,12 +20,15 @@ const customerRoutes = Router();
 // List all customers
 customerRoutes.get(
   "/",
-    validateQuery(CustomersQuerySchema),
+  validateQuery(CustomersQuerySchema),
   customerController.listAllCustomersWithParams
 );
 
-// List customers with metrics
-customerRoutes.get("/summary", customerController.listCustomersWithMetrics);
+customerRoutes.get(
+  "/summary",
+  validateQuery(CustomersSummaryQuerySchema),
+  customerController.listCustomersWithMetrics
+);
 
 // Get a customer by ID
 customerRoutes.get(

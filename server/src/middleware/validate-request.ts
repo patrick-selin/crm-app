@@ -54,7 +54,8 @@ export const validateParams = (schema: ZodSchema<any>) => {
 export const validateQuery = (schema: ZodSchema<any>) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
-      schema.parse(req.query);
+      const validatedQuery = schema.parse(req.query);
+      req.query = validatedQuery;
       next();
     } catch (error) {
       if (error instanceof ZodError) {
