@@ -21,6 +21,7 @@ export const CustomerSummarySchema = z.object({
   lastName: z.string().min(1),
   email: z.string().email(),
   lastOrderDate: z.union([z.coerce.date(), z.literal("No orders")]),
+
   numOfOrders: z.number().nonnegative(),
   totalSpent: z.number().nonnegative(),
 });
@@ -43,6 +44,7 @@ export const CustomerOrderSchema = z.object({
   paymentStatus: z.enum(["Completed", "Pending", "Overdue"]),
   orderDate: z.date(),
 });
+
 
 export const CustomersQuerySchema = z
   .object({

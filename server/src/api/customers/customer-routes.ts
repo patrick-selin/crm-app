@@ -11,6 +11,7 @@ import {
   CustomerIdSchema,
   UpdateCustomerSchema,
   CustomersQuerySchema,
+
 } from "../../schemas/customer-schemas";
 import { OrderIdSchema } from "../../schemas/order-schemas";
 
@@ -46,6 +47,7 @@ customerRoutes.get(
   validateParams(CustomerIdSchema.and(OrderIdSchema)),
   customerController.getCustomerOrderDetails
 );
+
 
 // Create a new customer
 customerRoutes.post(
