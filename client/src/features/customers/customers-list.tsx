@@ -8,6 +8,7 @@ const CustomersList = () => {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error fetching customers.</p>;
+  console.log(customersSummary);
 
   const rows = customersSummary?.map((customer) => (
     <Table.Tr key={customer.customerId}>
@@ -15,7 +16,15 @@ const CustomersList = () => {
         {customer.firstName} {customer.lastName}
       </Table.Td>
       <Table.Td>{customer.email}</Table.Td>
-      <Table.Td>{customer.lastOrderDate || "N/A"}</Table.Td>
+      <Table.Td>
+        {customer.lastOrderDate && customer.lastOrderDate !== "No orders"
+          ? new Date(customer.lastOrderDate).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })
+          : "N/A"}
+      </Table.Td>
       <Table.Td>{customer.numOfOrders}</Table.Td>
       <Table.Td>{customer.totalSpent.toFixed(2)}</Table.Td>
     </Table.Tr>

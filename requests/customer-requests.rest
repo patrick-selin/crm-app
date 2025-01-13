@@ -24,9 +24,8 @@ GET http://localhost:80/api/v1/customers?page=1&limit=3 HTTP/1.1
 ### GET /customers/summary
 GET http://localhost:80/api/v1/customers/summary HTTP/1.1
 
-### GET /customers/summary,  with query params
-GET http://localhost:80/api/v1/customers/summary?page=1&limit=3 HTTP/1.1
-
+### GET /customers/summary, with query params
+GET http://localhost:80/api/v1/customers/summary?sort=totalSpent:desc HTTP/1.1
 
 ### GET /customers/:id
 GET http://localhost:80/api/v1/customers/9182a36b-77e3-484f-b7c2-1c0c0194e4a5 HTTP/1.1
@@ -42,9 +41,9 @@ POST http://localhost:80/api/v1/customers HTTP/1.1
 content-type: application/json
 
 {
-  "firstName": "Jukka45",
+  "firstName": "Jukka33",
   "lastName": "Poika2",
-  "email": "jukka52@example.fi",
+  "email": "jukka33@example.fi",
   "phone": "2401234567",
   "address": "Heippakatu 12",
   "city": "Helsinki",

@@ -39,21 +39,34 @@ export const listAllCustomersWithParams = async (
 };
 
 export const listCustomersWithMetrics = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    logger.info("Controller invoked: all with metrics");
-    const customers = await customerService.getCustomersWithMetrics();
-    logger.info("Customers to send, with metrics:", customers);
+    logger.info("Controller invoked: listCustomersWithMetrics");
+    const { search, sort, page, limit, ...queryFilters } = req.query as any;
+
+    const filters = Object.keys(queryFilters).reduce((acc, key) => {
+      acc[key] = queryFilters[key] as string;
+      return acc;
+    }, {} as Record<string, string>);
+
+    const customers = await customerService.getCustomersWithMetrics({
+      search: search as string,
+      sort: sort as string,
+      page: parseInt(page as string, 10) || 1,
+      limit: parseInt(limit as string, 10) || 10,
+      filters,
+    });
+
+    logger.info("Customers retrieved with metrics:", customers);
     res.status(200).json(customers);
   } catch (error) {
-    logger.error("Controller ERROR");
+    logger.error("Controller error in listCustomersWithMetrics:", { error });
     next(error);
   }
 };
-
 export const getCustomerById = async (
   req: Request,
   res: Response,

@@ -45,14 +45,14 @@ export const getAllCustomersWithParams = async ({
     baseConditions.push(
       sql`${customers.firstName} ILIKE ${`%${search}%`} OR ${
         customers.lastName
-      } ILIKE ${`%${search}%`} OR ${customers.email} ILIKE ${`%${search}%`} OR ${
-        customers.city
-      } ILIKE ${`%${search}%`}`
+      } ILIKE ${`%${search}%`} OR ${
+        customers.email
+      } ILIKE ${`%${search}%`} OR ${customers.city} ILIKE ${`%${search}%`}`
     );
   }
 
   // Filters
-  
+
   if (filters) {
     for (const [key, value] of Object.entries(filters)) {
       baseConditions.push(sql`${sql.identifier(key)} = ${value}`);
@@ -103,50 +103,155 @@ export const getAllCustomersWithParams = async ({
   };
 };
 
-export const getCustomersWithMetrics = async () => {
-  logger.info("Service: Fetching customers with metrics...");
-  try {
-    const rawResults = await db
-      .select({
-        customerId: customers.customerId,
-        firstName: customers.firstName,
-        lastName: customers.lastName,
-        email: customers.email,
-        lastOrderDate: sql`COALESCE(MAX(${orders.orderDate}), NULL)`.as(
-          "lastOrderDate"
-        ),
-        numOfOrders:
-          sql`COALESCE(CAST(COUNT(${orders.orderId}) AS INTEGER), 0)`.as(
-            "numOfOrders"
-          ),
-        totalSpent:
-          sql`COALESCE(CAST(SUM(${orders.totalAmount}) AS DECIMAL), 0)`.as(
-            "totalSpent"
-          ),
-      })
-      .from(customers)
-      .leftJoin(orders, eq(customers.customerId, orders.customerId))
-      .groupBy(customers.customerId)
-      .orderBy(sql`MAX(${orders.orderDate}) DESC`);
+export const getCustomersWithMetrics = async ({
+  search,
+  sort,
+  page,
+  limit,
+  filters,
+}: {
+  search?: string;
+  sort?: string;
+  page: number;
+  limit: number;
+  filters?: Record<string, string>;
+}) => {
+  logger.info("Service: Fetching customers with metrics and params...");
 
-    const processedResults = rawResults.map((result) => {
-      const processed = {
-        ...result,
-        lastOrderDate: result.lastOrderDate
-          ? result.lastOrderDate
-          : "No orders",
-        numOfOrders: result.numOfOrders,
-        totalSpent: Number(result.totalSpent),
-      };
-      return processed;
-    });
+  const offset = (page - 1) * limit;
 
-    return z.array(CustomerSummarySchema).parse(processedResults);
-  } catch (error) {
-    logger.error("Service error in getCustomersWithMetrics:", { error });
-    throw error;
+  const baseConditions = [];
+
+  // Search
+  if (search) {
+    baseConditions.push(
+      sql`${customers.firstName} ILIKE ${`%${search}%`} OR ${
+        customers.lastName
+      } ILIKE ${`%${search}%`} OR ${customers.email} ILIKE ${`%${search}%`}`
+    );
   }
+
+  // Filters
+  if (filters) {
+    for (const [key, value] of Object.entries(filters)) {
+      baseConditions.push(sql`${sql.identifier(key)} = ${value}`);
+    }
+  }
+
+  const conditions = baseConditions.length ? and(...baseConditions) : undefined;
+
+  // Base query
+  const query = db
+    .select({
+      customerId: customers.customerId,
+      firstName: customers.firstName,
+      lastName: customers.lastName,
+      email: customers.email,
+      lastOrderDate: sql`COALESCE(MAX(${orders.orderDate}), NULL)`.as(
+        "lastOrderDate"
+      ),
+      numOfOrders:
+        sql`COALESCE(CAST(COUNT(${orders.orderId}) AS INTEGER), 0)`.as(
+          "numOfOrders"
+        ),
+      totalSpent:
+        sql`COALESCE(CAST(SUM(${orders.totalAmount}) AS DECIMAL), 0)`.as(
+          "totalSpent"
+        ),
+    })
+    .from(customers)
+    .leftJoin(orders, eq(customers.customerId, orders.customerId))
+    .groupBy(customers.customerId)
+    .where(conditions)
+    .offset(offset)
+    .limit(limit);
+
+  // Sorting
+  if (sort) {
+    const [column, direction] = sort.split(":");
+
+    if (column === "totalSpent") {
+      query.orderBy(
+        sql`COALESCE(CAST(SUM(${orders.totalAmount}) AS DECIMAL), 0) ${sql.raw(
+          direction.toUpperCase()
+        )}`
+      );
+    } else {
+      query.orderBy(
+        sql`${sql.identifier(column)} ${sql.raw(direction.toUpperCase())}`
+      );
+    }
+  }
+
+  const rawResults = await query;
+
+  // Convert totalSpent to a number
+  const processedResults = rawResults.map((result) => ({
+    ...result,
+    lastOrderDate: result.lastOrderDate ? result.lastOrderDate : "No orders",
+    totalSpent: Number(result.totalSpent),
+  }));
+
+  // Fetch total count
+  const totalResult = await db
+    .select({ count: sql<number>`COUNT(*)` })
+    .from(customers)
+    .where(conditions);
+
+  const total = totalResult[0]?.count ?? 0;
+
+  return {
+    total,
+    page,
+    limit,
+    data: z.array(CustomerSummarySchema).parse(processedResults),
+  };
 };
+
+// export const getCustomersWithMetrics = async () => {
+//   logger.info("Service: Fetching customers with metrics...");
+//   try {
+//     const rawResults = await db
+//       .select({
+//         customerId: customers.customerId,
+//         firstName: customers.firstName,
+//         lastName: customers.lastName,
+//         email: customers.email,
+//         lastOrderDate: sql`COALESCE(MAX(${orders.orderDate}), NULL)`.as(
+//           "lastOrderDate"
+//         ),
+//         numOfOrders:
+//           sql`COALESCE(CAST(COUNT(${orders.orderId}) AS INTEGER), 0)`.as(
+//             "numOfOrders"
+//           ),
+//         totalSpent:
+//           sql`COALESCE(CAST(SUM(${orders.totalAmount}) AS DECIMAL), 0)`.as(
+//             "totalSpent"
+//           ),
+//       })
+//       .from(customers)
+//       .leftJoin(orders, eq(customers.customerId, orders.customerId))
+//       .groupBy(customers.customerId)
+//       .orderBy(sql`MAX(${orders.orderDate}) DESC`);
+
+//     const processedResults = rawResults.map((result) => {
+//       const processed = {
+//         ...result,
+//         lastOrderDate: result.lastOrderDate
+//           ? result.lastOrderDate
+//           : "No orders",
+//         numOfOrders: result.numOfOrders,
+//         totalSpent: Number(result.totalSpent),
+//       };
+//       return processed;
+//     });
+
+//     return z.array(CustomerSummarySchema).parse(processedResults);
+//   } catch (error) {
+//     logger.error("Service error in getCustomersWithMetrics:", { error });
+//     throw error;
+//   }
+// };
 
 export const getCustomerById = async (id: string) => {
   logger.info(`Service: Fetching customer by ID = ${id}`);
