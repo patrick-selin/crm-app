@@ -20,7 +20,6 @@ const customerRoutes = Router();
 customerRoutes.get(
   "/",
     validateQuery(CustomersQuerySchema),
-    
   customerController.listAllCustomersWithParams
 );
 

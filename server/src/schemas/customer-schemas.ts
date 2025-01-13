@@ -15,7 +15,11 @@ export const CustomerSchema = z.object({
   updatedAt: z.coerce.date().nullable(),
 });
 
-export const CustomerSummarySchema = CustomerSchema.extend({
+export const CustomerSummarySchema = z.object({
+  customerId: z.string().uuid(),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  email: z.string().email(),
   lastOrderDate: z.union([z.coerce.date(), z.literal("No orders")]),
   numOfOrders: z.number().nonnegative(),
   totalSpent: z.number().nonnegative(),

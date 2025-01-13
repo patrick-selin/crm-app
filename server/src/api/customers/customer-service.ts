@@ -21,14 +21,6 @@ const isPostgresUniqueViolation = (error: any): boolean => {
   return error;
 };
 
-export const getAllCustomers = async () => {
-  logger.info("Service: Fetching all customers...");
-  const results = await db.select().from(customers);
-  const validated = z.array(CustomerSchema).parse(results);
-
-  return validated;
-};
-
 export const getAllCustomersWithParams = async ({
   search,
   sort,
@@ -120,13 +112,6 @@ export const getCustomersWithMetrics = async () => {
         firstName: customers.firstName,
         lastName: customers.lastName,
         email: customers.email,
-        phone: customers.phone, // hmm
-        address: customers.address,
-        city: customers.city,
-        postalCode: customers.postalCode,
-        country: customers.country,
-        createdAt: customers.createdAt,
-        updatedAt: customers.updatedAt, // hmm loppu
         lastOrderDate: sql`COALESCE(MAX(${orders.orderDate}), NULL)`.as(
           "lastOrderDate"
         ),

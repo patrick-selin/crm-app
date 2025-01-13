@@ -6,22 +6,6 @@ import logger from "../../utils/logger";
 import { ZodError } from "zod";
 import { ValidationError, NotFoundError } from "../../utils/errors/app-errors";
 
-export const listAllCustomers = async (
-  _req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    logger.info("Controller invoked: listAllCustomers");
-    const customers = await customerService.getAllCustomers();
-    logger.info("Customers retrieved:", customers);
-    res.status(200).json(customers);
-  } catch (error) {
-    logger.error("Controller error in listAllCustomers:", { error });
-    next(error);
-  }
-};
-
 export const listAllCustomersWithParams = async (
   req: Request,
   res: Response,
