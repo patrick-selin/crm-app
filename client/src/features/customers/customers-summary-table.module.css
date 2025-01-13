@@ -1,8 +1,32 @@
+:root {
+  --hover-light-mode-bg: var(--mantine-color-blue-2);
+  --hover-light-mode-text: var(--mantine-color-dark-9);
+
+  --hover-dark-mode-bg: var(--mantine-color-blue-5);
+  --hover-dark-mode-text: var(--mantine-color-gray-9);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hover-bg: var(--hover-dark-mode-bg);
+    --hover-text: var(--hover-dark-mode-text);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --hover-bg: var(--hover-light-mode-bg);
+    --hover-text: var(--hover-light-mode-text);
+  }
+}
+
 .tablerow {
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 }
 
 .tablerow:hover {
-  background-color: #f1f1f1;
+  background: var(--hover-bg);
+  color: var(--hover-text);
+  font-weight: bold;
 }

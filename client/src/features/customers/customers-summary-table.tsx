@@ -3,6 +3,7 @@ import { Table } from "@mantine/core";
 import { useCustomersSummary } from "./customers-queries";
 import { useNavigate } from "react-router";
 import classes from "./customers-summary-table.module.css";
+import TableControls from "./table-controls";
 
 const CustomersSummaryTable = () => {
   const { data: customersSummary, isLoading, error } = useCustomersSummary();
@@ -39,6 +40,7 @@ const CustomersSummaryTable = () => {
     <div>
       <h2>Customers</h2>
       {/* <div>SORT, FILTERs, SEARCH by name</div> */}
+      <TableControls />
       <div>
         <Table>
           <Table.Thead>
