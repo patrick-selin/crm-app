@@ -111,7 +111,6 @@ export const getAllCustomersWithParams = async ({
   };
 };
 
-
 export const getCustomersWithMetrics = async () => {
   logger.info("Service: Fetching customers with metrics...");
   try {

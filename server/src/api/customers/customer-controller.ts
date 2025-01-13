@@ -41,8 +41,8 @@ export const listAllCustomersWithParams = async (
     const customers = await customerService.getAllCustomersWithParams({
       search: search as string,
       sort: sort as string,
-      page: parseInt(page as string, 10) || 1,
-      limit: parseInt(limit as string, 10) || 10,
+      page: page,
+      limit: limit,
       filters,
     });
 

@@ -46,7 +46,7 @@ export const CustomersQuerySchema = z
     sort: z
       .string()
       .regex(
-        /^(city|country|numOfOrders|firstName|lastName):(asc|desc)$/i,
+        /^(city|country|firstName|lastName|address|postalCode):(asc|desc)$/i,
         "Sort format should be 'column:asc' or 'column:desc'"
       )
       .optional(),
@@ -59,10 +59,10 @@ export const CustomersQuerySchema = z
     limit: z
       .preprocess(
         (val) => parseInt(val as string, 10),
-        z.number().int().min(1).max(100).default(10)
+        z.number().int().min(1).max(50).default(10)
       )
       .optional(),
-      city: z.string().optional(),
+    city: z.string().optional(),
     country: z.string().optional(),
   })
   .strict();
