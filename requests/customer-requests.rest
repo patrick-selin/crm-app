@@ -18,11 +18,15 @@ GET http://localhost:80/api/v1/health HTTP/1.1
 GET http://localhost:80/api/v1/customers HTTP/1.1
 
 ### GET /customers, with query params
-GET http://localhost:80/api/v1/customers?page=1&limit=5 HTTP/1.1
+GET http://localhost:80/api/v1/customers?page=1&limit=3 HTTP/1.1
 # /customers?search=John&sort=city:asc&page=1&limit=10
 
 ### GET /customers/summary
 GET http://localhost:80/api/v1/customers/summary HTTP/1.1
+
+### GET /customers/summary,  with query params
+GET http://localhost:80/api/v1/customers/summary?page=1&limit=3 HTTP/1.1
+
 
 ### GET /customers/:id
 GET http://localhost:80/api/v1/customers/9182a36b-77e3-484f-b7c2-1c0c0194e4a5 HTTP/1.1
