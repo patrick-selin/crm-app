@@ -1,5 +1,5 @@
 // pages/customers.tsx
-import CustomersList from "../features/customers/customers-list";
+import CustomersList from "../features/customers/customers-page";
 // import CustomersListTest from "../features/customers/customers-list-test";
 const Customers = () => {
   return (

@@ -1,4 +1,4 @@
-// features/customers/customers-list.tsx
+// features/customers/customers-page.tsx
 import { useCustomersSummary } from "./customers-queries";
 import { Table } from "@mantine/core";
 
