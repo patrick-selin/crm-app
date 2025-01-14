@@ -1,10 +1,9 @@
 // features/customers/table-controls.tsx
-import { Group, Select, TextInput, Button } from "@mantine/core";
+import { Group, Select, TextInput } from "@mantine/core";
 
 interface TableControlsProps {
   search: string;
   onSearchChange: (value: string) => void;
-  onSearchClick: () => void;
   sort: string;
   onSortChange: (value: string) => void;
   limit: number;
@@ -15,7 +14,6 @@ interface TableControlsProps {
 const TableControls = ({
   search,
   onSearchChange,
-  onSearchClick,
   sort,
   onSortChange,
   limit,
@@ -25,15 +23,13 @@ const TableControls = ({
   return (
     <Group justify="space-between" mb="md" pt={"xl"} pb={"md"}>
       {/* Search Input */}
-      <Group>
-        <TextInput
-          placeholder="Search..."
-          aria-label="Search"
-          value={search}
-          onChange={(event) => onSearchChange(event.target.value)}
-        />
-        <Button onClick={onSearchClick}>Search</Button>
-      </Group>
+
+      <TextInput
+        placeholder="Search..."
+        aria-label="Search"
+        value={search}
+        onChange={(event) => onSearchChange(event.target.value)}
+      />
 
       {/* Sort Options */}
       <Select

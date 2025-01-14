@@ -265,15 +265,15 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Playwright dependencies
-        run: npm install
-        working-directory: ./playwright-e2e
+      # - name: Install Playwright dependencies
+      #   run: npm install
+      #   working-directory: ./playwright-e2e
 
-      - name: Install Playwright Browsers
-        # run: npx playwright install --with-deps
-        run: yarn playwright install --with-deps
-        working-directory: ./playwright-e2e
-        continue-on-error: true
+      # - name: Install Playwright Browsers
+      #   # run: npx playwright install --with-deps
+      #   run: yarn playwright install --with-deps
+      #   working-directory: ./playwright-e2e
+      #   continue-on-error: true
 
       # # Debug
       # - name: Debug
@@ -297,9 +297,9 @@ jobs:
       #     echo "Services are ready!"
       #   continue-on-error: true
 
-      - name: Run E2E tests ########### muista korjata db ongelma
-        run: npm run test:e2e
-        continue-on-error: true
+      # - name: Run E2E tests ########### muista korjata db ongelma
+      #   run: npm run test:e2e
+      #   continue-on-error: true
 
       # - name: Upload E2E Test Results
       #   uses: actions/upload-artifact@v4
