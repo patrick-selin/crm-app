@@ -17,8 +17,8 @@ import {
 import {
   Customer,
   CustomerSummary,
-} from "../../../src/schemas/customer-schemas";
-import { Order } from "../../../src/schemas/order-schemas";
+} from "../../../schemas/customer-schemas";
+// import { Order } from "../../../schemas/order-schemas";
 
 export const useCustomers = (): UseQueryResult<Customer[], Error> => {
   return useQuery({

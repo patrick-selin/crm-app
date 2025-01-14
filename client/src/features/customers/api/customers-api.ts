@@ -3,8 +3,8 @@ import axios from "axios";
 import {
   Customer,
   CustomerSummary,
-} from "../../../src/schemas/customer-schemas";
-import { Order } from "../../../src/schemas/order-schemas";
+} from "../../../schemas/customer-schemas";
+import { Order } from "../../../schemas/order-schemas";
 
 const baseUrl = `${import.meta.env.VITE_BASE_URL}`;
 

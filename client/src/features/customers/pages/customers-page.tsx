@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { Tabs, Button, Group, Modal, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import CustomersSummaryTable from "./customers-summary-table";
-import CustomersTable from "./customers-table";
-import AddCustomerModal from "./add-customer-modal";
+import CustomersSummaryTable from "../components/customers-summary-table";
+import CustomersTable from "../components/customers-table";
+import AddCustomerModal from "../modals/add-customer-modal";
 
 const CustomersPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
