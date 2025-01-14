@@ -36,7 +36,6 @@ const CustomersSummaryTable = () => {
       <TableControls
         search={search}
         onSearchChange={setSearch}
-        onSearchClick={handleSearch}
         sort={sort}
         onSortChange={setSort}
         limit={limit}
