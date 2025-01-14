@@ -5,7 +5,7 @@ import AppLayout from "../layouts/app-layout";
 import Home from "../pages/home";
 import Dashboard from "../pages/dashboard";
 import Customers from "../pages/customers";
-import CustomerDetail from "../features/customers/customer-detail";
+import CustomerDetail from "../features/customers/pages/customer-detail-page";
 import Sales from "../pages/sales";
 import Products from "../pages/products";
 import Analytics from "../pages/analytics";

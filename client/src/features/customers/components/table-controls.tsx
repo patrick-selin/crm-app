@@ -25,6 +25,7 @@ const TableControls = ({
       {/* Search Input */}
 
       <TextInput
+        label="Search by customer"
         placeholder="Search..."
         aria-label="Search"
         value={search}
@@ -33,7 +34,8 @@ const TableControls = ({
 
       {/* Sort Options */}
       <Select
-        placeholder="Sort by"
+        label="Sort by column"
+        placeholder="Choose..."
         aria-label="Sort"
         value={sort}
         onChange={onSortChange}
@@ -42,6 +44,7 @@ const TableControls = ({
 
       {/* Limit Options */}
       <Select
+        label="Rows per page"
         placeholder="Rows per page"
         aria-label="Rows per page"
         value={limit.toString()}

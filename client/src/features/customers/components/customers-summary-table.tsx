@@ -1,7 +1,7 @@
 // features/customers/customers-summary-table.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { useCustomersSummary } from "./customers-queries";
+import { useCustomersSummary } from "../api/customers-queries";
 import { Table, Text } from "@mantine/core";
 import classes from "./customers-summary-table.module.css";
 import TableControls from "./table-controls";
