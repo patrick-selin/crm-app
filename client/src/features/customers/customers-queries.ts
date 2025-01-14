@@ -9,8 +9,10 @@ import {
   getCustomers,
   getCustomersSummary,
   addCustomer,
-  getCustomer,
+  getCustomerById,
   getCustomerOrders,
+  updateCustomerById,
+  deleteCustomerById,
 } from "./customers-api";
 import {
   Customer,
@@ -47,21 +49,19 @@ export const useCustomersSummary = ({
   });
 };
 
-export const useCustomer = (id: string): UseQueryResult<Customer, Error> => {
+export const useCustomer = (id: string) => {
   return useQuery({
     queryKey: ["customer", id],
-    queryFn: () => getCustomer(id),
-    enabled: !!id,
+    queryFn: () => getCustomerById(id),
+    enabled: Boolean(id),
   });
 };
 
-export const useCustomerOrders = (
-  id: string
-): UseQueryResult<Order[], Error> => {
+export const useCustomerOrders = (id: string) => {
   return useQuery({
     queryKey: ["customerOrders", id],
     queryFn: () => getCustomerOrders(id),
-    enabled: !!id,
+    enabled: Boolean(id),
   });
 };
 
@@ -72,6 +72,31 @@ export const useAddCustomer = () => {
     mutationFn: addCustomer,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
+      queryClient.invalidateQueries({ queryKey: ["customersSummary"] });
+    },
+  });
+};
+
+export const useUpdateCustomer = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateCustomerById,
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ["customer", id] });
+      queryClient.invalidateQueries({ queryKey: ["customersSummary"] });
+    },
+  });
+};
+
+export const useDeleteCustomer = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteCustomerById,
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ["customers", id] });
+      queryClient.invalidateQueries({ queryKey: ["customersSummary"] });
     },
   });
 };
