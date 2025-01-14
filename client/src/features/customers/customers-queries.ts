@@ -48,7 +48,7 @@ export const useCustomersSummary = ({
 };
 
 export const useCustomer = (id: string): UseQueryResult<Customer, Error> => {
-  // this fails in build?
+  // this fails in build???
   return useQuery({
     queryKey: ["customer", id],
     queryFn: () => getCustomer(id),
@@ -67,22 +67,22 @@ export const useCustomerOrders = (
 };
 
 export const useCustomer = (id: string): UseQueryResult<Customer, Error> => {
-    return useQuery({
-      queryKey: ["customer", id],
-      queryFn: () => getCustomer(id),
-      enabled: !!id,
-    });
-  };
+  return useQuery({
+    queryKey: ["customer", id],
+    queryFn: () => getCustomer(id),
+    enabled: !!id,
+  });
+};
 
-  export const useCustomerOrders = (
-    id: string
-  ): UseQueryResult<Order[], Error> => {
-    return useQuery({
-      queryKey: ["customerOrders", id],
-      queryFn: () => getCustomerOrders(id),
-      enabled: !!id,
-    });
-  };  
+export const useCustomerOrders = (
+  id: string
+): UseQueryResult<Order[], Error> => {
+  return useQuery({
+    queryKey: ["customerOrders", id],
+    queryFn: () => getCustomerOrders(id),
+    enabled: !!id,
+  });
+};
 
 export const useAddCustomer = () => {
   const queryClient = useQueryClient();
