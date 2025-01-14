@@ -26,28 +26,29 @@ export const useCustomers = (): UseQueryResult<Customer[], Error> => {
 };
 
 export const useCustomersSummary = ({
-    search,
-    sort,
-    limit,
-    page,
-  }: {
-    search?: string;
-    sort?: string;
-    limit?: number;
-    page?: number;
-  }): UseQueryResult<CustomerSummary[], Error>  => {
-    return useQuery({
-      queryKey: ["customersSummary", { search, sort, limit, page }],
-      queryFn: () => getCustomersSummary({ search, sort, limit, page }),
-      placeholderData: () => ({
-        total: 0,
-        totalPages: 1,
-        data: [],
-      }),
-    });
-  };
+  search,
+  sort,
+  limit,
+  page,
+}: {
+  search?: string;
+  sort?: string;
+  limit?: number;
+  page?: number;
+}): UseQueryResult<CustomerSummary[], Error> => {
+  return useQuery({
+    queryKey: ["customersSummary", { search, sort, limit, page }],
+    queryFn: () => getCustomersSummary({ search, sort, limit, page }),
+    placeholderData: () => ({
+      total: 0,
+      totalPages: 1,
+      data: [],
+    }),
+  });
+};
 
 export const useCustomer = (id: string): UseQueryResult<Customer, Error> => {
+  // this fails in build?
   return useQuery({
     queryKey: ["customer", id],
     queryFn: () => getCustomer(id),
