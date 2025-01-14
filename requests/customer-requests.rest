@@ -31,7 +31,7 @@ GET {{baseUrl}}/customers/summary HTTP/1.1
 GET {{baseUrl}}/customers/summary?page=1&limit=3&sort=totalSpent:desc HTTP/1.1
 
 ### GET /customers/:id
-GET {{baseUrl}}/customers/9182a36b-77e3-484f-b7c2-1c0c0194e4a5 HTTP/1.1
+GET {{baseUrl}}/customers/234f2057-0087-43f7-8623-bb90c0f1532c HTTP/1.1
 
 ### GET /customers/:id/orders , overview of all orders from a customer (customer dashboard)
 GET {{baseUrl}}/customers/9182a36b-77e3-484f-b7c2-1c0c0194e4a5/orders HTTP/1.1
