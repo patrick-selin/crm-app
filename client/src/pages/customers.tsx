@@ -1,10 +1,10 @@
 // pages/customers.tsx
-import CustomersList from "../features/customers/customers-page";
-// import CustomersListTest from "../features/customers/customers-list-test";
+import CustomersPage from "../features/customers/customers-page";
+
 const Customers = () => {
   return (
     <div>
-      <CustomersList />
+      <CustomersPage />
     </div>
   );
 };

@@ -1,20 +1,62 @@
 // features/customers/table-controls.tsx
-import { Group, Select, Input, Pagination } from "@mantine/core";
+import { Group, Select, TextInput, Button } from "@mantine/core";
 
-const TableControls = () => {
+interface TableControlsProps {
+  search: string;
+  onSearchChange: (value: string) => void;
+  onSearchClick: () => void;
+  sort: string;
+  onSortChange: (value: string) => void;
+  limit: number;
+  onLimitChange: (value: number) => void;
+  sortOptions: { value: string; label: string }[];
+}
+
+const TableControls = ({
+  search,
+  onSearchChange,
+  onSearchClick,
+  sort,
+  onSortChange,
+  limit,
+  onLimitChange,
+  sortOptions,
+}: TableControlsProps) => {
   return (
-    <Group justify="space-between" mb="md">
-      <Input placeholder="Input component" />
+    <Group justify="space-between" mb="md" pt={"xl"} pb={"md"}>
+      {/* Search Input */}
+      <Group>
+        <TextInput
+          placeholder="Search..."
+          aria-label="Search"
+          value={search}
+          onChange={(event) => onSearchChange(event.target.value)}
+        />
+        <Button onClick={onSearchClick}>Search</Button>
+      </Group>
+
+      {/* Sort Options */}
       <Select
-        placeholder="Sort By"
+        placeholder="Sort by"
+        aria-label="Sort"
+        value={sort}
+        onChange={onSortChange}
+        data={sortOptions}
+      />
+
+      {/* Limit Options */}
+      <Select
+        placeholder="Rows per page"
+        aria-label="Rows per page"
+        value={limit.toString()}
+        onChange={(value) => onLimitChange(Number(value))}
         data={[
-          { value: "firstName:asc", label: "Name (A-Z)" },
-          { value: "firstName:desc", label: "Name (Z-A)" },
-          { value: "totalSpent:asc", label: "Total Spent (Low to High)" },
-          { value: "totalSpent:desc", label: "Total Spent (High to Low)" },
+          { value: "5", label: "5" },
+          { value: "10", label: "10" },
+          { value: "25", label: "25" },
+          { value: "50", label: "50" },
         ]}
       />
-      <Pagination total={10} />
     </Group>
   );
 };

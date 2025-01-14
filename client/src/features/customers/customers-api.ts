@@ -13,11 +13,32 @@ export const getCustomers = async (): Promise<Customer[]> => {
   return response.data.data;
 };
 
-export const getCustomersSummary = async (): Promise<CustomerSummary[]> => {
-  const response = await axios.get(`${baseUrl}/customers/summary`);
-  //   console.log(response.data.data);
-  return response.data.data;
-};
+export const getCustomersSummary = async ({
+    search,
+    sort,
+    limit = 10,
+    page = 1,
+  }: {
+    search?: string;
+    sort?: string;
+    limit?: number;
+    page?: number;
+  }): Promise<{ total: number; totalPages: number; data: CustomerSummary[] }> => {
+    const params = new URLSearchParams({
+      ...(search && { search }),
+      ...(sort && { sort }),
+      ...(limit && { limit: limit.toString() }),
+      ...(page && { page: page.toString() }),
+    });
+  
+    const response = await axios.get(`${baseUrl}/customers/summary?${params}`);
+    const total = Number(response.data.total);
+    return {
+      total,
+      totalPages: Math.ceil(total / limit),
+      data: response.data.data,
+    };
+  };
 
 export const getCustomer = async (id: string): Promise<Customer> => {
   const response = await axios.get(`${baseUrl}/customers/${id}`);
