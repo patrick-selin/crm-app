@@ -42,7 +42,7 @@ cd crm-app
 
 2. Rename the `.env.development.EXAMPLE` file to `.env.development` in the **/client** directory and add the following environment variable:
    ```bash
-   VITE_BASE_URL=/api1
+   VITE_BASE_URL=/api/v1
    ```
 
 ## Docker Setup
@@ -72,11 +72,13 @@ This will start the app using Docker Compose and set up the necessary services f
 
 ### Accessing the Application
 
-After the services start, access the app in your browser at [http://localhost:80](http://localhost:80). Nginx will serve the frontend for requests to `/` and route API requests to the backend at `/api1/`.
+After the services start, access the app in your browser at [http://localhost:80](http://localhost:80). Nginx will serve the frontend for requests to `/` and route API requests to the backend at `/api/v1`.
 
 ## Running Tests
 
 The project uses **Vitest** for unit and integration testing, and **Playwright** for end-to-end (E2E) testing. The **unit tests** use the development database, while the **integration** and **E2E tests** use the test database.
+
+All the following test scripts need to run in the root directory.
 
 ### Unit Tests
 
