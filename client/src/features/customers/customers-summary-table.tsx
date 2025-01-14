@@ -18,15 +18,12 @@ const CustomersSummaryTable = () => {
     data: customersSummary,
     isLoading,
     error,
-    refetch,
   } = useCustomersSummary({
     search,
     sort,
     limit,
     page: activePage,
   });
-
-  const handleSearch = () => refetch();
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error fetching customer summary.</p>;
@@ -51,7 +48,7 @@ const CustomersSummaryTable = () => {
         ]}
       />
 
-      <Text size="sm" mb="sm">
+      <Text size="sm" mb="sm" pl={"sm"}>
         Showing {customersSummary.data.length} of {customersSummary.total}{" "}
         customers
       </Text>
