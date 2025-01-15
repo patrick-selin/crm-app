@@ -3,14 +3,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useCustomersSummary } from "../api/customers-queries";
 import { Table, Text } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 import TableControls from "./table-controls";
 import TablePagination from "./table-pagination";
 
 const CustomersSummaryTable = () => {
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [sort, setSort] = useState<string | null>("");
   const [limit, setLimit] = useState(10);
   const [activePage, setActivePage] = useState(1);
+  const [debouncedSearch] = useDebouncedValue(searchInput, 500);
 
   const navigate = useNavigate();
   const {
@@ -18,8 +20,8 @@ const CustomersSummaryTable = () => {
     isLoading,
     error,
   } = useCustomersSummary({
-    search,
-    sort,
+    search: debouncedSearch,
+    sort: sort || "",
     limit,
     page: activePage,
   });
@@ -30,8 +32,8 @@ const CustomersSummaryTable = () => {
   return (
     <div>
       <TableControls
-        search={search}
-        onSearchChange={setSearch}
+        search={searchInput}
+        onSearchChange={setSearchInput}
         sort={sort}
         onSortChange={setSort}
         limit={limit}
@@ -40,10 +42,19 @@ const CustomersSummaryTable = () => {
           setActivePage(1);
         }}
         sortOptions={[
-          { value: "totalSpent:desc", label: "Total Spent (High to Low)" },
-          { value: "totalSpent:asc", label: "Total Spent (Low to High)" },
+          { value: "firstName:asc", label: "First Name (A-Z)" },
+          { value: "firstName:desc", label: "First Name (Z-A)" },
+          { value: "lastName:asc", label: "Last Name (A-Z)" },
+          { value: "lastName:desc", label: "Last Name (Z-A)" },
           { value: "lastOrderDate:desc", label: "Last Order (Newest)" },
           { value: "lastOrderDate:asc", label: "Last Order (Oldest)" },
+          {
+            value: "numOfOrders:desc",
+            label: "Number of Orders (High to Low)",
+          },
+          { value: "numOfOrders:asc", label: "Number of Orders (Low to High)" },
+          { value: "totalSpent:desc", label: "Total Spent (High to Low)" },
+          { value: "totalSpent:asc", label: "Total Spent (Low to High)" },
         ]}
       />
 

@@ -29,7 +29,7 @@ GET {{baseUrl}}/customers?page=1&limit=3 HTTP/1.1
 GET {{baseUrl}}/customers/summary HTTP/1.1
 
 ### GET /customers/summary, with query params
-GET {{baseUrl}}/customers/summary?page=1&limit=3&sort=totalSpent:desc HTTP/1.1
+GET {{baseUrl}}/customers/summary?&page=1&limit=10sort=numOfOrders:desc HTTP/1.1
 
 ### GET /customers/:id
 GET {{baseUrl}}/customers/234f2057-0087-43f7-8623-bb90c0f1532c HTTP/1.1
@@ -77,7 +77,7 @@ content-type: application/json
 ### aws staging
 
 ### GET customers
-GET http://ec2-13-60-156-45.eu-north-1.compute.amazonaws.com/api/v1/customers/4e9cc15b-5d75-45e8-a258-d0037f73fc3b/orders HTTP/1.1
+GET {{baseUrlStag}}/customers/4e9cc15b-5d75-45e8-a258-d0037f73fc3b/orders HTTP/1.1
 content-type: application/json
 
 
@@ -98,7 +98,7 @@ content-type: application/json
 GET {{baseUrlStag}}/customers/summary?page=1&limit=50   HTTP/1.1
 
 ### GET /customers/:id
-GET {{baseUrlStag}}/customers/8a8c53d5-1201-4df4-89cd-5a333065850a HTTP/1.1
+GET {{baseUrlStag}}/customers/8a8c53d5-1201-4df4-89cd-5a333065850a/orders HTTP/1.1
 
 # customer 8a8c53d5-1201-4df4-89cd-5a333065850a | Eve        | Davis   
 # order  1fdde1ec-9571-4146-87f8-e66d1618ed44 

@@ -103,6 +103,7 @@ export const getCustomers = async ({
   };
 };
 
+// sort issue
 export const getCustomersWithMetrics = async ({
   search,
   sort,
@@ -169,21 +170,27 @@ export const getCustomersWithMetrics = async ({
   // Sorting
   if (sort) {
     const [column, direction] = sort.split(":");
+    const validSortColumns: Record<string, any> = {
+      firstName: customers.firstName,
+      lastName: customers.lastName,
+      email: customers.email,
+      lastOrderDate: sql`COALESCE(MAX(${orders.orderDate}), NULL)`,
+      numOfOrders: sql`COALESCE(COUNT(${orders.orderId}), 0)`,
+      totalSpent: sql`COALESCE(SUM(${orders.totalAmount}), 0)`,
+    };
 
-    if (column === "totalSpent") {
+    if (validSortColumns[column]) {
       query.orderBy(
-        sql`COALESCE(CAST(SUM(${orders.totalAmount}) AS DECIMAL), 0) ${sql.raw(
-          direction.toUpperCase()
-        )}`
+        sql`${validSortColumns[column]} ${sql.raw(direction.toUpperCase())}`
       );
     } else {
-      query.orderBy(
-        sql`${sql.identifier(column)} ${sql.raw(direction.toUpperCase())}`
-      );
+      throw new Error(`Invalid sort column: ${column}`);
     }
   }
 
   const rawResults = await query;
+
+  console.log("RAW results::", JSON.stringify(rawResults, null, 2));
 
   // Convert totalSpent to a number
   const processedResults = rawResults.map((result) => ({
@@ -207,49 +214,6 @@ export const getCustomersWithMetrics = async ({
     data: z.array(CustomerSummarySchema).parse(processedResults),
   };
 };
-//   logger.info("Service: Fetching customers with metrics...");
-//   try {
-//     const rawResults = await db
-//       .select({
-//         customerId: customers.customerId,
-//         firstName: customers.firstName,
-//         lastName: customers.lastName,
-//         email: customers.email,
-//         lastOrderDate: sql`COALESCE(MAX(${orders.orderDate}), NULL)`.as(
-//           "lastOrderDate"
-//         ),
-//         numOfOrders:
-//           sql`COALESCE(CAST(COUNT(${orders.orderId}) AS INTEGER), 0)`.as(
-//             "numOfOrders"
-//           ),
-//         totalSpent:
-//           sql`COALESCE(CAST(SUM(${orders.totalAmount}) AS DECIMAL), 0)`.as(
-//             "totalSpent"
-//           ),
-//       })
-//       .from(customers)
-//       .leftJoin(orders, eq(customers.customerId, orders.customerId))
-//       .groupBy(customers.customerId)
-//       .orderBy(sql`MAX(${orders.orderDate}) DESC`);
-
-//     const processedResults = rawResults.map((result) => {
-//       const processed = {
-//         ...result,
-//         lastOrderDate: result.lastOrderDate
-//           ? result.lastOrderDate
-//           : "No orders",
-//         numOfOrders: result.numOfOrders,
-//         totalSpent: Number(result.totalSpent),
-//       };
-//       return processed;
-//     });
-
-//     return z.array(CustomerSummarySchema).parse(processedResults);
-//   } catch (error) {
-//     logger.error("Service error in getCustomersWithMetrics:", { error });
-//     throw error;
-//   }
-// };
 
 export const getCustomerById = async (id: string) => {
   logger.info(`Service: Fetching customer by ID = ${id}`);
@@ -284,7 +248,6 @@ export const getCustomerOrders = async (customerId: string) => {
 
   return validatedOrders;
 };
-
 
 export const getCustomerOrderDetails = async (
   customerId: string,
