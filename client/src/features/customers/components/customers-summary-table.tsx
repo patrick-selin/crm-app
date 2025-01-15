@@ -14,7 +14,7 @@ const CustomersSummaryTable = () => {
 
   const navigate = useNavigate();
   const {
-    data: customersSummary,
+    data: customersSummary = { total: 0, totalPages: 1, data: [] },
     isLoading,
     error,
   } = useCustomersSummary({

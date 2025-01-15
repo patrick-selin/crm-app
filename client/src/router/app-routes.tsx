@@ -6,7 +6,7 @@ import Home from "../pages/home";
 import Dashboard from "../pages/dashboard";
 import Customers from "../pages/customers";
 import CustomerDetail from "../features/customers/pages/customer-detail-page";
-import OrderDetailPage from "../features/customers/components/order-detail-drawer.tsx";
+import OrderDetailPage from "../features/customers/pages/order-detail-page";
 import Sales from "../pages/sales";
 import Products from "../pages/products";
 import Analytics from "../pages/analytics";

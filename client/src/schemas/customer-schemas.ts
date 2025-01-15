@@ -25,6 +25,13 @@ export const CustomerSummarySchema = z.object({
   totalSpent: z.number().nonnegative(),
 });
 
+export const CustomersSummaryResponseSchema = z.object({
+  total: z.coerce.number().nonnegative(),
+  page: z.coerce.number().min(1),
+  limit: z.coerce.number().positive(),
+  data: z.array(CustomerSummarySchema),
+});
+
 export const CreateCustomerSchema = CustomerSchema.omit({
   customerId: true,
   createdAt: true,
@@ -101,5 +108,4 @@ export type CustomerSummary = z.infer<typeof CustomerSummarySchema>;
 export type AddCustomer = z.infer<typeof CreateCustomerSchema>;
 export type UpdateCustomer = z.infer<typeof UpdateCustomerSchema>;
 export type CustomersQuery = z.infer<typeof CustomersQuerySchema>;
-
-// hello from megre
+export type CustomersSummaryResponse = z.infer<typeof CustomersSummaryResponseSchema>;

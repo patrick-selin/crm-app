@@ -13,11 +13,20 @@ const OrderDetailDrawer = ({
   onClose: () => void;
   opened: boolean;
 }) => {
-  const { data: orderDetail, isLoading, error } = useOrderDetail(customerId, orderId);
+  const {
+    data: orderDetail,
+    isLoading,
+    error,
+  } = useOrderDetail(customerId, orderId);
 
   if (isLoading) {
     return (
-      <Drawer opened={opened} onClose={onClose} title="Order Details" padding="lg">
+      <Drawer
+        opened={opened}
+        onClose={onClose}
+        title="Order Details"
+        padding="lg"
+      >
         <Text>Loading order details...</Text>
       </Drawer>
     );
@@ -25,16 +34,26 @@ const OrderDetailDrawer = ({
 
   if (error) {
     return (
-      <Drawer opened={opened} onClose={onClose} title="Order Details" padding="lg">
-        <Text color="red">Failed to load order details.</Text>
+      <Drawer
+        opened={opened}
+        onClose={onClose}
+        title="Order Details"
+        padding="lg"
+      >
+        <Text>Failed to load order details.</Text>
       </Drawer>
     );
   }
 
   if (!orderDetail) {
     return (
-      <Drawer opened={opened} onClose={onClose} title="Order Details" padding="lg">
-        <Text color="gray">No details available for this order.</Text>
+      <Drawer
+        opened={opened}
+        onClose={onClose}
+        title="Order Details"
+        padding="lg"
+      >
+        <Text>No details available for this order.</Text>
       </Drawer>
     );
   }
@@ -42,14 +61,33 @@ const OrderDetailDrawer = ({
   const { order, items } = orderDetail;
 
   return (
-    <Drawer opened={opened} onClose={onClose} title="Order Details" padding="lg">
+    <Drawer
+      opened={opened}
+      onClose={onClose}
+      title="Order Details"
+      padding="xl"
+      size="xl"
+      offset={1}
+      radius="md"
+    
+      overlayProps={{ backgroundOpacity: 0.2, blur: 1 }}
+      styles={{
+        content: {
+          border: "0.25px solid var(--mantine-color-gray-3)",
+        },
+      }}
+    >
       <Title order={3}>Order Information</Title>
       <Text>Order ID: {order.orderId}</Text>
       <Text>Total Amount: {order.totalAmount}</Text>
       <Text>Payment Status: {order.paymentStatus}</Text>
       <Text>Order Date: {new Date(order.orderDate).toLocaleDateString()}</Text>
-      <Text>Created At: {new Date(order.createdAt).toLocaleDateString()}</Text>
-      {order.updatedAt && <Text>Updated At: {new Date(order.updatedAt).toLocaleDateString()}</Text>}
+
+      {order.updatedAt && (
+        <Text>
+          Updated At: {new Date(order.updatedAt).toLocaleDateString()}
+        </Text>
+      )}
 
       <Title order={3} mt="lg">
         Items
@@ -77,4 +115,3 @@ const OrderDetailDrawer = ({
 };
 
 export default OrderDetailDrawer;
-
