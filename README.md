@@ -72,7 +72,7 @@ For detailed documentation on various aspects of the project, please refer to th
 - For the **/client** folder, the following environment variables are required:
   ```bash
   # Base URL for API requests
-  VITE_BASE_URL=/api1
+  VITE_BASE_URL=/api/v1
   ```
 
 4. Build and start the app using NPM script that launches Docker Compose: `npm run dev`
