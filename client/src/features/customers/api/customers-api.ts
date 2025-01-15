@@ -58,7 +58,7 @@ export const getOrderDetail = async (
 export const addCustomer = async (
   customer: Omit<Customer, "customerId" | "createdAt" | "updatedAt">
 ): Promise<Customer> => {
-  const response = await axios.post(baseUrl, customer);
+  const response = await axios.post(baseUrl, customer); // vaara
   return response.data;
 };
 

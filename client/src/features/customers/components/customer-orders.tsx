@@ -53,7 +53,7 @@ const CustomerOrders = ({
           onClose={() => setSelectedOrder(null)}
         />
       )}
-      s
+      
     </div>
   );
 };
