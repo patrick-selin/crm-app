@@ -1,16 +1,16 @@
 // features/customers/customer-detail.tsx
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import CustomerInfo from "../components/customer-info";
 import CustomerOrders from "../components/customer-orders";
 import EditCustomerModal from "../components/edit-customer-modal";
 import DeleteCustomerButton from "../components/delete-customer-button";
-import { Title, Group, Loader, Flex } from "@mantine/core";
+import { Title, Group, Loader, Flex, Button } from "@mantine/core";
 
 import { useCustomer, useCustomerOrders } from "../api/customers-queries";
 
 const CustomerDetail = () => {
   const { id } = useParams<{ id: string }>();
-
+  const navigate = useNavigate();
   const { data: customer, isLoading: isCustomerLoading } = useCustomer(id!);
   const { data: orders, isLoading: isOrdersLoading } = useCustomerOrders(id!);
 
@@ -19,12 +19,17 @@ const CustomerDetail = () => {
 
   return (
     <div>
-      {/* muista back-button */}
-      <Title order={1}>Customer Page {id}</Title>
+      <Button mt="sm" variant="light" onClick={() => navigate(-1)}>
+        Back
+      </Button>
+      <Title order={1}>
+        Customer Page: {customer.firstName} {customer.lastName}
+      </Title>
+      <Title order={4}>Customer ID: {id}</Title>
 
-      <Flex gap="xl" justify="space-between" wrap="wrap">
+      <Flex gap="xl" justify="space-between" wrap="wrap" mt="xl">
         <CustomerInfo customer={customer} />
-        <CustomerOrders orders={orders || []} />
+        <CustomerOrders customerId={id!} orders={orders || []} />
       </Flex>
       <Group>
         <EditCustomerModal />

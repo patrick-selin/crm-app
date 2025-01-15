@@ -1,6 +1,9 @@
 // features/customers/customers-api.ts
 import axios from "axios";
-import { Customer, CustomerSummary } from "../../../schemas/customer-schemas";
+import {
+  Customer,
+  CustomersSummaryResponse,
+} from "../../../schemas/customer-schemas";
 import { Order, OrderDetailResponse } from "../../../schemas/order-schemas";
 
 const baseUrl = `${import.meta.env.VITE_BASE_URL}`;
@@ -20,21 +23,16 @@ export const getCustomersSummary = async ({
   sort?: string;
   limit?: number;
   page?: number;
-}): Promise<{ total: number; totalPages: number; data: CustomerSummary[] }> => {
+}): Promise<CustomersSummaryResponse> => {
   const params = new URLSearchParams({
     ...(search && { search }),
     ...(sort && { sort }),
     ...(limit && { limit: limit.toString() }),
     ...(page && { page: page.toString() }),
   });
-
   const response = await axios.get(`${baseUrl}/customers/summary?${params}`);
-  const total = Number(response.data.total);
-  return {
-    total,
-    totalPages: Math.ceil(total / limit),
-    data: response.data.data,
-  };
+
+  return response.data;
 };
 
 export const getCustomerById = async (id: string): Promise<Customer> => {

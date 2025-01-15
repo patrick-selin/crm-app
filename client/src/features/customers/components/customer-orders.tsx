@@ -3,7 +3,13 @@ import { Table, Title } from "@mantine/core";
 import OrderDetailDrawer from "../../customers/components/order-detail-drawer";
 import { Order } from "../../../schemas/order-schemas";
 
-const CustomerOrders = ({ orders }: { orders: Order[] }) => {
+const CustomerOrders = ({
+  customerId,
+  orders,
+}: {
+  customerId: string;
+  orders: Order[];
+}) => {
   const [selectedOrder, setSelectedOrder] = useState<null | string>(null);
 
   return (
@@ -42,7 +48,7 @@ const CustomerOrders = ({ orders }: { orders: Order[] }) => {
       {selectedOrder && (
         <OrderDetailDrawer
           orderId={selectedOrder}
-          customerId={orders[0].customerId}
+          customerId={customerId}
           opened={!!selectedOrder}
           onClose={() => setSelectedOrder(null)}
         />

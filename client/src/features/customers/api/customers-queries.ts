@@ -11,10 +11,14 @@ import {
   addCustomer,
   getCustomerById,
   getCustomerOrders,
+  getOrderDetail,
   updateCustomerById,
   deleteCustomerById,
 } from "./customers-api";
-import { Customer, CustomerSummary } from "../../../schemas/customer-schemas";
+import {
+  Customer,
+  CustomersSummaryResponse,
+} from "../../../schemas/customer-schemas";
 import { OrderDetailResponse } from "../../../schemas/order-schemas";
 
 export const useCustomers = (): UseQueryResult<Customer[], Error> => {
@@ -34,15 +38,10 @@ export const useCustomersSummary = ({
   sort?: string;
   limit?: number;
   page?: number;
-}): UseQueryResult<CustomerSummary[], Error> => {
+}): UseQueryResult<CustomersSummaryResponse, Error> => {
   return useQuery({
     queryKey: ["customersSummary", { search, sort, limit, page }],
     queryFn: () => getCustomersSummary({ search, sort, limit, page }),
-    placeholderData: () => ({
-      total: 0,
-      totalPages: 1,
-      data: [],
-    }),
   });
 };
 
