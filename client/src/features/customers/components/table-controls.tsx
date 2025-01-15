@@ -4,8 +4,8 @@ import { Group, Select, TextInput } from "@mantine/core";
 interface TableControlsProps {
   search: string;
   onSearchChange: (value: string) => void;
-  sort: string;
-  onSortChange: (value: string) => void;
+  sort: string | null;
+  onSortChange: (value: string | null) => void;
   limit: number;
   onLimitChange: (value: number) => void;
   sortOptions: { value: string; label: string }[];
