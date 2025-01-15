@@ -1,10 +1,7 @@
 // features/customers/customers-api.ts
 import axios from "axios";
-import {
-  Customer,
-  CustomerSummary,
-} from "../../../schemas/customer-schemas";
-import { Order } from "../../../schemas/order-schemas";
+import { Customer, CustomerSummary } from "../../../schemas/customer-schemas";
+import { Order, OrderDetailResponse } from "../../../schemas/order-schemas";
 
 const baseUrl = `${import.meta.env.VITE_BASE_URL}`;
 
@@ -50,6 +47,16 @@ export const getCustomerOrders = async (id: string): Promise<Order[]> => {
   return response.data;
 };
 
+export const getOrderDetail = async (
+  customerId: string,
+  orderId: string
+): Promise<OrderDetailResponse> => {
+  const response = await axios.get(
+    `${baseUrl}/customers/${customerId}/orders/${orderId}`
+  );
+  return response.data;
+};
+
 export const addCustomer = async (
   customer: Omit<Customer, "customerId" | "createdAt" | "updatedAt">
 ): Promise<Customer> => {
@@ -58,17 +65,17 @@ export const addCustomer = async (
 };
 
 export const updateCustomerById = async ({
-    id,
-    ...data
-  }: {
-    id: string;
-    [key: string]: unknown;
-  }) => {
-    const response = await axios.put(`${baseUrl}/${id}`, data);
-    return response.data;
-  };
-  
-  export const deleteCustomerById = async (id: string) => {
-    const response = await axios.delete(`${baseUrl}/${id}`);
-    return response.data;
-  };
+  id,
+  ...data
+}: {
+  id: string;
+  [key: string]: unknown;
+}) => {
+  const response = await axios.put(`${baseUrl}/${id}`, data);
+  return response.data;
+};
+
+export const deleteCustomerById = async (id: string) => {
+  const response = await axios.delete(`${baseUrl}/${id}`);
+  return response.data;
+};

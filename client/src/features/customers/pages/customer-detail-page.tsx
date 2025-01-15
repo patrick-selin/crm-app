@@ -4,7 +4,7 @@ import CustomerInfo from "../components/customer-info";
 import CustomerOrders from "../components/customer-orders";
 import EditCustomerModal from "../components/edit-customer-modal";
 import DeleteCustomerButton from "../components/delete-customer-button";
-import { Title, Group, Loader } from "@mantine/core";
+import { Title, Group, Loader, Flex } from "@mantine/core";
 
 import { useCustomer, useCustomerOrders } from "../api/customers-queries";
 
@@ -14,18 +14,18 @@ const CustomerDetail = () => {
   const { data: customer, isLoading: isCustomerLoading } = useCustomer(id!);
   const { data: orders, isLoading: isOrdersLoading } = useCustomerOrders(id!);
 
-
   if (isCustomerLoading || isOrdersLoading) return <Loader />;
   if (!customer) return <p>Customer not found.</p>;
-
 
   return (
     <div>
       {/* muista back-button */}
       <Title order={1}>Customer Page {id}</Title>
-      <Title order={2}>{customer.firstName} {customer.lastName}</Title>
-      <CustomerInfo customer={customer} />
-      <CustomerOrders orders={orders || []} />
+
+      <Flex gap="xl" justify="space-between" wrap="wrap">
+        <CustomerInfo customer={customer} />
+        <CustomerOrders orders={orders || []} />
+      </Flex>
       <Group>
         <EditCustomerModal />
         <DeleteCustomerButton />
