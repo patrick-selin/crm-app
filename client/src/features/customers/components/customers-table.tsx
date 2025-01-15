@@ -1,7 +1,7 @@
 // features/customers/customers-table.tsx
 
 const CustomersTable = () => {
-  return <div>hello customer table</div>;
+  return <div>All Customers -table</div>;
 };
 
 export default CustomersTable;

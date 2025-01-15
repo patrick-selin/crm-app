@@ -14,11 +14,8 @@ import {
   updateCustomerById,
   deleteCustomerById,
 } from "./customers-api";
-import {
-  Customer,
-  CustomerSummary,
-} from "../../../schemas/customer-schemas";
-// import { Order } from "../../../schemas/order-schemas";
+import { Customer, CustomerSummary } from "../../../schemas/customer-schemas";
+import { OrderDetailResponse } from "../../../schemas/order-schemas";
 
 export const useCustomers = (): UseQueryResult<Customer[], Error> => {
   return useQuery({
@@ -62,6 +59,17 @@ export const useCustomerOrders = (id: string) => {
     queryKey: ["customerOrders", id],
     queryFn: () => getCustomerOrders(id),
     enabled: Boolean(id),
+  });
+};
+
+export const useOrderDetail = (
+  customerId: string,
+  orderId: string
+): UseQueryResult<OrderDetailResponse, Error> => {
+  return useQuery({
+    queryKey: ["orderDetail", customerId, orderId],
+    queryFn: () => getOrderDetail(customerId, orderId),
+    enabled: Boolean(customerId && orderId),
   });
 };
 

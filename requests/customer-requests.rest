@@ -34,10 +34,10 @@ GET {{baseUrl}}/customers/summary?page=1&limit=3&sort=totalSpent:desc HTTP/1.1
 GET {{baseUrl}}/customers/234f2057-0087-43f7-8623-bb90c0f1532c HTTP/1.1
 
 ### GET /customers/:id/orders , overview of all orders from a customer (customer dashboard)
-GET {{baseUrl}}/customers/9182a36b-77e3-484f-b7c2-1c0c0194e4a5/orders HTTP/1.1
+GET {{baseUrl}}/customers/234f2057-0087-43f7-8623-bb90c0f1532c/orders HTTP/1.1
 
 ### GET /customers/:id/orders/:orderId"
-GET {{baseUrl}}/customers/9182a36b-77e3-484f-b7c2-1c0c0194e4a5/orders/e551617b-6756-4a78-b574-b6d8913fae05 HTTP/1.1
+GET {{baseUrl}}/customers/234f2057-0087-43f7-8623-bb90c0f1532c/orders/a3d1a396-56f4-4682-a80f-2f6541dd0eb9 HTTP/1.1
 
 ### GET
 ## ??
@@ -74,6 +74,12 @@ content-type: application/json
 
 ### 
 ### aws staging
+
+### GET customers
+GET http://ec2-13-60-156-45.eu-north-1.compute.amazonaws.com/api/v1/customers HTTP/1.1
+content-type: application/json
+
+
 ### POST testItem
 POST http://ec2-13-60-156-45.eu-north-1.compute.amazonaws.com/api/v1/test HTTP/1.1
 content-type: application/json

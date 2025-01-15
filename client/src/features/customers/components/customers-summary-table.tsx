@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useCustomersSummary } from "../api/customers-queries";
 import { Table, Text } from "@mantine/core";
-import classes from "./customers-summary-table.module.css";
 import TableControls from "./table-controls";
 import TablePagination from "./table-pagination";
 
@@ -53,7 +52,7 @@ const CustomersSummaryTable = () => {
         customers
       </Text>
 
-      <Table>
+      <Table withRowBorders withTableBorder>
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Name</Table.Th>
@@ -67,7 +66,7 @@ const CustomersSummaryTable = () => {
           {customersSummary.data.map((customer) => (
             <Table.Tr
               key={customer.customerId}
-              className={classes.tablerow}
+              className="tablerow"
               onClick={() => navigate(`/customers/${customer.customerId}`)}
             >
               <Table.Td>
