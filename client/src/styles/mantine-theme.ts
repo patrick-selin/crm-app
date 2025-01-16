@@ -1,10 +1,12 @@
 // styles/mantine-theme.ts
 import { createTheme } from "@mantine/core";
+import "@mantine/core/styles.css";
 
 const theme = createTheme({
   fontFamily: "Public Sans, sans-serif",
 
-  primaryColor: "blue",
+  primaryColor: "indigo",
+  // white: "FCFAFA",
   headings: {
     fontFamily: "Public Sans, sans-serif",
     sizes: {
@@ -46,6 +48,18 @@ const theme = createTheme({
       "#242424", //   "#1d1e30", // dark theme body bg color
       "#1f1f1f",
       "#141414",
+    ],
+    gray: [
+      "#f8f9fa",
+      "#f1f3f5",
+      "#e9ecef",
+      "#dee2e6",
+      "#ced4da",
+      "#adb5bd",
+      "#868e96",
+      "#495057",
+      "#343a40",
+      "#212529",
     ],
   },
 

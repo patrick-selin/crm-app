@@ -46,6 +46,10 @@ a {
   text-decoration: none;
 }
 
+a:visited {
+  color: inherit;
+}
+
 h1,
 h2 {
   padding: 1rem 0rem;
@@ -61,7 +65,8 @@ h3 {
 }
 
 .tablerow:hover {
-  background: var(--hover-bg);
+  background: var(--mantine-color-indigo-4);
   color: var(--hover-text);
   font-weight: bold;
 }
+
