@@ -1,9 +1,10 @@
-// features/customers/customer-detail.tsx
+// features/customers/customer-detail-page.tsx
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import CustomerInfo from "../components/customer-info";
 import CustomerOrders from "../components/customer-orders";
 import EditCustomerModal from "../components/edit-customer-modal";
-import DeleteCustomerButton from "../components/delete-customer-button";
+import DeleteCustomerModal from "../components/delete-customer-button";
 import { Title, Group, Loader, Flex, Button } from "@mantine/core";
 
 import { useCustomer, useCustomerOrders } from "../api/customers-queries";
@@ -13,6 +14,8 @@ const CustomerDetail = () => {
   const navigate = useNavigate();
   const { data: customer, isLoading: isCustomerLoading } = useCustomer(id!);
   const { data: orders, isLoading: isOrdersLoading } = useCustomerOrders(id!);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   if (isCustomerLoading || isOrdersLoading) return <Loader />;
   if (!customer) return <p>Customer not found.</p>;
@@ -31,10 +34,27 @@ const CustomerDetail = () => {
         <CustomerInfo customer={customer} />
         <CustomerOrders customerId={id!} orders={orders || []} />
       </Flex>
-      <Group>
-        <EditCustomerModal />
-        <DeleteCustomerButton />
+      <Group mt="lg">
+        <Button onClick={() => setEditModalOpen(true)}>Edit</Button>
+        <Button
+          color="red"
+          variant="outline"
+          onClick={() => setDeleteModalOpen(true)}
+        >
+          Delete
+        </Button>
       </Group>
+
+      <EditCustomerModal
+        opened={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        customer={customer}
+      />
+      <DeleteCustomerModal
+        opened={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        customerId={customer.customerId}
+      />
     </div>
   );
 };

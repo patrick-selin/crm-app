@@ -3,7 +3,8 @@ import axios from "axios";
 import {
   Customer,
   CustomersSummaryResponse,
-  CreateCustomer
+  CreateCustomer,
+  CreateCustomerSchema, UpdateCustomerSchema
 } from "../../../schemas/customer-schemas";
 import { Order, OrderDetailResponse } from "../../../schemas/order-schemas";
 
@@ -59,7 +60,9 @@ export const getOrderDetail = async (
 export const addCustomer = async (
   customer: CreateCustomer
 ): Promise<Customer> => {
-  const response = await axios.post(`${baseUrl}/customers`, customer);
+  const validatedCustomer = CreateCustomerSchema.parse(customer);
+
+  const response = await axios.post(`${baseUrl}/customers`, validatedCustomer);
   return response.data;
 };
 
@@ -69,12 +72,14 @@ export const updateCustomerById = async ({
 }: {
   id: string;
   [key: string]: unknown;
-}) => {
-  const response = await axios.put(`${baseUrl}/${id}`, data);
+}): Promise<Customer> => {
+  const validatedData = UpdateCustomerSchema.parse(data);
+
+  const response = await axios.put(`${baseUrl}/customers/${id}`, validatedData);
   return response.data;
 };
 
 export const deleteCustomerById = async (id: string) => {
-  const response = await axios.delete(`${baseUrl}/${id}`);
+  const response = await axios.delete(`${baseUrl}/customers/${id}`);
   return response.data;
 };

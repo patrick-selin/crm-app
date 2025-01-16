@@ -62,7 +62,11 @@ export const CreateCustomerSchema = CustomerSchema.omit({
   updatedAt: true,
 });
 
-export const UpdateCustomerSchema = CustomerSchema.partial();
+export const UpdateCustomerSchema = CustomerSchema.omit({
+  customerId: true,
+  createdAt: true,
+  updatedAt: true,
+}).partial(); 
 
 export const CustomerIdSchema = z.object({
   id: z.string().uuid(),
