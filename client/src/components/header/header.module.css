@@ -33,22 +33,24 @@
   transition: color 0.2s ease-in-out;
 }
 
+link {
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: color 0.2s ease-in-out;
+}
+
 .linkactive {
-  color: var(--mantine-color-blue-7);
+  color: var(--mantine-color-indigo-7);
   font-weight: bold;
-  border-bottom: 2px solid var(--mantine-color-blue-7);
+  border-bottom: 2px solid var(--mantine-color-indigo-7);
   text-decoration: none;
 }
 
-.link:hover {
-  color: var(--mantine-color-blue-7);
+.nav .link:hover {
+  color: var(--mantine-color-indigo-7);
 }
 
 .active {
   font-weight: bold;
-}
-
-.link:visited {
-  text-decoration: none;
-  color: inherit;
 }
