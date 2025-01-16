@@ -1,9 +1,18 @@
 // components/Footer.tsx
-import { Title } from "@mantine/core";
+import { Text } from "@mantine/core";
 const Footer = () => {
   return (
     <footer>
-      <Title order={5}>i am a footer</Title>
+      <Text ta="center" size="sm" c="dimmed">
+        © {new Date().getFullYear()} CRM App. Contact:{" "}
+        <a
+          href="https://github.com/patrick-selin"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>
+      </Text>
     </footer>
   );
 };

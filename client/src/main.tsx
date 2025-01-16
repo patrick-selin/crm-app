@@ -7,7 +7,7 @@ import AppRoutes from "./router/app-routes";
 //
 import "./styles/global.css";
 import { MantineProvider } from "@mantine/core";
-import { Notifications } from '@mantine/notifications';
+import { Notifications } from "@mantine/notifications";
 import theme from "./styles/mantine-theme";
 import "@mantine/notifications/styles.css";
 
@@ -16,7 +16,7 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <MantineProvider theme={theme}>
+      <MantineProvider theme={theme} defaultColorScheme="dark">
         <Notifications />
         <AppRoutes />
       </MantineProvider>

@@ -34,7 +34,10 @@ const Header = () => {
         <Group justify="space-between" h="100%">
           {/* Logo */}
           <NavLink to="/" className={classes.logo}>
-            <QueueListIcon className={classes.logoicon} />
+            <QueueListIcon
+              className={classes.logoicon}
+              style={{ width: 24, height: 24 }}
+            />
             CRM App
           </NavLink>
 
@@ -145,7 +148,7 @@ const Header = () => {
             {isAuthenticated ? (
               <>
                 <ActionIcon variant="light" radius="xl">
-                  <BellIcon className={classes.icon} />
+                  <BellIcon style={{ width: 20, height: 20 }} />
                 </ActionIcon>
                 <Avatar alt="User Avatar" radius="xl" />
               </>

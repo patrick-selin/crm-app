@@ -1,4 +1,4 @@
-import { Card, Text, Title } from "@mantine/core";
+import { Card, Text, Title, } from "@mantine/core";
 import { Customer } from "../../../schemas/customer-schemas";
 
 const CustomerInfo = ({ customer }: { customer: Customer }) => (
@@ -8,13 +8,13 @@ const CustomerInfo = ({ customer }: { customer: Customer }) => (
       <Title order={3}>
         {customer.firstName} {customer.lastName}
       </Title>
-      <Text>Email: {customer.email}</Text>
-      <Text>Phone: {customer.phone}</Text>
-      <Text>
+      <Text mb="sm">Email: {customer.email}</Text>
+      <Text mb="sm">Phone: {customer.phone}</Text>
+      <Text mb="sm">
         Address: {customer.address}, {customer.city}
       </Text>
-      <Text>Postal Code: {customer.postalCode}</Text>
-      <Text>Country: {customer.country}</Text>
+      <Text mb="sm">Postal Code: {customer.postalCode}</Text>
+      <Text mb="sm">Country: {customer.country}</Text>
     </Card>
   </div>
 );
