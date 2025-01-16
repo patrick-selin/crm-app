@@ -33,12 +33,6 @@
   transition: color 0.2s ease-in-out;
 }
 
-link {
-  text-decoration: none;
-  font-size: 1rem;
-  font-weight: 700;
-  transition: color 0.2s ease-in-out;
-}
 
 .linkactive {
   color: var(--mantine-color-indigo-7);
@@ -51,6 +45,25 @@ link {
   color: var(--mantine-color-indigo-7);
 }
 
-.active {
-  font-weight: bold;
+
+.drawerNav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.drawerNav .link {
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.drawerNav .link:hover,
+.drawerNav .link:focus {
+  background-color: var(--mantine-color-gray-2);
+  color: var(--mantine-color-indigo-7);
 }

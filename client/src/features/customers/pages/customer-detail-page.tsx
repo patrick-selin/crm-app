@@ -5,7 +5,7 @@ import CustomerInfo from "../components/customer-info";
 import CustomerOrders from "../components/customer-orders";
 import EditCustomerModal from "../components/edit-customer-modal";
 import DeleteCustomerModal from "../components/delete-customer-button";
-import { Title, Group, Loader, Flex, Button } from "@mantine/core";
+import { Title, Group, Loader, Flex, Button, Divider } from "@mantine/core";
 
 import { useCustomer, useCustomerOrders } from "../api/customers-queries";
 
@@ -30,8 +30,9 @@ const CustomerDetail = () => {
       </Title>
       <Title order={4}>Customer ID: {id}</Title>
 
-      <Flex gap="xl" justify="space-between" wrap="wrap" mt="xl">
+      <Flex gap="xl" justify="space-between" wrap="wrap" mt="md">
         <CustomerInfo customer={customer} />
+        <Divider orientation="vertical" size="md" mt="xl" />
         <CustomerOrders customerId={id!} orders={orders || []} />
       </Flex>
       <Group mt="lg">

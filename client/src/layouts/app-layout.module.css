@@ -1,9 +1,32 @@
 /* app-wide styles */
 
 .appLayout {
-  /* background: var(--mantine-color-blue-1); */
+  position: relative;
+  min-height: 100vh;
 }
 
 .mainContent {
-  /* background: var(--mantine-color-blue-1); */
+  padding-bottom: 3rem;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 3rem;
+  background-color: var(--mantine-color-gray-19);
+  text-align: center;
+  margin-top: 5rem;
+  padding: 1rem;
+  border-top: 0.1px solid var(--mantine-color-gray-8);
+}
+
+footer a {
+  text-decoration: underline solid;
+  color: var(--mantine-color-indigo-6);
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: var(--mantine-color-indigo-9);
 }
