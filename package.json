@@ -15,6 +15,9 @@
     "test:unit:client:ci": "docker-compose -f docker-compose.ci.yml exec client npm run test:unit",
     "test:unit:server:ci": "docker-compose -f docker-compose.ci.yml exec server npm run test:unit",
     "test:integration:ci": "docker-compose -f docker-compose.ci.yml exec server npm run test:integration:ci",
+    "test:unit:client:stag": "docker-compose -f docker-compose.stag.yml exec frontend-proxy npm run test:unit",
+    "test:unit:server:stag": "docker-compose -f docker-compose.stag.yml exec server npm run test:unit",
+    "test:integration:stag": "docker-compose -f docker-compose.stag.yml exec server npm run test:integration:ci",
     "test:e2e": "cd playwright-e2e && npm run test",
     "test:e2e:report": "cd playwright-e2e && npm run test:report"
   },
