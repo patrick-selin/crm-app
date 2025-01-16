@@ -190,7 +190,7 @@ export const getCustomersWithMetrics = async ({
 
   const rawResults = await query;
 
-  console.log("RAW results::", JSON.stringify(rawResults, null, 2));
+  // console.log("RAW results::", JSON.stringify(rawResults, null, 2));
 
   // Convert totalSpent to a number
   const processedResults = rawResults.map((result) => ({
