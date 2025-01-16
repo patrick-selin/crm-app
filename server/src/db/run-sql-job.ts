@@ -1,3 +1,12 @@
+import { Client } from "pg";
+import cron from "node-cron";
+import { config } from "../config/config";
+
+if (!config.DATABASE_URL) {
+  throw new Error("DATABASE_URL is not defined in the environment variables.");
+}
+
+const sqlScript = `
 -- Step 1: Generate a Customer or Use Existing Customer
 DO $$
 DECLARE
@@ -85,3 +94,26 @@ BEGIN
     SET total_amount = total_order_amount
     WHERE orders.order_id = new_order_id;
 END $$;
+`;
+
+cron.schedule("0 * * * *", async () => {
+  const client = new Client({
+    connectionString: config.DATABASE_URL,
+    ssl:
+      config.NODE_ENV === "production" ? { rejectUnauthorized: false } : false, // Optional SSL config
+  });
+
+  try {
+    await client.connect();
+    console.log("Connected to the database.");
+    await client.query(sqlScript);
+    console.log("SQL job executed successfully.");
+  } catch (error) {
+    console.error("Error executing SQL job:", error);
+  } finally {
+    await client.end();
+    console.log("Database connection closed.");
+  }
+});
+
+console.log("Cron job started. SQL job will run every minute.");
