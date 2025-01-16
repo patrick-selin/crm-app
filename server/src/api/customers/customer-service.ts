@@ -23,7 +23,7 @@ const isPostgresUniqueViolation = (error: any): boolean => {
 
 export const getCustomers = async ({
   search,
-  sort,
+  sort = "createdAt:desc",
   page,
   limit,
   filters,
@@ -68,19 +68,26 @@ export const getCustomers = async ({
     .limit(limit);
 
   // Sorting
+  const sortMapping: Record<string, string> = {
+    firstName: "first_name",
+    lastName: "last_name",
+    email: "email",
+    city: "city",
+    country: "country",
+    createdAt: "created_at",
+  };
+
   if (sort) {
-    const sortMapping: Record<string, string> = {
-      firstName: "first_name",
-      lastName: "last_name",
-      email: "email",
-    };
-
     const [column, direction] = sort.split(":");
-    const dbColumn = sortMapping[column] || column;
+    const dbColumn = sortMapping[column];
 
-    query.orderBy(
-      sql`${sql.identifier(dbColumn)} ${sql.raw(direction.toUpperCase())}`
-    );
+    if (dbColumn) {
+      query.orderBy(
+        sql`${sql.identifier(dbColumn)} ${sql.raw(direction.toUpperCase())}`
+      );
+    } else {
+      throw new Error(`Invalid sort column: ${column}`);
+    }
   }
 
   const results = await query;
@@ -103,7 +110,7 @@ export const getCustomers = async ({
 
 export const getCustomersWithMetrics = async ({
   search,
-  sort,
+  sort = "lastOrderDate:desc",
   page,
   limit,
   filters,
