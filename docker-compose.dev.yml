@@ -31,6 +31,21 @@ services:
       timeout: 5s
       retries: 10
 
+  cron-job:
+    container_name: crm-app-cron-job
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    env_file:
+      - server/.env.development
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - database-sql
+    command: ["npx", "tsx", "/usr/src/app/src/db/run-sql-job.ts"]
+    
+
   migrate:
     container_name: crm-app-db-migrate
     build:
@@ -44,23 +59,23 @@ services:
     env_file:
       - server/.env.development
 
-  db-seed:
-    image: postgres:16.4-bullseye
-    depends_on:
-      database-sql:
-        condition: service_healthy
-      migrate:
-        condition: service_started
-    volumes:
-      - ./server/src/db/seed-db.sql:/seed-db.sql
-    env_file:
-      - server/.env.development
-    command: >
-      sh -c "
-        export PGPASSWORD=$$POSTGRES_PASSWORD &&
-        psql -h database-sql -U $$POSTGRES_USER -d crm_app_db_dev -f /seed-db.sql &&
-        psql -h database-sql -U $$POSTGRES_USER -d crm_app_db_test -f /seed-db.sql
-      "
+  # db-seed:
+  #   image: postgres:16.4-bullseye
+  #   depends_on:
+  #     database-sql:
+  #       condition: service_healthy
+  #     migrate:
+  #       condition: service_started
+  #   volumes:
+  #     - ./server/src/db/seed-db.sql:/seed-db.sql
+  #   env_file:
+  #     - server/.env.development
+  #   command: >
+  #     sh -c "
+  #       export PGPASSWORD=$$POSTGRES_PASSWORD &&
+  #       psql -h database-sql -U $$POSTGRES_USER -d crm_app_db_dev -f /seed-db.sql &&
+  #       psql -h database-sql -U $$POSTGRES_USER -d crm_app_db_test -f /seed-db.sql
+  #     "
 
   client:
     container_name: crm-app-client
