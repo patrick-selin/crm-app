@@ -23,7 +23,7 @@ GET {{baseUrl}}/customers HTTP/1.1
 
 ### GET /customers, with query params
 GET {{baseUrl}}/customers?page=1&limit=3 HTTP/1.1
-# /customers?search=John&sort=city:asc&page=1&limit=10
+# /customers?search=John&sort=city:asc&page=1&limit=3
 
 ### GET /customers/summary
 GET {{baseUrl}}/customers/summary HTTP/1.1

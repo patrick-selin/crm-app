@@ -10,11 +10,27 @@ import { Order, OrderDetailResponse } from "../../../schemas/order-schemas";
 
 const baseUrl = `${import.meta.env.VITE_BASE_URL}`;
 
-export const getCustomers = async (): Promise<Customer[]> => {
-  const response = await axios.get(`${baseUrl}/customers`);
-  return response.data.data;
-};
+export const getCustomers = async ({
+  search = "",
+  sort = "",
+  limit = 10,
+  page = 1,
+}: {
+  search?: string;
+  sort?: string;
+  limit?: number;
+  page?: number;
+}): Promise<{ total: number; page: number; limit: number; data: Customer[] }> => {
+  const params = new URLSearchParams({
+    ...(search && { search }),
+    ...(sort && { sort }),
+    ...(limit && { limit: limit.toString() }),
+    ...(page && { page: page.toString() }),
+  });
 
+  const response = await axios.get(`${baseUrl}/customers?${params}`);
+  return response.data;
+};
 export const getCustomersSummary = async ({
   search,
   sort,

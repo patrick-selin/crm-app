@@ -37,7 +37,6 @@ export const getCustomers = async ({
   logger.info("Service: Fetching all customers with params...");
 
   const offset = (page - 1) * limit;
-
   const baseConditions = [];
 
   // Search
@@ -52,7 +51,6 @@ export const getCustomers = async ({
   }
 
   // Filters
-
   if (filters) {
     for (const [key, value] of Object.entries(filters)) {
       baseConditions.push(sql`${sql.identifier(key)} = ${value}`);
@@ -74,7 +72,7 @@ export const getCustomers = async ({
     const sortMapping: Record<string, string> = {
       firstName: "first_name",
       lastName: "last_name",
-      totalSpent: "total_spent",
+      email: "email",
     };
 
     const [column, direction] = sort.split(":");
@@ -103,7 +101,6 @@ export const getCustomers = async ({
   };
 };
 
-// sort issue
 export const getCustomersWithMetrics = async ({
   search,
   sort,
