@@ -126,32 +126,29 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-            cd /home/ubuntu/crm-app/server
-            echo "Running unit tests in /server..."
-            npm run test:unit:ci || exit 1
+            cd /home/ubuntu/crm-app/
+            echo "Running unit tests in server-side..."
+            npm run test:unit:client:ci || exit 1
 
-            cd /home/ubuntu/crm-app/client
-            echo "Running unit tests in /client..."
-            npm run test:unit:ci || exit 1
+            echo "Running unit tests in client-side..."
+            npm run test:unit:client:ci" || exit 1
 
             echo "Unit tests passed successfully!"
           EOF
 
-      ## muista lisata
-      # Run INTEGRATION TESTs
+      - name: Run Integration Tests on Staging Server
+        run: |
+          ssh ubuntu@${{ secrets.AWS_EC2_PUBLIC_IP }} << 'EOF'
+            echo "Running Integration Tests..."
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-      # - name: Run E2E Tests on Staging Server
-      #   run: |
-      #     ssh ubuntu@${{ secrets.AWS_EC2_PUBLIC_IP }} << 'EOF'
-      #       echo "Running E2E tests..."
-      #       export NVM_DIR="$HOME/.nvm"
-      #       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd /home/ubuntu/crm-app/
+            echo "Running Integration tests in server-side..."
+            npm run test:integration:ci || exit 1
 
-      #       cd /home/ubuntu/crm-app
-      #       npm run test:e2e || exit 1
-
-      #       echo "E2E tests passed successfully!"
-      #     EOF
+            echo "Integration tests passed successfully!"
+          EOF
 
       - name: Clean Up Docker Resources on EC2
         run: |
@@ -162,44 +159,8 @@ jobs:
             df -h
           EOF
 
-      # # run tests
-      # - name: Run Unit Tests on Staging Server
-      #   run: |
-      #     ssh ubuntu@${{ secrets.AWS_EC2_PUBLIC_IP }} << 'EOF'
-      #       echo "Switching to project directory..."
-      #       cd /home/ubuntu/crm-app
-      #       pwd
+      # # E2# tests
 
-      #       echo "Loading nvm environment..."
-      #       export NVM_DIR="$HOME/.nvm"
-      #       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-      #       echo "Verifying Node.js and npm versions..."
-      #       node --version
-      #       npm --version
-
-      #       # Run Unit Tests in /server
-      #       echo "Running Unit Tests in /server..."
-      #       cd /home/ubuntu/crm-app/server
-      #       npm install
-      #       npm run test:unit:ci
-      #       SERVER_EXIT_CODE=$?
-
-      #       # Run Unit Tests in /client
-      #       echo "Running Unit Tests in /client..."
-      #       cd /home/ubuntu/crm-app/client
-      #       npm install
-      #       npm run test:unit:ci
-      #       CLIENT_EXIT_CODE=$?
-
-      #       # Check if Unit Tests Failed
-      #       if [ $SERVER_EXIT_CODE -ne 0 ] || [ $CLIENT_EXIT_CODE -ne 0 ]; then
-      #         echo "Unit tests failed! Exiting with error."
-      #         exit 1
-      #       else
-      #         echo "Unit tests passed successfully!"
-      #       fi
-      #     EOF
 
       # - name: Run E2E Tests on Staging Server
       #   run: |
@@ -218,7 +179,10 @@ jobs:
 
       #       echo "Running E2E tests..."
       #       /home/ubuntu/.nvm/versions/node/v22.12.0/bin/npm run test:e2e
+      #        ## or  npm run test:e2e || exit 1 ???
       #       EXIT_CODE=$?
+
+      
 
       #       if [ $EXIT_CODE -ne 0 ]; then
       #         echo "E2E tests failed! Exit code: $EXIT_CODE"
@@ -227,6 +191,79 @@ jobs:
       #         echo "E2E tests passed successfully!"
       #       fi
       #     EOF
+
+
+# e2e-tests:
+  #   needs: [integration-tests]
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 5
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "20"
+
+      # - name: Install Playwright dependencies
+      #   run: npm install
+      #   working-directory: ./playwright-e2e
+
+      # - name: Install Playwright Browsers
+      #   # run: npx playwright install --with-deps
+      #   run: yarn playwright install --with-deps
+      #   working-directory: ./playwright-e2e
+      #   continue-on-error: true
+
+      # # Debug
+      # - name: Debug
+      #   run: |
+      #     echo "Waiting for services to be ready..."
+      #     until curl -s http://localhost/api1/health; do
+      #       echo "Waiting for backend to be ready..."
+      #       sleep 8
+      #     done
+      #     echo "Services are ready!"
+      #   continue-on-error: true
+
+      # # Debug
+      # - name: Debug
+      #   run: |
+      #     echo "Waiting for services to be ready..."
+      #     until curl -s http://localhost/api1/customers; do
+      #       echo "Waiting for backend to be ready..."
+      #       sleep 8
+      #     done
+      #     echo "Services are ready!"
+      #   continue-on-error: true
+
+      # - name: Run E2E tests ########### muista korjata db ongelma
+      #   run: npm run test:e2e
+      #   continue-on-error: true
+
+      # - name: Upload E2E Test Results
+      #   uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #     name: playwright-report
+      #     path: ./playwright-e2e/playwright-report/
+      #     retention-days: 30
+
+      # - name: Upload Screenshots as Artifacts
+      #   uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #     name: e2e-screenshots
+      #     path: ./screenshots/*.png
+
+      # - name: Stop and Remove Containers
+      #   run: |
+      #     docker-compose -f docker-compose.ci.yml down
+
+
+
 
     # if ok, --> deploy to PROD
 
