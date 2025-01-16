@@ -22,7 +22,7 @@ const CustomersPage = () => {
 
       {/* Add Customer Modal */}
       <Modal opened={opened} onClose={close} title="Add new customer" centered>
-        <AddCustomerModal />
+        <AddCustomerModal opened={opened} onClose={close} />
       </Modal>
 
       {/* Tabs */}

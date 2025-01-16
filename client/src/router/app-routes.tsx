@@ -7,9 +7,8 @@ import Dashboard from "../pages/dashboard";
 import Customers from "../pages/customers";
 import CustomerDetail from "../features/customers/pages/customer-detail-page";
 import OrderDetailPage from "../features/customers/pages/order-detail-page";
-import Sales from "../pages/sales";
+import Orders from "../pages/orders";
 import Products from "../pages/products";
-import Analytics from "../pages/analytics";
 import Profile from "../pages/profile";
 // import AdminPanel from "../pages/admin-panel";
 import SignIn from "../pages/sign-in";
@@ -57,10 +56,10 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "sales",
+        path: "orders",
         element: (
           <ProtectedRoute>
-            <Sales />
+            <Orders />
           </ProtectedRoute>
         ),
       },
@@ -69,14 +68,6 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Products />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "analytics",
-        element: (
-          <ProtectedRoute>
-            <Analytics />
           </ProtectedRoute>
         ),
       },
