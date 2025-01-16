@@ -82,7 +82,7 @@ export const CustomersQuerySchema = z
     sort: z
       .string()
       .regex(
-        /^(city|country|firstName|lastName|address|postalCode):(asc|desc)$/i,
+        /^(city|country|firstName|lastName|address|postalCode|email|createdAt):(asc|desc)$/i,
         "Sort format should be 'column:asc' or 'column:desc'"
       )
       .optional(),

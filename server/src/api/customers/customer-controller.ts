@@ -15,7 +15,8 @@ export const listCustomers = async (
     logger.info("Controller invoked: listAllCustomers");
     logger.info("Query Parameters:", req.query);
 
-    const { search, sort, page, limit, ...queryFilters } = req.query as any;
+    const { search, sort, page = "1", limit = "10", ...queryFilters } =
+      req.query as any;
 
     const filters = Object.keys(queryFilters).reduce((acc, key) => {
       acc[key] = queryFilters[key] as string;
@@ -25,8 +26,8 @@ export const listCustomers = async (
     const customers = await customerService.getCustomers({
       search: search as string,
       sort: sort as string,
-      page: page,
-      limit: limit,
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10),
       filters,
     });
 

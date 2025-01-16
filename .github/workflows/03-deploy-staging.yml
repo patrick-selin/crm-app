@@ -89,6 +89,9 @@ jobs:
 
             echo 'Stopping existing Docker services...' &&
             docker-compose --env-file .env -f docker-compose.stag.yml down &&
+            
+            echo 'Removes all unused images...' 
+            docker image prune -a &&
 
             echo 'Pulling latest Docker images...' &&
             docker-compose --env-file .env -f docker-compose.stag.yml pull &&
