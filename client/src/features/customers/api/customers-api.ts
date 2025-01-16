@@ -3,13 +3,14 @@ import axios from "axios";
 import {
   Customer,
   CustomersSummaryResponse,
+  CreateCustomer
 } from "../../../schemas/customer-schemas";
 import { Order, OrderDetailResponse } from "../../../schemas/order-schemas";
 
 const baseUrl = `${import.meta.env.VITE_BASE_URL}`;
 
 export const getCustomers = async (): Promise<Customer[]> => {
-  const response = await axios.get(`${baseUrl}customers`);
+  const response = await axios.get(`${baseUrl}/customers`);
   return response.data.data;
 };
 
@@ -56,9 +57,9 @@ export const getOrderDetail = async (
 };
 
 export const addCustomer = async (
-  customer: Omit<Customer, "customerId" | "createdAt" | "updatedAt">
+  customer: CreateCustomer
 ): Promise<Customer> => {
-  const response = await axios.post(baseUrl, customer); // vaara
+  const response = await axios.post(`${baseUrl}/customers`, customer);
   return response.data;
 };
 
