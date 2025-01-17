@@ -54,3 +54,14 @@ export const LoginSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 });
+
+export const JwtPayloadSchema = z.object({
+  id: z.string().uuid(),
+  role: z.enum(["admin", "user"]),
+  iat: z.number(),
+  exp: z.number(), 
+});
+
+
+export type LoginSchema = z.infer<typeof LoginSchema>;
+export type RegisterSchema = z.infer<typeof RegisterSchema>;

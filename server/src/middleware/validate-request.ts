@@ -4,13 +4,17 @@ import { Request, Response, NextFunction } from "express";
 import { ZodSchema, ZodError } from "zod";
 import { ValidationError } from "../utils/errors/app-errors";
 
-export function validateBody(schema: ZodSchema<any>) {
+export const validateBody = (schema: ZodSchema<any>) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
       schema.parse(req.body);
       next();
     } catch (error) {
       if (error instanceof ZodError) {
+        console.error(
+          "Validation failed:",
+          JSON.stringify(error.errors, null, 2)
+        );
         return next(
           new ValidationError(
             "Invalid request body",
@@ -25,7 +29,7 @@ export function validateBody(schema: ZodSchema<any>) {
       next(error);
     }
   };
-}
+};
 
 export const validateParams = (schema: ZodSchema<any>) => {
   return (req: Request, _res: Response, next: NextFunction) => {
@@ -68,7 +72,6 @@ export const validateQuery = (schema: ZodSchema<any>) => {
             }))
           )
         );
-
       }
       next(error);
     }
