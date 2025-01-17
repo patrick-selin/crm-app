@@ -34,7 +34,7 @@ jobs:
       - name: Build application
         run: npm run build
         working-directory: ${{ matrix.app == 'client' && './client' || './server' }}
-
+              
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
