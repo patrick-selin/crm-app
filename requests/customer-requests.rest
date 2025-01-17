@@ -44,7 +44,7 @@ GET {{baseUrl}}/customers/234f2057-0087-43f7-8623-bb90c0f1532c/orders/a3d1a396-5
 ## ??
 
 ### POST /customers
-POST {{baseUrl}}/customers HTTP/1.1
+POST {{baseUrlStag}}/customers HTTP/1.1
 content-type: application/json
 
 {
