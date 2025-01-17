@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(morganMiddleware);
 //routes
 app.use((req, _res, next) => {
-  console.log(`Incoming Request: ${req.method} ${req.url}`);
+  console.log(`Incoming Request, ser: ${req.method} ${req.url}`);
   next();
 });
 app.use("/api/v1/health", healthCheckRoutes);

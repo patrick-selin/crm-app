@@ -1,30 +1,37 @@
-// // auth-service.ts
-import bcrypt from "bcrypt";
+// import * as argon2 from "argon2";
+
 import { db } from "../../db/db";
 import logger from "../../utils/logger";
 import { users } from "../../db/schemas/users";
-import { RegisterSchema } from "../../schemas/user-and-auth-schemas";
+
+import bcrypt from "bcrypt";
 
 export const registerUser = async (data: any) => {
   logger.info("Service: Registering new user...");
-
-  const validatedData = RegisterSchema.parse(data);
-
-  const hashedPassword = await bcrypt.hash(validatedData.password, 10);
-
   try {
+    if (!data.password) {
+      throw new Error("Password is required");
+    }
+
+    logger.info("Hashing password...");
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    logger.info("Inserting user into database...");
     const [newUser] = await db
       .insert(users)
       .values({
-        ...validatedData,
+        ...data,
         passwordHash: hashedPassword,
       })
       .returning();
 
-    logger.info("New user created:", { id: newUser.userId, email: newUser.email });
+    logger.info("User successfully registered:", {
+      id: newUser.userId,
+      email: newUser.email,
+    });
     return newUser;
   } catch (error) {
-    logger.error("Service error in registerUser:", { error });
+    logger.error("Error during user registration:", error);
     throw error;
   }
 };

@@ -1,10 +1,11 @@
 @baseUrl = http://localhost/api/v1
+@baseUrlStag = http://ec2-13-60-156-45.eu-north-1.compute.amazonaws.com/api/v1
 
 GET {{baseUrl}}/test HTTP/1.1
 
 ###
 ### POST testItem
-POST {{baseUrl}}/test HTTP/1.1
+POST {{baseUrlStag}}/test HTTP/1.1
 content-type: application/json
 
 {
@@ -13,16 +14,16 @@ content-type: application/json
 }
 
 ### GET /customers
-GET {{baseUrl}}/auth HTTP/1.1
+GET {{baseUrl}}/customers HTTP/1.1
 
 
 ### POST registeer user
-POST {{baseUrl}}/auth/register HTTP/1.1
+POST {{baseUrl}}/hello/register HTTP/1.1
 content-type: application/json
 
 {
-  "username": "2patu",
-  "email": "2patu@testi.fi",
+  "username": "3244patu",
+  "email": "3442patu@testi.fi",
   "password": "salasana",
   "firstName": "Patrick",
   "lastName": "Sel",
@@ -43,3 +44,62 @@ content-type: application/json
   "password": "salasana"
 }
 
+
+### POST registeer user
+POST {{baseUrl}}/auth/register HTTP/1.1
+content-type: application/json
+
+{
+  "username": "c17egtt3heippa",
+  "email": "1c7teutgt@testi.fi",
+  "password": "salasana",
+  "firstName": "Patrick",
+  "lastName": "Sel",
+  "role": "user",
+  "phone": "0401234567",
+  "address": "Testikatu 2",
+  "city": "Turku",
+  "postalCode": "20100",
+  "country": "Suomi"
+}
+
+### POST login user
+POST {{baseUrlStag}}/auth/login HTTP/1.1
+content-type: application/json
+
+{
+  "email": "patu@testi.fi",
+  "password": "salasana"
+}
+
+
+
+
+
+
+
+
+### GET /auth test
+GET {{baseUrl}}/auth HTTP/1.1
+
+### GET /auth test AWS
+GET {{baseUrlStag}}/auth HTTP/1.1
+
+
+### POST registeer user
+POST {{baseUrl}}/auth/register HTTP/1.1
+content-type: application/json
+
+{
+  "username": "11r7egtt3heippa",
+  "email": "1711rteutgt@testi.fi",
+  "password": "salasana",
+  "firstName": "Patrick",
+  "lastName": "Sel",
+  "role": "user",
+  "phone": "0401234567",
+  "address": "Testikatu 2",
+  "city": "Turku",
+  "postalCode": "20100",
+  "country": "Suomi"
+}

@@ -5,7 +5,7 @@ import * as authService from "./auth-service";
 import { ZodError } from "zod";
 import { ValidationError} from "../../utils/errors/app-errors";
 
-export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
+export const registerUserTemp = async (req: Request, res: Response, next: NextFunction) => {
     try {
       logger.info("Controller invoked: registerUser");
       logger.info("Request Body:", req.body);

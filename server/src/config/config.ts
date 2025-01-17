@@ -18,6 +18,8 @@ interface Config {
   POSTGRES_PASSWORD: string;
   POSTGRES_USER: string;
   POSTGRES_HOST: string;
+  JWT_SECRET: string;
+  REFRESH_SECRET: string;
 }
 
 const server_port = process.env.SERVER_PORT
@@ -38,4 +40,6 @@ export const config: Config = {
   POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
   POSTGRES_USER: process.env.POSTGRES_USER,
   POSTGRES_HOST: process.env.POSTGRES_HOST,
+  JWT_SECRET: process.env.JWT_SECRET || "default-jwt-secret",
+  REFRESH_SECRET: process.env.REFRESH_SECRET || "default-refresh-secret",
 };

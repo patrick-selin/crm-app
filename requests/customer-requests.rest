@@ -44,13 +44,13 @@ GET {{baseUrl}}/customers/234f2057-0087-43f7-8623-bb90c0f1532c/orders/a3d1a396-5
 ## ??
 
 ### POST /customers
-POST {{baseUrl}}/customers HTTP/1.1
+POST {{baseUrlStag}}/customers HTTP/1.1
 content-type: application/json
 
 {
   "firstName": "Jukka33",
   "lastName": "Poika2",
-  "email": "jukka33@example.fi",
+  "email": "jukkadd33@example.fi",
   "phone": "2401234567",
   "address": "Heippakatu 12",
   "city": "Helsinki",
@@ -95,7 +95,7 @@ content-type: application/json
 
 
 ### GET /customers/:id/orders , overview of all orders from a customer (customer dashboard)
-GET {{baseUrlStag}}/customers/summary?page=1&limit=50   HTTP/1.1
+GET {{baseUrlStag}}/customers/summary?page=1&limit=2   HTTP/1.1
 
 ### GET /customers/:id
 GET {{baseUrlStag}}/customers/8a8c53d5-1201-4df4-89cd-5a333065850a/orders HTTP/1.1
