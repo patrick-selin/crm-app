@@ -1,0 +1,18 @@
+@baseUrl = http://localhost/api/v1
+
+GET {{baseUrl}}/test HTTP/1.1
+
+###
+### POST testItem
+POST {{baseUrl}}/test HTTP/1.1
+content-type: application/json
+
+{
+    "content": "Sample Test Content 22stag",
+    "important": true
+}
+
+### GET /customers
+GET {{baseUrl}}/auth HTTP/1.1
+
+
