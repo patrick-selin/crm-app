@@ -26,7 +26,7 @@ COPY global-bundle.pem  /usr/src/app/global-bundle.pem
 COPY vitest.integration.config.ts /usr/src/app/vitest.integration.config.ts
 COPY vitest.unit.config.ts /usr/src/app/vitest.unit.config.ts
 
-RUN addgroup -S nodejs && adduser -S nodejs -G nodejs
+RUN groupadd -r nodejs && useradd -r -g nodejs nodejs
 RUN chown -R nodejs:nodejs /usr/src/app
 USER nodejs
 

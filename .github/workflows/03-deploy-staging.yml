@@ -157,9 +157,12 @@ jobs:
         run: |
           ssh ubuntu@${{ secrets.AWS_EC2_PUBLIC_IP }} << 'EOF'
             echo "Cleaning up Docker resources..."
-            docker system prune -af
+            docker system prune -af --volumes
             echo "Docker cleanup completed!"
+            echo "Disk space usage after cleanup:"
             df -h
+            echo "Docker system usage after cleanup:"
+            docker system df
           EOF
 
       # # E2# tests

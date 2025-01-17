@@ -83,7 +83,7 @@ content-type: application/json
 GET {{baseUrl}}/auth HTTP/1.1
 
 ### GET /auth test AWS
-GET {{baseUrl}}/auth HTTP/1.1
+GET {{baseUrlStag}}/auth HTTP/1.1
 
 
 ### POST registeer user
@@ -91,8 +91,8 @@ POST {{baseUrlStag}}/auth/register HTTP/1.1
 content-type: application/json
 
 {
-  "username": "abab",
-  "email": "137f3x11rteutgt@testi.fi",
+  "username": "stag",
+  "email": "stagt@stag.fi",
   "password": "salasana",
   "firstName": "Patrick",
   "lastName": "Sel",
@@ -102,4 +102,13 @@ content-type: application/json
   "city": "Turku",
   "postalCode": "20100",
   "country": "Suomi"
+}
+
+### POST login user
+POST {{baseUrlStag}}/auth/login HTTP/1.1
+content-type: application/json
+
+{
+  "email": "stagt@stag.fi",
+  "password": "salasana"
 }

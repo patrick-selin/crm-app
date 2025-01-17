@@ -1,5 +1,5 @@
 # Dockerfile.dev for server/backend
-FROM node:20.11.1 AS builder
+FROM node:20.11.1-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -9,7 +9,7 @@ RUN yarn add global tsx
 
 COPY . .
 
-FROM node:20.11.1
+FROM node:20.11.1-alpine
 
 WORKDIR /usr/src/app
 
