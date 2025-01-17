@@ -1,5 +1,4 @@
 // shared/schemas/customer-schemas.ts
-// shared/schemas/customer-schemas.ts
 import { z } from "zod";
 
 export const CustomerSchema = z.object({
@@ -18,11 +17,11 @@ export const CustomerSchema = z.object({
     .max(100, { message: "Email must not exceed 100 characters" }),
   phone: z
     .string()
-    .min(8, { message: "Phone number is required" })
+    .min(8, { message: "Phone number is required, min 8" })
     .max(15, { message: "Phone number must not exceed 15 characters" }),
   address: z
     .string()
-    .min(2, { message: "Address is required" })
+    .min(2, { message: "Address is required,, min 2" })
     .max(100, { message: "Address must not exceed 100 characters" }),
   city: z
     .string()
@@ -30,7 +29,7 @@ export const CustomerSchema = z.object({
     .max(50, { message: "City must not exceed 50 characters" }),
   postalCode: z
     .string()
-    .min(1, { message: "Postal code is required" })
+    .min(5, { message: "Postal code is required, min 5" })
     .max(6, { message: "Postal code must not exceed 6 characters" }),
   country: z
     .string()
@@ -63,7 +62,11 @@ export const CreateCustomerSchema = CustomerSchema.omit({
   updatedAt: true,
 });
 
-export const UpdateCustomerSchema = CustomerSchema.partial();
+export const UpdateCustomerSchema = CustomerSchema.omit({
+  customerId: true,
+  createdAt: true,
+  updatedAt: true,
+}).partial();
 
 export const CustomerIdSchema = z.object({
   id: z.string().uuid(),
@@ -82,7 +85,7 @@ export const CustomersQuerySchema = z
     sort: z
       .string()
       .regex(
-        /^(city|country|firstName|lastName|address|postalCode|email|createdAt):(asc|desc)$/i,
+        /^(city|country|firstName|lastName|address|postalCode):(asc|desc)$/i,
         "Sort format should be 'column:asc' or 'column:desc'"
       )
       .optional(),
@@ -133,4 +136,6 @@ export type CustomerSummary = z.infer<typeof CustomerSummarySchema>;
 export type CreateCustomer = z.infer<typeof CreateCustomerSchema>;
 export type UpdateCustomer = z.infer<typeof UpdateCustomerSchema>;
 export type CustomersQuery = z.infer<typeof CustomersQuerySchema>;
-export type CustomersSummaryResponse = z.infer<typeof CustomersSummaryResponseSchema>;
+export type CustomersSummaryResponse = z.infer<
+  typeof CustomersSummaryResponseSchema
+>;

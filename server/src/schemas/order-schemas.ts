@@ -30,5 +30,12 @@ export const OrderItemSchema = z.object({
   price: z.number().nonnegative(),
 });
 
+export const OrderDetailResponseSchema = z.object({
+  order: OrderSchema,
+  items: z.array(OrderItemSchema),
+});
+
 export type Order = z.infer<typeof OrderSchema>;
 export type PaginatedOrders = z.infer<typeof PaginatedOrdersSchema>;
+export type OrderItem = z.infer<typeof OrderItemSchema>;
+export type OrderDetailResponse = z.infer<typeof OrderDetailResponseSchema>;
