@@ -50,8 +50,8 @@ POST {{baseUrl}}/auth/register HTTP/1.1
 content-type: application/json
 
 {
-  "username": "c17egtt3heippa",
-  "email": "1c7teutgt@testi.fi",
+  "username": "c1y7egtt3heippa",
+  "email": "1c7teyutgt@testi.fi",
   "password": "salasana",
   "firstName": "Patrick",
   "lastName": "Sel",
@@ -83,16 +83,16 @@ content-type: application/json
 GET {{baseUrl}}/auth HTTP/1.1
 
 ### GET /auth test AWS
-GET {{baseUrlStag}}/auth HTTP/1.1
+GET {{baseUrl}}/auth HTTP/1.1
 
 
 ### POST registeer user
-POST {{baseUrl}}/auth/register HTTP/1.1
+POST {{baseUrlStag}}/auth/register HTTP/1.1
 content-type: application/json
 
 {
-  "username": "11r7egtt3heippa",
-  "email": "1711rteutgt@testi.fi",
+  "username": "abab",
+  "email": "137f3x11rteutgt@testi.fi",
   "password": "salasana",
   "firstName": "Patrick",
   "lastName": "Sel",

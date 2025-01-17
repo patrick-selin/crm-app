@@ -1,21 +1,26 @@
 // auth-routes.ts
 import { Router } from "express";
 import * as authController from "./auth-controller";
-// import { validateBody } from "../../middleware/validate-request";
-// import { RegisterSchema } from "../../schemas/user-and-auth-schemas";
+import { validateBody } from "../../middleware/validate-request";
+import {
+  RegisterSchema,
+  LoginSchema,
+} from "../../schemas/user-and-auth-schemas";
 
 const authRoutes = Router();
 
 // Register a new user
 authRoutes.post(
   "/register",
-//   validateBody(RegisterSchema),
+  validateBody(RegisterSchema),
   authController.registerUserTemp
 );
+// Login a user
+authRoutes.post("/login", validateBody(LoginSchema), authController.loginUser);
 
 // Simple GET route for /auth
 authRoutes.get("/", (req, res) => {
-    console.log(`Incoming Request rout: ${req.method} ${req.url}`);
+  console.log(`Incoming Request rout: ${req.method} ${req.url}`);
   res.json({
     message: "Auth endpoint is working!",
     timestamp: new Date().toISOString(),
