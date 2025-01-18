@@ -44,6 +44,10 @@ content-type: application/json
   "password": "salasana"
 }
 
+### GET /auth/me
+GET {{baseUrl}}/auth/me HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MTg5MTM0LCJleHAiOjE3MzcxOTAwMzR9.9ZeGkkIFOTraLdBKi4obKadNmRl1ZSUarTfdw6Vb1dE
 
 ### POST registeer user
 POST {{baseUrl}}/auth/register HTTP/1.1
@@ -71,7 +75,6 @@ content-type: application/json
   "email": "patu@testi.fi",
   "password": "salasana"
 }
-
 
 
 
@@ -112,3 +115,6 @@ content-type: application/json
   "email": "stagt@stag.fi",
   "password": "salasana"
 }
+
+
+

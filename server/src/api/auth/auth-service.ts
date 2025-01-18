@@ -1,10 +1,13 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import {config} from "../../config/config"
+import { config } from "../../config/config";
 import { db } from "../../db/db";
 import { eq } from "drizzle-orm";
 import { users } from "../../db/schemas/users";
-import { RegisterSchema, LoginSchema } from "../../schemas/user-and-auth-schemas";
+import {
+  RegisterSchema,
+  LoginSchema,
+} from "../../schemas/user-and-auth-schemas";
 import logger from "../../utils/logger";
 
 export const registerUser = async (data: RegisterSchema) => {
@@ -46,7 +49,6 @@ export const login = async (data: LoginSchema) => {
 
   const [user] = await db.select().from(users).where(eq(users.email, email));
 
-
   if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
     throw new Error("Invalid credentials");
   }
@@ -64,5 +66,20 @@ export const login = async (data: LoginSchema) => {
     accessToken,
     refreshToken,
     user: { id: user.userId, email: user.email, role: user.role },
+  };
+};
+
+export const getUserProfile = async (userId: string) => {
+  const [user] = await db.select().from(users).where(eq(users.userId, userId));
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return {
+    id: user.userId,
+    email: user.email,
+    role: user.role,
+    username: user.username,
   };
 };

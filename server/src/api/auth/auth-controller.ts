@@ -5,7 +5,7 @@ import * as authService from "./auth-service";
 import { ZodError } from "zod";
 import { ValidationError } from "../../utils/errors/app-errors";
 
-export const registerUserTemp = async (
+export const registerUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -49,5 +49,25 @@ export const loginUser = async (
     res.status(200).json(result);
   } catch (error) {
     next(error);
+  }
+};
+
+export const getUserProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const userId = req.user.id;
+    const user = await authService.getUserProfile(userId);
+    res.status(200).json(user);
+    return;
+  } catch (error) {
+    next(error);
+    return;
   }
 };

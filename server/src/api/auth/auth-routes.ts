@@ -6,6 +6,7 @@ import {
   RegisterSchema,
   LoginSchema,
 } from "../../schemas/user-and-auth-schemas";
+import { authenticateJWT } from "../../middleware/auth";
 
 const authRoutes = Router();
 
@@ -13,18 +14,15 @@ const authRoutes = Router();
 authRoutes.post(
   "/register",
   validateBody(RegisterSchema),
-  authController.registerUserTemp
+  authController.registerUser
 );
 // Login a user
 authRoutes.post("/login", validateBody(LoginSchema), authController.loginUser);
 
-// Simple GET route for /auth
-authRoutes.get("/", (req, res) => {
-  console.log(`Incoming Request rout: ${req.method} ${req.url}`);
-  res.json({
-    message: "Auth endpoint is working!",
-    timestamp: new Date().toISOString(),
-  });
-});
+// Get logged-in user's details
+authRoutes.get("/me", authenticateJWT, authController.getUserProfile);
+
+// Refresh token
+
 
 export default authRoutes;
