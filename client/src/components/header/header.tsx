@@ -1,3 +1,5 @@
+// components/header/header.tsx
+
 import {
   Box,
   Burger,
