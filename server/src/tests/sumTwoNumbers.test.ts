@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test } from "../../$node_modules/vitest/dist/index.js";
 import { sum } from "./sumTwoNumbers";
 
 test("sums 5 and 8 to equal 13", () => {

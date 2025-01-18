@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { ValidationError } from "../utils/errors/app-errors";
 import { ZodError } from "zod";
 import { JwtPayloadSchema } from "../schemas/auth-schemas";
-import { config } from "../config/config"
+import { config } from "../config/config";
 
 export const authenticateJWT = (
   req: Request,

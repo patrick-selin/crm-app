@@ -11,9 +11,8 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ): Response | void {
-
-   //debug
-   logger.error("Error caught in errorHandler:", {
+  //debug
+  logger.error("Error caught in errorHandler:", {
     method: req.method,
     url: req.url,
     headers: req.headers,

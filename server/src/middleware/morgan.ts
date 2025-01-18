@@ -14,7 +14,6 @@ const skip = () => {
   return env !== "development";
 };
 
-
 morgan.token("req-body", (req: Request, _res: Response) => {
   return JSON.stringify(req.body);
 });
