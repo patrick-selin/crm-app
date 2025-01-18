@@ -10,7 +10,6 @@ import {
   LoginSchema,
 } from "../../schemas/user-and-auth-schemas";
 import logger from "../../utils/logger";
-
 import { ValidationError } from "../../utils/errors/app-errors";
 
 export const registerUser = async (data: RegisterSchema) => {
@@ -39,7 +38,15 @@ export const registerUser = async (data: RegisterSchema) => {
 
     return newUser;
   } catch (error) {
-    logger.error("Error during user registration:", error);
+    if (
+      error instanceof Error &&
+      error.message.includes("duplicate key value")
+    ) {
+      throw new ValidationError(
+        "Duplicate Email",
+        "An account with this email address already exists"
+      );
+    }
     throw error;
   }
 };
@@ -50,41 +57,52 @@ const REFRESH_SECRET = config.REFRESH_SECRET!;
 export const login = async (data: LoginSchema) => {
   const { email, password } = data;
 
-  const [user] = await db.select().from(users).where(eq(users.email, email));
+  try {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
 
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-    throw new Error("Invalid credentials");
+    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+      throw new ValidationError(
+        "Invalid Credentials",
+        "The email or password is incorrect"
+      );
+    }
+
+    const accessToken = jwt.sign(
+      { id: user.userId, role: user.role },
+      JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+    const refreshToken = jwt.sign({ id: user.userId }, REFRESH_SECRET, {
+      expiresIn: "28d",
+    });
+
+    return {
+      accessToken,
+      refreshToken,
+      user: { id: user.userId, email: user.email, role: user.role },
+    };
+  } catch (error) {
+    throw error;
   }
-
-  const accessToken = jwt.sign(
-    { id: user.userId, role: user.role },
-    JWT_SECRET,
-    { expiresIn: "15m" }
-  );
-  const refreshToken = jwt.sign({ id: user.userId }, REFRESH_SECRET, {
-    expiresIn: "28d",
-  });
-
-  return {
-    accessToken,
-    refreshToken,
-    user: { id: user.userId, email: user.email, role: user.role },
-  };
 };
 
 export const getAuthDetails = async (userId: string) => {
-  const [user] = await db.select().from(users).where(eq(users.userId, userId));
+  try {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.userId, userId));
+    if (!user) {
+      throw new ValidationError(
+        "User Not Found",
+        "No user exists with the given ID"
+      );
+    }
 
-  if (!user) {
-    throw new Error("User not found");
+    return { id: user.userId, email: user.email, role: user.role };
+  } catch (error) {
+    throw error;
   }
-
-  return {
-    id: user.userId,
-    email: user.email,
-    role: user.role,
-    username: user.username,
-  };
 };
 
 export const refreshToken = async (token: string) => {
@@ -100,21 +118,9 @@ export const refreshToken = async (token: string) => {
     if (error instanceof jwt.JsonWebTokenError) {
       throw new ValidationError(
         "Invalid Refresh Token",
-        "JWT verification failed for the provided refresh token"
+        "JWT verification failed"
       );
     }
-    if (error instanceof ZodError) {
-      throw new ValidationError(
-        "Invalid Token Payload",
-        "The token payload structure is invalid",
-        error.issues.map((issue) => ({
-          path: issue.path.join("."),
-          message: issue.message,
-        }))
-      );
-    }
-
-    // For any other unexpected errors
-    throw new Error("An error occurred while refreshing the token");
+    throw error;
   }
 };
