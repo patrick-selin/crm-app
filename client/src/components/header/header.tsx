@@ -28,7 +28,7 @@ const Header = () => {
   const isDark = colorScheme === "dark";
   const theme = useMantineTheme();
 
-  const isAuthenticated = true;
+  const isAuthenticated = false;
 
   return (
     <Box>
