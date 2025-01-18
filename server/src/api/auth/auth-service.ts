@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs";
-import { ZodError } from "zod";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { config } from "../../config/config";
 import { db } from "../../db/db";

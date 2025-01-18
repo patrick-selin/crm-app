@@ -34,7 +34,8 @@ content-type: application/json
 ### GET /auth/me
 GET {{baseUrl}}/auth/me HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MTk0MjExLCJleHAiOjE3MzcxOTUxMTF9.y4wz7k8zBS-Sn09tjHUT4Wtp_oZlNSWsyBVLGHjJ1tM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MTkzNjQxLCJleHAiOjE3MzcxOTQ1NDF9.ddUI9y6fTh7aL-9z4Ii6NXbbwmOu6AOCJVZDvX9_C_k
+
 
 
 ### POST /auth/refresh
@@ -42,7 +43,7 @@ POST {{baseUrl}}/auth/refresh HTTP/1.1
 Content-Type: application/json
 
 {
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsImlhdCI6MTczNzE5NDI0MCwiZXhwIjoxNzM5NjEzNDQwfQ.ERTyqn0wHx0EdaPLIkSk2q04ATvvvAaDlvqbNts48eM"
+  "refreshToken": "seyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsImlhdCI6MTczNzE5NDI0MCwiZXhwIjoxNzM5NjEzNDQwfQ.ERTyqn0wHx0EdaPLIkSk2q04ATvvvAaDlvqbNts48eM"
 }
 
 
