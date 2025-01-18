@@ -39,20 +39,31 @@ export const registerUser = async (
   }
 };
 
-export const loginUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const result = await authService.login(req.body);
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-};
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await authService.login(req.body);
+      res.status(200).json(result);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        logger.warn("Validation error in loginUser:", {
+          details: error.issues,
+        });
+        return next(
+          new ValidationError(
+            "Invalid login data",
+            "Failed Zod schema validation for user login",
+            error.issues.map((issue) => ({
+              path: issue.path.join("."),
+              message: issue.message,
+            }))
+          )
+        );
+      }
+      next(error);
+    }
+  };
 
-export const getUserProfile = async (
+export const getAuthDetails = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -63,7 +74,7 @@ export const getUserProfile = async (
     }
 
     const userId = req.user.id;
-    const user = await authService.getUserProfile(userId);
+    const user = await authService.getAuthDetails(userId);
     res.status(200).json(user);
     return;
   } catch (error) {
@@ -71,3 +82,25 @@ export const getUserProfile = async (
     return;
   }
 };
+
+export const refreshToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { refreshToken } = req.body;
+  
+      if (!refreshToken) {
+        throw new ValidationError(
+          "Invalid request",
+          "Refresh token is required in the body"
+        );
+      }
+  
+      const newTokens = await authService.refreshToken(refreshToken);
+      res.status(200).json(newTokens);
+    } catch (error) {
+      next(error);
+    }
+  };

@@ -5,8 +5,9 @@ import { validateBody } from "../../middleware/validate-request";
 import {
   RegisterSchema,
   LoginSchema,
+  RefreshTokenSchema,
 } from "../../schemas/user-and-auth-schemas";
-import { authenticateJWT } from "../../middleware/auth";
+import { authenticateJWT } from "../../middleware/auth-jwt";
 
 const authRoutes = Router();
 
@@ -20,9 +21,13 @@ authRoutes.post(
 authRoutes.post("/login", validateBody(LoginSchema), authController.loginUser);
 
 // Get logged-in user's details
-authRoutes.get("/me", authenticateJWT, authController.getUserProfile);
+authRoutes.get("/me", authenticateJWT, authController.getAuthDetails);
 
 // Refresh token
-
+authRoutes.post(
+  "/refresh",
+  validateBody(RefreshTokenSchema),
+  authController.refreshToken
+);
 
 export default authRoutes;

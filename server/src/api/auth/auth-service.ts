@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { ZodError } from "zod";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { config } from "../../config/config";
 import { db } from "../../db/db";
 import { eq } from "drizzle-orm";
@@ -9,6 +10,8 @@ import {
   LoginSchema,
 } from "../../schemas/user-and-auth-schemas";
 import logger from "../../utils/logger";
+
+import { ValidationError } from "../../utils/errors/app-errors";
 
 export const registerUser = async (data: RegisterSchema) => {
   logger.info("Service: Registering new user...");
@@ -69,7 +72,7 @@ export const login = async (data: LoginSchema) => {
   };
 };
 
-export const getUserProfile = async (userId: string) => {
+export const getAuthDetails = async (userId: string) => {
   const [user] = await db.select().from(users).where(eq(users.userId, userId));
 
   if (!user) {
@@ -82,4 +85,36 @@ export const getUserProfile = async (userId: string) => {
     role: user.role,
     username: user.username,
   };
+};
+
+export const refreshToken = async (token: string) => {
+  try {
+    const payload = jwt.verify(token, REFRESH_SECRET) as JwtPayload;
+    const newAccessToken = jwt.sign(
+      { id: payload.id, role: payload.role },
+      JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+    return { accessToken: newAccessToken };
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      throw new ValidationError(
+        "Invalid Refresh Token",
+        "JWT verification failed for the provided refresh token"
+      );
+    }
+    if (error instanceof ZodError) {
+      throw new ValidationError(
+        "Invalid Token Payload",
+        "The token payload structure is invalid",
+        error.issues.map((issue) => ({
+          path: issue.path.join("."),
+          message: issue.message,
+        }))
+      );
+    }
+
+    // For any other unexpected errors
+    throw new Error("An error occurred while refreshing the token");
+  }
 };

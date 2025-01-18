@@ -11,6 +11,18 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ): Response | void {
+
+   //debug
+   logger.error("Error caught in errorHandler:", {
+    method: req.method,
+    url: req.url,
+    headers: req.headers,
+    body: req.body,
+    errorType: typeof err,
+    errorDetails: err,
+    stack: err instanceof Error ? err.stack : undefined,
+  });
+
   //  Zod validation errors
   if (err instanceof ZodError) {
     logger.warn("Validation error occurred", {
