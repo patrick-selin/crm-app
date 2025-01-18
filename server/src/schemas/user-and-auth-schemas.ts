@@ -62,6 +62,9 @@ export const JwtPayloadSchema = z.object({
   exp: z.number(), 
 });
 
+export const RefreshTokenSchema = z.object({
+  refreshToken: z.string().min(1, "Refresh token is required"),
+});
 
 export type LoginSchema = z.infer<typeof LoginSchema>;
 export type RegisterSchema = z.infer<typeof RegisterSchema>;

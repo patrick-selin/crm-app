@@ -1,29 +1,16 @@
 @baseUrl = http://localhost/api/v1
 @baseUrlStag = http://ec2-13-60-156-45.eu-north-1.compute.amazonaws.com/api/v1
 
-GET {{baseUrl}}/test HTTP/1.1
 
-###
-### POST testItem
-POST {{baseUrlStag}}/test HTTP/1.1
+## DEV
+
+### POST register user
+POST {{baseUrl}}/auth/register HTTP/1.1
 content-type: application/json
 
 {
-    "content": "Sample Test Content 22stag",
-    "important": true
-}
-
-### GET /customers
-GET {{baseUrl}}/customers HTTP/1.1
-
-
-### POST registeer user
-POST {{baseUrl}}/hello/register HTTP/1.1
-content-type: application/json
-
-{
-  "username": "3244patu",
-  "email": "3442patu@testi.fi",
+  "username": "csc1y7egtt3heippa",
+  "email": "1c7stceyutgt@testi.fi",
   "password": "salasana",
   "firstName": "Patrick",
   "lastName": "Sel",
@@ -35,7 +22,7 @@ content-type: application/json
   "country": "Suomi"
 }
 
-### POST login user
+### POST /auth/login
 POST {{baseUrl}}/auth/login HTTP/1.1
 content-type: application/json
 
@@ -47,47 +34,21 @@ content-type: application/json
 ### GET /auth/me
 GET {{baseUrl}}/auth/me HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MTg5MTM0LCJleHAiOjE3MzcxOTAwMzR9.9ZeGkkIFOTraLdBKi4obKadNmRl1ZSUarTfdw6Vb1dE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MTk0MjExLCJleHAiOjE3MzcxOTUxMTF9.y4wz7k8zBS-Sn09tjHUT4Wtp_oZlNSWsyBVLGHjJ1tM
 
-### POST registeer user
-POST {{baseUrl}}/auth/register HTTP/1.1
-content-type: application/json
 
-{
-  "username": "c1y7egtt3heippa",
-  "email": "1c7teyutgt@testi.fi",
-  "password": "salasana",
-  "firstName": "Patrick",
-  "lastName": "Sel",
-  "role": "user",
-  "phone": "0401234567",
-  "address": "Testikatu 2",
-  "city": "Turku",
-  "postalCode": "20100",
-  "country": "Suomi"
-}
-
-### POST login user
-POST {{baseUrlStag}}/auth/login HTTP/1.1
-content-type: application/json
+### POST /auth/refresh
+POST {{baseUrl}}/auth/refresh HTTP/1.1
+Content-Type: application/json
 
 {
-  "email": "patu@testi.fi",
-  "password": "salasana"
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsImlhdCI6MTczNzE5NDI0MCwiZXhwIjoxNzM5NjEzNDQwfQ.ERTyqn0wHx0EdaPLIkSk2q04ATvvvAaDlvqbNts48eM"
 }
 
 
 
 
-
-
-
-### GET /auth test
-GET {{baseUrl}}/auth HTTP/1.1
-
-### GET /auth test AWS
-GET {{baseUrlStag}}/auth HTTP/1.1
-
+# AWS
 
 ### POST registeer user
 POST {{baseUrlStag}}/auth/register HTTP/1.1
@@ -107,7 +68,7 @@ content-type: application/json
   "country": "Suomi"
 }
 
-### POST login user
+### POST login user // this is aws test user
 POST {{baseUrlStag}}/auth/login HTTP/1.1
 content-type: application/json
 
@@ -116,5 +77,8 @@ content-type: application/json
   "password": "salasana"
 }
 
-
+### GET /auth/me
+GET {{baseUrlStag}}/auth/me HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmYjZmYmM3LTI1NmYtNGIwYy1iMmM5LTc1ZDAzYzliOThkNSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MTg5ODc0LCJleHAiOjE3MzcxOTA3NzR9.HWNfaFHnwNKF4TmBupRQZvFORsNOiFLQn2551xvbW6s
 

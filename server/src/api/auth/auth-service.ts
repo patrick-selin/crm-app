@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { ZodError } from "zod";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { config } from "../../config/config";
 import { db } from "../../db/db";
 import { eq } from "drizzle-orm";
@@ -9,6 +10,7 @@ import {
   LoginSchema,
 } from "../../schemas/user-and-auth-schemas";
 import logger from "../../utils/logger";
+import { ValidationError } from "../../utils/errors/app-errors";
 
 export const registerUser = async (data: RegisterSchema) => {
   logger.info("Service: Registering new user...");
@@ -36,7 +38,15 @@ export const registerUser = async (data: RegisterSchema) => {
 
     return newUser;
   } catch (error) {
-    logger.error("Error during user registration:", error);
+    if (
+      error instanceof Error &&
+      error.message.includes("duplicate key value")
+    ) {
+      throw new ValidationError(
+        "Duplicate Email",
+        "An account with this email address already exists"
+      );
+    }
     throw error;
   }
 };
@@ -47,39 +57,70 @@ const REFRESH_SECRET = config.REFRESH_SECRET!;
 export const login = async (data: LoginSchema) => {
   const { email, password } = data;
 
-  const [user] = await db.select().from(users).where(eq(users.email, email));
+  try {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
 
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-    throw new Error("Invalid credentials");
+    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+      throw new ValidationError(
+        "Invalid Credentials",
+        "The email or password is incorrect"
+      );
+    }
+
+    const accessToken = jwt.sign(
+      { id: user.userId, role: user.role },
+      JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+    const refreshToken = jwt.sign({ id: user.userId }, REFRESH_SECRET, {
+      expiresIn: "28d",
+    });
+
+    return {
+      accessToken,
+      refreshToken,
+      user: { id: user.userId, email: user.email, role: user.role },
+    };
+  } catch (error) {
+    throw error;
   }
-
-  const accessToken = jwt.sign(
-    { id: user.userId, role: user.role },
-    JWT_SECRET,
-    { expiresIn: "15m" }
-  );
-  const refreshToken = jwt.sign({ id: user.userId }, REFRESH_SECRET, {
-    expiresIn: "28d",
-  });
-
-  return {
-    accessToken,
-    refreshToken,
-    user: { id: user.userId, email: user.email, role: user.role },
-  };
 };
 
-export const getUserProfile = async (userId: string) => {
-  const [user] = await db.select().from(users).where(eq(users.userId, userId));
+export const getAuthDetails = async (userId: string) => {
+  try {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.userId, userId));
+    if (!user) {
+      throw new ValidationError(
+        "User Not Found",
+        "No user exists with the given ID"
+      );
+    }
 
-  if (!user) {
-    throw new Error("User not found");
+    return { id: user.userId, email: user.email, role: user.role };
+  } catch (error) {
+    throw error;
   }
+};
 
-  return {
-    id: user.userId,
-    email: user.email,
-    role: user.role,
-    username: user.username,
-  };
+export const refreshToken = async (token: string) => {
+  try {
+    const payload = jwt.verify(token, REFRESH_SECRET) as JwtPayload;
+    const newAccessToken = jwt.sign(
+      { id: payload.id, role: payload.role },
+      JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+    return { accessToken: newAccessToken };
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      throw new ValidationError(
+        "Invalid Refresh Token",
+        "JWT verification failed"
+      );
+    }
+    throw error;
+  }
 };

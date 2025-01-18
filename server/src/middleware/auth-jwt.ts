@@ -33,7 +33,7 @@ export const authenticateJWT = (
   }
 
   try {
-    const decoded = jwt.verify(token, config.JWT_SECRET) as object;
+    const decoded = jwt.verify(token, config.JWT_SECRET) as jwt.JwtPayload;
 
     const validatedPayload = JwtPayloadSchema.parse(decoded);
 
