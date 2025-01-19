@@ -17,6 +17,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { NavLink } from "react-router";
 import ThemeSwitcher from "../theme-switcher/theme-switcher";
 import { BellIcon, QueueListIcon } from "@heroicons/react/24/outline";
+import { useAuth } from "../../features/auth/context/auth-context"
 import classes from "./header.module.css";
 import { NAV_LINKS } from "../../utils/constants/constants";
 
@@ -28,7 +29,7 @@ const Header = () => {
   const isDark = colorScheme === "dark";
   const theme = useMantineTheme();
 
-  const isAuthenticated = true;
+  const { isAuthenticated, user, logout } = useAuth();
 
   return (
     <Box>
@@ -87,7 +88,14 @@ const Header = () => {
                     }}
                   />
                 </ActionIcon>
-                <Avatar alt="User Avatar" radius="xl" name="PS" />
+                <Avatar alt={user?.email || "User"} radius="xl" />
+                <Button
+                  variant="default"
+                  onClick={logout}
+                  className={classes.linkButton}
+                >
+                  Logout
+                </Button>
               </>
             ) : (
               <>
@@ -152,7 +160,14 @@ const Header = () => {
                 <ActionIcon variant="light" radius="xl">
                   <BellIcon style={{ width: 20, height: 20 }} />
                 </ActionIcon>
-                <Avatar alt="User Avatar" radius="xl" />
+                <Avatar alt={user?.email || "User"} radius="xl" />
+                <Button
+                  variant="default"
+                  onClick={logout}
+                  className={classes.linkButton}
+                >
+                  Logout
+                </Button>
               </>
             ) : (
               <>

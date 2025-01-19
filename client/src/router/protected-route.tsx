@@ -1,15 +1,17 @@
 // router/protected-route.tsx
 import React from "react";
 import { Navigate } from "react-router";
+import { useAuth } from "../features/auth/context/auth-context";
 
 // temp mock auth state
-const isAuthenticated = true; // temp auth
+// const isAuthenticated = true; // temp auth
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { isAuthenticated } = useAuth();
+  console.log("is auth", isAuthenticated);
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   if (!isAuthenticated) {
     return <Navigate to="/sign-in" replace />;
   }
@@ -18,3 +20,4 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 };
 
 export default ProtectedRoute;
+
