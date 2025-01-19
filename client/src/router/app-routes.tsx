@@ -2,7 +2,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import AppLayout from "../layouts/app-layout";
 //
-import Home from "../pages/home";
 import Dashboard from "../pages/dashboard";
 import Customers from "../pages/customers";
 import CustomerDetail from "../features/customers/pages/customer-detail-page";
@@ -22,7 +21,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <AppLayout />,
     children: [
-      { path: "/", element: <Home /> }, // testi, redirect to /dashboard
+      { path: "/", element: <Dashboard /> },
       {
         path: "dashboard",
         element: (
