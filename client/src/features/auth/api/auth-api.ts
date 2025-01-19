@@ -1,16 +1,17 @@
 //features/auth/auth-api.ts
-import axios from "axios";
+import axiosInstance from "../../../services/api-client";
 
-const baseUrl = `${import.meta.env.VITE_BASE_URL}`;
-
-// Login API
 export const loginUser = async (email: string, password: string) => {
-  const response = await axios.post(`${baseUrl}/auth/login`, { email, password });
-  console.log("Login user API response.data: " + JSON.stringify(response.data));
+  const response = await axiosInstance.post("/auth/login", { email, password });
   return response.data; // { accessToken, refreshToken, user }
 };
 
-// Logout API
 export const logoutUser = async () => {
-  await axios.post(`${baseUrl}/auth/logout`);
+
+  return Promise.resolve();
+};
+
+export const fetchUserProfile = async () => {
+  const response = await axiosInstance.get("/auth/me");
+  return response.data; // { id, email, role }
 };

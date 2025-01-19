@@ -1,5 +1,5 @@
 // auth/context/auth-context.tsx
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { notifications } from "@mantine/notifications";
 
 type UserType = {
@@ -11,10 +11,11 @@ type UserType = {
 type AuthContextType = {
   user: UserType | null;
   accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   setAccessToken: (token: string | null) => void;
+  setRefreshToken: (token: string | null) => void;
   setUser: (user: UserType | null) => void;
-  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 };
 
@@ -22,22 +23,39 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserType | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [accessToken, setAccessTokenState] = useState<string | null>(null);
+  const [refreshToken, setRefreshTokenState] = useState<string | null>(null);
 
-  const login = async (email: string, password: string) => {
-    try {
-      notifications.show({ title: "Login Successful", message: "Welcome back!", color: "green" });
-    } catch (error) {
-      notifications.show({
-        title: "Login Failed",
-        message: error instanceof Error ? error.message : "Invalid credentials",
-        color: "red",
-      });
+  // Helpers to manage tokens in localStorage
+  const setAccessToken = (token: string | null) => {
+    if (token) {
+      localStorage.setItem("accessToken", token);
+    } else {
+      localStorage.removeItem("accessToken");
     }
+    setAccessTokenState(token);
   };
+
+  const setRefreshToken = (token: string | null) => {
+    if (token) {
+      localStorage.setItem("refreshToken", token);
+    } else {
+      localStorage.removeItem("refreshToken");
+    }
+    setRefreshTokenState(token);
+  };
+
+  // On app load, restore tokens from localStorage
+  useEffect(() => {
+    const storedAccessToken = localStorage.getItem("accessToken");
+    const storedRefreshToken = localStorage.getItem("refreshToken");
+    if (storedAccessToken) setAccessTokenState(storedAccessToken);
+    if (storedRefreshToken) setRefreshTokenState(storedRefreshToken);
+  }, []);
 
   const logout = () => {
     setAccessToken(null);
+    setRefreshToken(null);
     setUser(null);
     notifications.show({ title: "Logged Out", message: "See you next time!", color: "blue" });
   };
@@ -49,10 +67,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         accessToken,
+        refreshToken,
         isAuthenticated,
         setAccessToken,
+        setRefreshToken,
         setUser,
-        login,
         logout,
       }}
     >

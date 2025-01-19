@@ -43,7 +43,7 @@ const SignIn = () => {
         withAsterisk
         {...form.getInputProps("password")}
       />
-      <Button type="submit" mt="md" loading={login.isLoading}>
+      <Button type="submit" mt="md" loading={login.isPending}>
         Login
       </Button>
     </form>
