@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { ValidationError } from "../utils/errors/app-errors";
 import { ZodError } from "zod";
-import { JwtPayloadSchema } from "../schemas/auth-schemas";
+import { JwtPayloadSchema } from "../schemas/user-and-auth-schemas";
 import { config } from "../config/config";
 
 export const authenticateJWT = (

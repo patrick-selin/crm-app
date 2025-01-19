@@ -9,8 +9,8 @@ POST {{baseUrl}}/auth/register HTTP/1.1
 content-type: application/json
 
 {
-  "username": "csc1y7egtt3heippa",
-  "email": "1c7stceyutgt@testi.fi",
+  "username": "cscccc1y7egtt3heippa",
+  "email": "1c7stcccceyutgt@testi.fi",
   "password": "salasana",
   "firstName": "Patrick",
   "lastName": "Sel",
@@ -34,7 +34,7 @@ content-type: application/json
 ### GET /auth/me
 GET {{baseUrl}}/auth/me HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MTkzNjQxLCJleHAiOjE3MzcxOTQ1NDF9.ddUI9y6fTh7aL-9z4Ii6NXbbwmOu6AOCJVZDvX9_C_k
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3Mjc5NTI2LCJleHAiOjE3Mzc2MjUxMjZ9.Dmzl01TmIg20sPXKr41cSIQAxqAqWPRyKeRR5mrYpyM
 
 
 
