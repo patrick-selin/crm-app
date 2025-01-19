@@ -22,94 +22,95 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-  #     - name: Cache node modules
-  #       uses: actions/cache@v4
-  #       with:
-  #         path: ./client/node_modules
-  #         key: ${{ runner.os }}-client-node-${{ hashFiles('client/package-lock.json') }}-${{ runner.os }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-client-node-
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ./client/node_modules
+          key: ${{ runner.os }}-server-node-${{ hashFiles('server/package-lock.json') }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-client-node-
 
-  #     - name: Install frontend dependencies
-  #       run: npm install
-  #       working-directory: ./client
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: ./client
 
-  #     - name: Check style/lint
-  #       run: npm run lint
-  #       working-directory: ./client
+      - name: Check style/lint
+        run: npm run lint
+        working-directory: ./client
 
-  #     - name: Run TypeScript type checks
-  #       run: npm run typecheck
-  #       working-directory: ./client
+      - name: Run TypeScript type checks
+        run: npm run typecheck
+        working-directory: ./client
 
-  #     - name: Run npm audit
-  #       run: npm audit --audit-level=high
-  #       working-directory: ./client
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+        working-directory: ./client
 
-  #     - name: Run frontend unit tests
-  #       run: npm run test:unit:ci
-  #       working-directory: ./client
+      - name: Run frontend unit tests
+        run: npm run test:unit:ci
+        working-directory: ./client
+        continue-on-error: true #muista ottaa pois kun lisaat test
 
-  #     - name: Upload frontend coverage results
-  #       if: success()
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: client-coverage
-  #         path: client/coverage
+      - name: Upload frontend coverage results
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-coverage
+          path: client/coverage
 
-  # server-unit-tests:
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
+  server-unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-  #     - name: Cache node modules
-  #       uses: actions/cache@v4
-  #       with:
-  #         path: ./server/node_modules
-  #         key: ${{ runner.os }}-server-node-${{ hashFiles('server/package-lock.json') }}-${{ runner.os }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-server-node-
-  #       continue-on-error: true
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ./server/node_modules
+          key: ${{ runner.os }}-server-node-${{ hashFiles('server/package-lock.json') }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-server-node-
 
-  #     - name: Remove node_modules
-  #       run: rm -rf node_modules package-lock.json
-  #       working-directory: ./server
+      - name: Remove node_modules
+        run: rm -rf node_modules package-lock.json
+        working-directory: ./server
 
-  #     - name: Install server dependencies
-  #       run: npm install
-  #       working-directory: ./server
+      - name: Install server dependencies
+        run: npm install
+        working-directory: ./server
 
-  #     - name: Run TypeScript type checks
-  #       run: npm run tsc --noEmit
-  #       working-directory: ./server
+      - name: Run TypeScript type checks
+        run: npm run tsc --noEmit
+        working-directory: ./server
 
-  #     - name: Run npm audit
-  #       run: npm audit --audit-level=high
-  #       working-directory: ./server
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+        working-directory: ./server
 
-  #     - name: Run server unit tests
-  #       run: npm run test:unit:ci
-  #       working-directory: ./server
+      - name: Run server unit tests
+        run: npm run test:unit:ci
+        working-directory: ./server
+        continue-on-error: true #muista ottaa pois kun lisaat test
 
-  #     - name: Upload server coverage results
-  #       if: success()
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: server-coverage
-  #         path: server/coverage
+      - name: Upload server coverage results
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-coverage
+          path: server/coverage
 
   # integration-tests:
   #   needs: [client-unit-tests, server-unit-tests]

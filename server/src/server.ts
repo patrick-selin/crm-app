@@ -6,7 +6,6 @@ import morganMiddleware from "./middleware/morgan";
 import { unknownEndpoint } from "./middleware/unknown-endpoint";
 import { errorHandler } from "./middleware/error-handler";
 import healthCheckRoutes from "./api/health/healthRoutes";
-import testRoutes from "./api/test-route/test-routes";
 import authRoutes from "./api/auth/auth-routes";
 import customerRoutes from "./api/customers/customer-routes";
 
@@ -22,10 +21,8 @@ app.use((req, _res, next) => {
   next();
 });
 app.use("/api/v1/health", healthCheckRoutes);
-app.use("/api/v1/test", testRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/customers", customerRoutes);
-// app.use("/api/v1/customers", authenticateJWT, customerRoutes); //muista
 // middleware
 app.use(unknownEndpoint);
 app.use(errorHandler);
