@@ -63,6 +63,8 @@ jobs:
           echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
           echo "SERVER_HOST=${{ secrets.SERVER_HOST }}" >> .env
           echo "DATABASE_URL_STAG=${{ secrets.DATABASE_URL_STAG }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}" >> .env
 
       - name: Configure SSH ffor EC2 Access
         uses: webfactory/ssh-agent@v0.9.0

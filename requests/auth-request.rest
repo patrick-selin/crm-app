@@ -49,7 +49,7 @@ Content-Type: application/json
 
 
 
-# AWS
+# AWS AWS AWS AWS
 
 ### POST registeer user
 POST {{baseUrlStag}}/auth/register HTTP/1.1
