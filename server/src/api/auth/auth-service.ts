@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { config } from "../../config/config";
 import { db } from "../../db/db";
 import { eq } from "drizzle-orm";
@@ -69,16 +69,21 @@ export const login = async (data: LoginSchema) => {
     const accessToken = jwt.sign(
       { id: user.userId, role: user.role },
       JWT_SECRET,
-      { expiresIn: "15min" } // muista muuttaa 15min
+      { expiresIn: "15m" }
     );
     const refreshToken = jwt.sign({ id: user.userId }, REFRESH_SECRET, {
-      expiresIn: "28d",
+      expiresIn: "14d",
     });
 
     return {
       accessToken,
       refreshToken,
-      user: { id: user.userId, email: user.email, role: user.role },
+      user: {
+        id: user.userId,
+        firstName: user.firstName,
+        email: user.email,
+        role: user.role,
+      },
     };
   } catch (error) {
     throw error;
@@ -98,7 +103,12 @@ export const getAuthDetails = async (userId: string) => {
       );
     }
 
-    return { id: user.userId, email: user.email, role: user.role };
+    return {
+      id: user.userId,
+      firstName: user.firstName,
+      email: user.email,
+      role: user.role,
+    };
   } catch (error) {
     throw error;
   }
@@ -106,12 +116,26 @@ export const getAuthDetails = async (userId: string) => {
 
 export const refreshToken = async (token: string) => {
   try {
-    const payload = jwt.verify(token, REFRESH_SECRET) as JwtPayload;
+    const payload = jwt.verify(token, REFRESH_SECRET) as jwt.JwtPayload;
+
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.userId, payload.id));
+
+    if (!user) {
+      throw new ValidationError(
+        "User Not Found",
+        "No user exists with the given ID"
+      );
+    }
+
     const newAccessToken = jwt.sign(
-      { id: payload.id, role: payload.role },
+      { id: user.userId, firstName: user.firstName, role: user.role },
       JWT_SECRET,
       { expiresIn: "15m" }
     );
+
     return { accessToken: newAccessToken };
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {

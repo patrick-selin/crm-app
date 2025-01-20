@@ -2,12 +2,8 @@
 @baseUrlStag = http://ec2-13-60-156-45.eu-north-1.compute.amazonaws.com/api/v1
 
 @access-token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MTk4MDkzLCJleHAiOjE3Mzc1NDM2OTN9.EVQwbCRtRl4__v-GcxcEanwpZlfl5lYlDOr6qufdi-c
-@access-token-stag = eyJ
+@access-token-stag = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmYjZmYmM3LTI1NmYtNGIwYy1iMmM5LTc1ZDAzYzliOThkNSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3Mjk2Mzg1LCJleHAiOjE3MzcyOTcyODV9.6Qcgi2l7AY-Un80gKhomLpEj9IJZOf5M3ilgrGPL-KQ
 
-
-### GET all test items
-# GET http://localhost/api/v1/test HTTP/1.1
-GET {{baseUrl}}/test HTTP/1.1
 
 ### GET health
 GET http://localhost:80/api/v1/health HTTP/1.1
@@ -76,7 +72,7 @@ Content-Type: application/json
 }
 
 ### DELETE /customers/:id
-DELETE {{baseUrl}}/customers/995dd88b-35ba-4863-88fc-1e4ae7f517e7 HTTP/1.1
+DELETE {{baseUrl}}/customers/771a2fac-210d-4d40-8412-6ea69aa41dc9 HTTP/1.1
 Authorization: Bearer {{access-token}}
 Content-Type: application/json
 
@@ -84,10 +80,6 @@ Content-Type: application/json
 ### 
 ### AWS STAGING
 
-
-### GET all test items
-# GET http://localhost/api/v1/test HTTP/1.1
-GET {{baseUrlStag}}/test HTTP/1.1
 
 ### GET health
 GET http://localhost:80/api/v1/health HTTP/1.1

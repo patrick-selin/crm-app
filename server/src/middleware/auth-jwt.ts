@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import { ValidationError } from "../utils/errors/app-errors";
+import { ValidationError, UnauthorizedError } from "../utils/errors/app-errors";
 import { ZodError } from "zod";
 import { JwtPayloadSchema } from "../schemas/user-and-auth-schemas";
 import { config } from "../config/config";
@@ -37,17 +37,30 @@ export const authenticateJWT = (
 
     const validatedPayload = JwtPayloadSchema.parse(decoded);
 
+
     req.user = validatedPayload;
 
     return next();
   } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      console.error("Access token expired:", error.message);
+      return next(
+        new UnauthorizedError(
+          "Access Token Expired",
+          "The access token has expired. Please refresh your token."
+        )
+      );
+    }
+
     if (error instanceof jwt.JsonWebTokenError) {
+      console.error("Invalid JWT:", error.message);
       return next(
         new ValidationError("Invalid Token", "JWT verification failed")
       );
     }
 
     if (error instanceof ZodError) {
+      console.error("Invalid Token Payload:", error.issues);
       return next(
         new ValidationError(
           "Invalid Token Payload",
@@ -60,6 +73,7 @@ export const authenticateJWT = (
       );
     }
 
+    console.error("Unexpected error in JWT authentication:", error);
     return next(error);
   }
 };
