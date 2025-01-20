@@ -1,4 +1,4 @@
-// testController.js
+// health-controller.js
 import { Request, Response } from "express";
 
 export const getHealthHTML = async (_req: Request, res: Response) => {

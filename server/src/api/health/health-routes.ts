@@ -1,6 +1,6 @@
-// testRoutes.js
+// health-routes.js
 import { Router } from "express";
-import { getHealthHTML, getHealthJSON } from "./healthController";
+import { getHealthHTML, getHealthJSON } from "./health-controller";
 
 const router = Router();
 

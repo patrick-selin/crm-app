@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "docker-compose -f docker-compose.dev.yml up --build",
     "dev:stop": "docker-compose -f docker-compose.dev.yml down",
+    "test": "npm run test:unit:client && npm run test:unit:server && npm run test:integration",
     "test:unit:client": "docker-compose -f docker-compose.dev.yml exec client npm run test:unit",
     "test:unit:server": "docker-compose -f docker-compose.dev.yml exec server npm run test:unit",
     "test:integration": "docker-compose -f docker-compose.dev.yml exec server npm run test:integration",
@@ -23,5 +24,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@faker-js/faker": "^9.4.0"
+  }
 }

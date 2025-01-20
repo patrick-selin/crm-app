@@ -5,7 +5,7 @@ import cors from "cors";
 import morganMiddleware from "./middleware/morgan";
 import { unknownEndpoint } from "./middleware/unknown-endpoint";
 import { errorHandler } from "./middleware/error-handler";
-import healthCheckRoutes from "./api/health/healthRoutes";
+import healthCheckRoutes from "./api/health/health-routes";
 import authRoutes from "./api/auth/auth-routes";
 import customerRoutes from "./api/customers/customer-routes";
 

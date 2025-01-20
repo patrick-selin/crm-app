@@ -126,7 +126,8 @@ jobs:
   #     POSTGRES_DB: crm_app_db_dev
   #     SERVER_PORT: ${{ secrets.SERVER_PORT }}
   #     SERVER_HOST: ${{ secrets.SERVER_HOST }}
-  #     VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+  #     VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }} 
+  ## JWT envs 
 
   #   steps:
   #     - name: Checkout code
