@@ -51,15 +51,15 @@ export const RegisterSchema = UserSchema.omit({
 });
 
 export const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 export const JwtPayloadSchema = z.object({
   id: z.string().uuid(),
   role: z.enum(["admin", "user"]),
   iat: z.number(),
-  exp: z.number(), 
+  exp: z.number(),
 });
 
 export const RefreshTokenSchema = z.object({

@@ -34,16 +34,13 @@ content-type: application/json
 ### GET /auth/me
 GET {{baseUrl}}/auth/me HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MjgzNjA0LCJleHAiOjE3Mzc2MjkyMDR9.v6EeJ7Sn4S7-zvNnCM6I7debhSAEfOpbkFSDLvkwZBQ
-
-
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MzU0Nzc3LCJleHAiOjE3MzczNTQ3OTJ9.Q20fJTEH3xdXjJ2UyjSRoNlrlP1CYXZOCg1aC3eN0-A
 ### POST /auth/refresh
 POST {{baseUrl}}/auth/refresh HTTP/1.1
 Content-Type: application/json
 
 {
-  "refreshToken": "seyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsImlhdCI6MTczNzE5NDI0MCwiZXhwIjoxNzM5NjEzNDQwfQ.ERTyqn0wHx0EdaPLIkSk2q04ATvvvAaDlvqbNts48eM"
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsImlhdCI6MTczNzM1MzA3MSwiZXhwIjoxNzM5NzcyMjcxfQ.19RDXB0HCJReFGA099qgeMmsqBHVIpyZ8PfsWquatfs"
 }
 
 

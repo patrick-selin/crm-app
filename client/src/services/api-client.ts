@@ -1,3 +1,4 @@
+// services/api-client.ts
 import axios from "axios";
 
 const baseUrl = `${import.meta.env.VITE_BASE_URL}`;
@@ -20,7 +21,6 @@ const axiosInstance = axios.create({
   baseURL: baseUrl,
 });
 
-
 axiosInstance.interceptors.request.use((config) => {
   const accessToken = localStorage.getItem("accessToken");
   if (accessToken && config.headers) {
@@ -39,17 +39,20 @@ axiosInstance.interceptors.response.use(
 
       if (!isRefreshing) {
         isRefreshing = true;
+
         try {
           const refreshToken = localStorage.getItem("refreshToken");
           if (!refreshToken) throw new Error("No refresh token available");
 
-          const { data } = await axios.post(`${baseUrl}/auth/refresh`, { refreshToken });
+          const { data } = await axios.post(`${baseUrl}/auth/refresh`, {
+            refreshToken,
+          });
 
           localStorage.setItem("accessToken", data.accessToken);
-
           isRefreshing = false;
           notifySubscribers(data.accessToken);
 
+          originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
           return axiosInstance(originalRequest);
         } catch (err) {
           isRefreshing = false;
