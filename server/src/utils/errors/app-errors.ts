@@ -3,7 +3,8 @@
 export enum HttpStatusCodes {
   OK = 200,
   BAD_REQUEST = 400,
-  UN_AUTHORISED = 403,
+  UNAUTHORIZED = 401,
+  FORBIDDEN = 403,
   NOT_FOUND = 404,
   CONFLICT = 409,
   INTERNAL_ERROR = 500,
@@ -111,6 +112,23 @@ export class ConflictError extends AppError {
     super(
       "CONFLICT",
       HttpStatusCodes.CONFLICT,
+      userMessage,
+      devMessage,
+      true,
+      errorStack
+    );
+  }
+}
+
+export class UnauthorizedError extends AppError {
+  constructor(
+    userMessage = "Unauthorized Access",
+    devMessage = "Access token is expired or invalid",
+    errorStack?: unknown
+  ) {
+    super(
+      "UNAUTHORIZED",
+      HttpStatusCodes.UNAUTHORIZED,
       userMessage,
       devMessage,
       true,

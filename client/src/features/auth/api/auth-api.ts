@@ -7,11 +7,16 @@ export const loginUser = async (email: string, password: string) => {
 };
 
 export const logoutUser = async () => {
-
   return Promise.resolve();
 };
 
 export const fetchUserProfile = async () => {
-  const response = await axiosInstance.get("/auth/me");
-  return response.data; // { id, email, role }
+  try {
+    const response = await axiosInstance.get("/auth/me");
+    // console.log("/auth/me response:", response.data);
+    return response.data; // { id, firstName, email, role }
+  } catch (error) {
+    console.error("/auth/me failed:", error);
+    throw error;
+  }
 };

@@ -1,9 +1,11 @@
 // auth/context/auth-context.tsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { notifications } from "@mantine/notifications";
+import { fetchUserProfile } from "../api/auth-api";
 
 type UserType = {
   id: string;
+  firstName: string;
   email: string;
   role: string;
 };
@@ -13,7 +15,7 @@ type AuthContextType = {
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
-  loading: boolean; // Add a loading state
+  loading: boolean;
   setAccessToken: (token: string | null) => void;
   setRefreshToken: (token: string | null) => void;
   setUser: (user: UserType | null) => void;
@@ -22,11 +24,13 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<UserType | null>(null);
   const [accessToken, setAccessTokenState] = useState<string | null>(null);
   const [refreshToken, setRefreshTokenState] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true); // New state for initialization
+  const [loading, setLoading] = useState(true);
 
   const setAccessToken = (token: string | null) => {
     if (token) {
@@ -46,35 +50,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setRefreshTokenState(token);
   };
 
-  const logout = () => {
+  const logout = (showNotification = true) => {
     setAccessToken(null);
     setRefreshToken(null);
     setUser(null);
-    notifications.show({ title: "Logged Out", message: "See you next time!", color: "blue" });
-  };
-
-  // Initialize authentication state
-  useEffect(() => {
-    const storedAccessToken = localStorage.getItem("accessToken");
-    const storedRefreshToken = localStorage.getItem("refreshToken");
-
-    if (storedAccessToken) {
-      setAccessTokenState(storedAccessToken);
-    }
-    if (storedRefreshToken) {
-      setRefreshTokenState(storedRefreshToken);
-    }
-
-    // Simulate fetching user profile if needed
-    if (storedAccessToken) {
-      setUser({
-        id: "1", // Replace with API call to fetch user data if needed
-        email: "user@example.com",
-        role: "user",
+    if (showNotification) {
+      notifications.show({
+        title: "Logged Out",
+        message: "See you next time!",
+        color: "blue",
       });
     }
+  };
 
-    setLoading(false); // Mark initialization as complete
+  // Init auth state
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const storedAccessToken = localStorage.getItem("accessToken");
+      const storedRefreshToken = localStorage.getItem("refreshToken");
+
+      if (storedAccessToken) {
+        setAccessToken(storedAccessToken);
+      }
+      if (storedRefreshToken) {
+        setRefreshToken(storedRefreshToken);
+      }
+
+      if (storedAccessToken) {
+        try {
+          const userProfile = await fetchUserProfile();
+          setUser(userProfile);
+        } catch (error) {
+          console.error("Failed to fetch user profile:", error);
+          logout(false);
+        }
+      }
+
+      setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
   const isAuthenticated = !!accessToken;

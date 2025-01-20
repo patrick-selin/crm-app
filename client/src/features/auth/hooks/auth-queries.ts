@@ -20,7 +20,7 @@ export const useLogin = () => {
   
         notifications.show({
           title: "Login Successful",
-          message: `Welcome back, ${data.user.email}!`,
+          message: `Welcome back, ${data.user.firstName}!`,
           color: "green",
         });
       },
@@ -40,23 +40,19 @@ export const useLogin = () => {
   
     return useMutation({
       mutationFn: async () => {
-        // No API call is needed; we handle logout on the client
         return Promise.resolve();
       },
       onSuccess: () => {
-        // Clear tokens and user data
         setAccessToken(null);
         setRefreshToken(null);
         setUser(null);
   
-        // Remove tokens from localStorage
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
   
         // Clear query cache
         queryClient.clear();
   
-        // Show notification
         notifications.show({
           title: "Logged Out",
           message: "See you next time!",
@@ -64,7 +60,6 @@ export const useLogin = () => {
         });
       },
       onError: () => {
-        // Handle unexpected errors gracefully (unlikely here)
         notifications.show({
           title: "Logout Failed",
           message: "Something went wrong. Please try again.",
