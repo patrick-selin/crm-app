@@ -10,11 +10,9 @@ import fs from "fs";
 const databaseUrl =
   config.NODE_ENV === "test" ? config.TEST_DATABASE_URL : config.DATABASE_URL;
 
-console.log("DB.ts tiedosto ==========");
 console.log(`NODE env :: ${config.NODE_ENV}`);
-console.log(`databaseUrl on :: ${databaseUrl}`);
 console.log("+++++++++");
-// const queryClient = postgres(databaseUrl);
+
 const sslConfig =
   config.NODE_ENV === "production"
     ? {

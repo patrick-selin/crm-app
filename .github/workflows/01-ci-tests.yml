@@ -54,7 +54,6 @@ jobs:
       - name: Run frontend unit tests
         run: npm run test:unit:ci
         working-directory: ./client
-        continue-on-error: true #muista ottaa pois kun lisaat test
 
       - name: Upload frontend coverage results
         if: success()
@@ -103,7 +102,6 @@ jobs:
       - name: Run server unit tests
         run: npm run test:unit:ci
         working-directory: ./server
-        continue-on-error: true #muista ottaa pois kun lisaat test
 
       - name: Upload server coverage results
         if: success()
@@ -126,8 +124,8 @@ jobs:
   #     POSTGRES_DB: crm_app_db_dev
   #     SERVER_PORT: ${{ secrets.SERVER_PORT }}
   #     SERVER_HOST: ${{ secrets.SERVER_HOST }}
-  #     VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }} 
-  ## JWT envs 
+  #     VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+  ## JWT envs
 
   #   steps:
   #     - name: Checkout code
@@ -243,4 +241,3 @@ jobs:
   #       with:
   #         name: integration-test-results
   #         path: ./integration-tests/results
-
