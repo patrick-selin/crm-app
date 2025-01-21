@@ -9,8 +9,8 @@ POST {{baseUrl}}/auth/register HTTP/1.1
 content-type: application/json
 
 {
-  "username": "cscccc1y7egtt3heippa",
-  "email": "1c7stcccceyutgt@testi.fi",
+  "username": "cytt3heippa",
+  "email": "uut@testi.fi",
   "password": "salasana",
   "firstName": "Patrick",
   "lastName": "Sel",

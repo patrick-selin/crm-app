@@ -42,8 +42,8 @@ export const registerUser = async (data: RegisterSchema) => {
       error.message.includes("duplicate key value")
     ) {
       throw new ValidationError(
-        "Duplicate Email",
-        "An account with this email address already exists"
+        "An account with this email address or username already exists",
+        "Duplicate email or username"
       );
     }
     throw error;
