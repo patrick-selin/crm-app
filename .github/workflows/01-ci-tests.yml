@@ -110,134 +110,138 @@ jobs:
           name: server-coverage
           path: server/coverage
 
-  # integration-tests:
-  #   needs: [client-unit-tests, server-unit-tests]
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
+  integration-tests:
+    needs: [client-unit-tests, server-unit-tests]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
-  #   env:
-  #     NODE_ENV: test
-  #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  #     TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
-  #     POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-  #     POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-  #     POSTGRES_DB: crm_app_db_dev
-  #     SERVER_PORT: ${{ secrets.SERVER_PORT }}
-  #     SERVER_HOST: ${{ secrets.SERVER_HOST }}
-  #     VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
-  ## JWT envs
+    env:
+      NODE_ENV: test
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_DB: crm_app_db_dev
+      SERVER_PORT: ${{ secrets.SERVER_PORT }}
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
+      VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      REFRESH_SECRETL: ${{ secrets.REFRESH_SECRET }}
 
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-  #     - name: Install Docker Compose
-  #       run: |
-  #         sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-  #         sudo chmod +x /usr/local/bin/docker-compose
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-  #     - name: Start Application with Docker Compose
-  #       run: |
-  #         docker-compose -f docker-compose.ci.yml up -d
-  #         echo "Waiting for services to be ready..."
-  #         until curl -s http://localhost/api1/health; do
-  #           echo "Waiting for backend to be ready..."
-  #           sleep 8
-  #         done
-  #         echo "Services are ready!"
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
-  #     - name: Create test database if it doesn't exist
-  #       run: |
-  #         echo "Checking if test database exists..."
-  #         if [ "$(docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = 'crm_app_db_test'")" != "1" ]; then
-  #           echo "Test database does not exist. Creating it now..."
-  #           docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -c "CREATE DATABASE crm_app_db_test;"
-  #         else
-  #           echo "Test database already exists."
-  #         fi
-  #       shell: bash
-  #       continue-on-error: true
+      - name: Start Application with Docker Compose
+        run: |
+          docker-compose -f docker-compose.ci.yml up -d
+          echo "Waiting for services to be ready..."
+          until curl -s http://localhost/api1/health; do
+            echo "Waiting for backend to be ready..."
+            sleep 8
+          done
+          echo "Services are ready!"
 
-  #     - name: Run generate migration files TEST-DB
-  #       run: |
-  #         docker-compose -f docker-compose.ci.yml exec server npm run db:generate:test
-  #       continue-on-error: true
+      - name: Create test database if it doesn't exist
+        run: |
+          echo "Checking if test database exists..."
+          if [ "$(docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = 'crm_app_db_test'")" != "1" ]; then
+            echo "Test database does not exist. Creating it now..."
+            docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -c "CREATE DATABASE crm_app_db_test;"
+          else
+            echo "Test database already exists."
+          fi
+        shell: bash
+        continue-on-error: true
 
-  #     - name: Run drizzle kit migrations TEST-SB
-  #       run: |
-  #         docker-compose -f docker-compose.ci.yml exec server sh -c "NODE_ENV=test npx drizzle-kit generate"
+      - name: Run generate migration files TEST-DB
+        run: |
+          docker-compose -f docker-compose.ci.yml exec server npm run db:generate:test
+        continue-on-error: true
 
-  #       continue-on-error: true
+      - name: Run drizzle kit migrations TEST-SB
+        run: |
+          docker-compose -f docker-compose.ci.yml exec server sh -c "NODE_ENV=test npx drizzle-kit generate"
 
-  #     - name: Run migration script TEST-DB
-  #       run: |
-  #         docker-compose -f docker-compose.ci.yml exec server npm run db:migrate:script:test
-  #       continue-on-error: true
+        continue-on-error: true
 
-  #     - name: Seed test data in the database
-  #       run: |
-  #         echo "Seeding data into test database..."
-  #         docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "
-  #         -- Insert Mock Data for Test items
-  #         INSERT INTO test_items (id, content, important) VALUES
-  #         ('1', 'Test Word 1', true),
-  #         ('2', 'Test Word 2', false),
-  #         ('3', 'Test Word 3', true);
+      - name: Run migration script TEST-DB
+        run: |
+          docker-compose -f docker-compose.ci.yml exec server npm run db:migrate:script:test
+        continue-on-error: true
 
-  #         -- Insert Mock Data for Customers
-  #         INSERT INTO customers (customer_id, first_name, last_name, email, phone, address, city, postal_code, country)
-  #         VALUES
-  #         (gen_random_uuid(), 'John', 'Doe', 'john.doe@example.com', '555-1234', '123 Main St', 'New York', '10001', 'USA'),
-  #         (gen_random_uuid(), 'Jane', 'Smith', 'jane.smith@example.com', '555-5678', '456 Oak Ave', 'San Francisco', '94105', 'USA');
-  #         "
-  #       continue-on-error: true
+      #     - name: Seed test data in the database
+      #       run: |
+      #         echo "Seeding data into test database..."
+      #         docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "
+      #         -- Insert Mock Data for Test items
+      #         INSERT INTO test_items (id, content, important) VALUES
+      #         ('1', 'Test Word 1', true),
+      #         ('2', 'Test Word 2', false),
+      #         ('3', 'Test Word 3', true);
 
-  #     # Debug
-  #     - name: Check migration logs
-  #       run: |
-  #         echo "Checking migration logs..."
-  #         docker logs crm-app-db-migrate
-  #       continue-on-error: true
+      #         -- Insert Mock Data for Customers
+      #         INSERT INTO customers (customer_id, first_name, last_name, email, phone, address, city, postal_code, country)
+      #         VALUES
+      #         (gen_random_uuid(), 'John', 'Doe', 'john.doe@example.com', '555-1234', '123 Main St', 'New York', '10001', 'USA'),
+      #         (gen_random_uuid(), 'Jane', 'Smith', 'jane.smith@example.com', '555-5678', '456 Oak Ave', 'San Francisco', '94105', 'USA');
+      #         "
+      #       continue-on-error: true
 
-  #     # Debug
-  #     - name: Check all databases for the user
-  #       run: |
-  #         echo "Listing all databases for user..."
-  #         docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -c "\l"
-  #       continue-on-error: true
+      #     # Debug
+      #     - name: Check migration logs
+      #       run: |
+      #         echo "Checking migration logs..."
+      #         docker logs crm-app-db-migrate
+      #       continue-on-error: true
 
-  #     # Debug
-  #     - name: Check database tables
-  #       run: |
-  #         echo "Listing tables in the TEST database..."
-  #         docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "\dt"
-  #       continue-on-error: true
+      # Debug
+      - name: Check all databases for the user
+        run: |
+          echo "Listing all databases for user..."
+          docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d postgres -c "\l"
+        continue-on-error: true
 
-  #     # Debug
-  #     - name: Check test data exists in table
-  #       run: |
-  #         echo "Listing all rows in the test_items table..."
-  #         docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM test_items;"
+      # Debug
+      - name: Check database tables
+        run: |
+          echo "Listing tables in the TEST database..."
+          docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "\dt"
+        continue-on-error: true
 
-  #         echo "Listing all rows in the customers table..."
-  #         docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM customers;"
-  #       continue-on-error: true
+      #     # Debug
+      #     - name: Check test data exists in table
+      #       run: |
+      #         echo "Listing all rows in the test_items table..."
+      #         docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM test_items;"
 
-  #     - name: Run Integration Tests
-  #       run: |
-  #         docker-compose -f docker-compose.ci.yml exec server npm run test:integration:ci
+      #         echo "Listing all rows in the customers table..."
+      #         docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM customers;"
+      #       continue-on-error: true
 
-  #     - name: Upload Integration Test Results
-  #       uses: actions/upload-artifact@v4
-  #       if: always()
-  #       with:
-  #         name: integration-test-results
-  #         path: ./integration-tests/results
+      - name: Run Integration Tests
+        run: |
+          npm run test:integration:server:ci
+        continue-on-error: true
+
+      - name: Upload Integration Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integration-test-results
+          path: ./integration-tests/results
+        continue-on-error: true
