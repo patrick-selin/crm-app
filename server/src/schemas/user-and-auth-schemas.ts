@@ -68,3 +68,4 @@ export const RefreshTokenSchema = z.object({
 
 export type LoginSchema = z.infer<typeof LoginSchema>;
 export type RegisterSchema = z.infer<typeof RegisterSchema>;
+export type JwtPayload = z.infer<typeof JwtPayloadSchema>;

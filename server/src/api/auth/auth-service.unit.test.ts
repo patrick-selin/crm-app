@@ -5,48 +5,82 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { ValidationError } from "../../utils/errors/app-errors";
 import { faker } from "@faker-js/faker";
+import { JwtPayload } from "../../schemas/user-and-auth-schemas";
 
 vi.mock("../../db/db");
 vi.mock("bcryptjs");
 vi.mock("jsonwebtoken");
+
+// Helper functions
+
+const createMockUser = (overrides = {}) => ({
+  userId: faker.string.uuid(),
+  email: faker.internet.email(),
+  firstName: faker.person.firstName(),
+  passwordHash: faker.string.alphanumeric(60),
+  role: "user",
+  ...overrides,
+});
+
+const createMockRegisterUser = (overrides = {}) => ({
+  userId: faker.string.uuid(),
+  username: faker.internet.username(),
+  email: faker.internet.email(),
+  firstName: faker.person.firstName(),
+  lastName: faker.person.lastName(),
+  role: "user",
+  passwordHash: faker.string.alphanumeric(60),
+  createdAt: new Date(),
+  updatedAt: null,
+  ...overrides,
+});
+
+
+const createMockPayload = (overrides = {}): JwtPayload => ({
+  id: faker.string.uuid(),
+  role: "user",
+  iat: Math.floor(Date.now() / 1000),
+  exp: Math.floor(Date.now() / 1000) + 60 * 15, // 15-min
+  ...overrides,
+});
+
+const mockDbSelect = (mockResponse: any[]) => {
+  vi.spyOn(db, "select").mockReturnValue({
+    from: vi.fn().mockReturnValue({
+      where: vi.fn().mockResolvedValue(mockResponse),
+    }),
+  } as any);
+};
+
+const mockDbInsert = (mockResponse: any[]) => {
+  vi.spyOn(db, "insert").mockImplementation(
+    () =>
+      ({
+        values: vi.fn().mockReturnValue({
+          returning: vi.fn().mockResolvedValue(mockResponse),
+        }),
+      } as any)
+  );
+};
 
 describe("Auth Service Unit Tests", () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  // ok
   describe("registerUser", () => {
     it("should register a new user and return user details", async () => {
-      const mockUser = {
-        userId: faker.string.uuid(),
-        username: faker.internet.username(),
-        email: faker.internet.email(),
-        firstName: faker.person.firstName(),
-        lastName: faker.person.lastName(),
-        role: "user",
-        passwordHash: faker.string.alphanumeric(60),
-        createdAt: new Date(),
-        updatedAt: null,
-      };
+      const mockRegisterUser = createMockRegisterUser();
+      vi.spyOn(bcrypt, "hashSync").mockReturnValue(mockRegisterUser.passwordHash);
 
-      vi.spyOn(bcrypt, "hashSync").mockReturnValue(mockUser.passwordHash);
-
-      vi.spyOn(db, "insert").mockImplementation(
-        () =>
-          ({
-            values: vi.fn().mockReturnValue({
-              returning: vi.fn().mockResolvedValue([mockUser]),
-            }),
-          } as any)
-      );
+      mockDbInsert([mockRegisterUser]);
 
       const result = await authService.registerUser({
-        username: mockUser.username,
-        email: mockUser.email,
+        username: mockRegisterUser.username,
+        email: mockRegisterUser.email,
         password: faker.internet.password(),
-        firstName: mockUser.firstName,
-        lastName: mockUser.lastName,
+        firstName: mockRegisterUser.firstName,
+        lastName: mockRegisterUser.lastName,
         role: faker.helpers.arrayElement(["user", "admin"]),
         phone: faker.phone.number(),
         address: faker.location.streetAddress(),
@@ -57,9 +91,9 @@ describe("Auth Service Unit Tests", () => {
 
       expect(result).toEqual(
         expect.objectContaining({
-          userId: mockUser.userId,
-          username: mockUser.username,
-          email: mockUser.email,
+          userId: mockRegisterUser.userId,
+          username: mockRegisterUser.username,
+          email: mockRegisterUser.email,
         })
       );
 
@@ -116,24 +150,15 @@ describe("Auth Service Unit Tests", () => {
     });
   });
 
-    describe("login", () => {
+  describe("login", () => {
     it("should log in a user and return tokens", async () => {
-      const mockUser = {
-        userId: faker.string.uuid(),
-        email: faker.internet.email(),
-        passwordHash: faker.string.alphanumeric(60),
-        role: "user",
-      };
-
-      // Mock db.select().from().where()
-      vi.spyOn(db, "select").mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          where: vi.fn().mockResolvedValue([mockUser]),
-        }),
-      } as any);
-
-      vi.spyOn(bcrypt, "compare").mockResolvedValue(true);
-      vi.spyOn(jwt, "sign").mockReturnValue(faker.string.alphanumeric(30) as never);
+      const mockUser = createMockUser();
+      
+      mockDbSelect([mockUser]);
+      vi.spyOn(bcrypt, "compare").mockImplementation(async () => true);
+      vi.spyOn(jwt, "sign").mockReturnValue(
+        faker.string.alphanumeric(30) as never
+      );
 
       const result = await authService.login({
         email: mockUser.email,
@@ -146,6 +171,7 @@ describe("Auth Service Unit Tests", () => {
         user: {
           id: mockUser.userId,
           email: mockUser.email,
+          firstName: mockUser.firstName,
           role: mockUser.role,
         },
       });
@@ -158,20 +184,10 @@ describe("Auth Service Unit Tests", () => {
     });
 
     it("should throw ValidationError for incorrect password", async () => {
-      const mockUser = {
-        userId: faker.string.uuid(),
-        email: faker.internet.email(),
-        passwordHash: faker.string.alphanumeric(60),
-        role: "user",
-      };
+      const mockUser = createMockUser();
 
-      vi.spyOn(db, "select").mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          where: vi.fn().mockResolvedValue([mockUser]),
-        }),
-      } as any);
-
-      vi.spyOn(bcrypt, "compare").mockResolvedValue(false);
+      mockDbSelect([mockUser]);
+      vi.spyOn(bcrypt, "compare").mockImplementation(async () => false);
 
       await expect(
         authService.login({
@@ -184,11 +200,7 @@ describe("Auth Service Unit Tests", () => {
     });
 
     it("should throw ValidationError if user not found", async () => {
-      vi.spyOn(db, "select").mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          where: vi.fn().mockResolvedValue([]),
-        }),
-      } as any);
+      mockDbSelect([]);
 
       await expect(
         authService.login({
@@ -201,6 +213,101 @@ describe("Auth Service Unit Tests", () => {
     });
   });
 
- 
+  describe("getAuthDetails", () => {
+    it("should return user details for a valid user ID", async () => {
+      const mockUser = createMockUser();
+
+      mockDbSelect([mockUser]);
+
+      const result = await authService.getAuthDetails(mockUser.userId);
+
+      expect(result).toEqual({
+        id: mockUser.userId,
+        firstName: mockUser.firstName,
+        email: mockUser.email,
+        role: mockUser.role,
+      });
+
+      expect(db.select).toHaveBeenCalled();
+    });
+
+    it("should throw ValidationError if user is not found", async () => {
+      mockDbSelect([]);
+
+      await expect(
+        authService.getAuthDetails("nonexistent-id")
+      ).rejects.toThrow(ValidationError);
+
+      expect(db.select).toHaveBeenCalled();
+    });
+  });
+});
+
+describe("refreshToken", () => {
+  it("should return a new access token for a valid refresh token", async () => {
+    const mockPayload = createMockPayload();
+    const mockUser = createMockUser({ userId: mockPayload.id });
+
+    vi.spyOn(jwt, "verify").mockImplementation(() => mockPayload);
+    mockDbSelect([mockUser]);
+
+    const mockAccessToken = faker.string.alphanumeric(30);
+    vi.spyOn(jwt, "sign").mockImplementation(() => mockAccessToken);
+
+    const result = await authService.refreshToken(
+      faker.string.alphanumeric(30)
+    );
+
+    expect(result).toEqual({ accessToken: mockAccessToken });
+    expect(jwt.verify).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String)
+    );
   
+    expect(db.select).toHaveBeenCalled();
+    expect(jwt.sign).toHaveBeenCalledWith(
+      {
+        id: mockUser.userId,
+        firstName: mockUser.firstName,
+        role: mockUser.role,
+      },
+      expect.any(String),
+      { expiresIn: "15m" }
+    );
+  });
+
+  it("should throw ValidationError for an invalid refresh token", async () => {
+    vi.spyOn(jwt, "verify").mockImplementation(() => {
+      throw new jwt.JsonWebTokenError("JWT verification failed");
+    });
+
+    await expect(authService.refreshToken("invalid-token")).rejects.toThrow(
+      new ValidationError("Invalid Refresh Token", "JWT verification failed")
+    );
+
+    expect(jwt.verify).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String)
+    );
+  });
+
+  it("should throw ValidationError if user is not found", async () => {
+    const mockPayload = createMockPayload();
+
+    vi.spyOn(jwt, "verify").mockImplementation(() => mockPayload);
+
+    mockDbSelect([]);
+
+    await expect(
+      authService.refreshToken(faker.string.alphanumeric(30))
+    ).rejects.toThrow(
+      new ValidationError("User Not Found", "No user exists with the given ID")
+    );
+
+    expect(jwt.verify).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String)
+    );
+    expect(db.select).toHaveBeenCalled();
+  });
 });
