@@ -111,6 +111,12 @@ jobs:
           path: server/coverage
 
   integration-tests:
+    # ala aja int testeja jos ei push tai merge to dev branch?
+    if: >
+      (
+        (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/dev')) ||
+        (github.event_name == 'pull_request' && github.base_ref == 'dev')
+      )
     needs: [client-unit-tests, server-unit-tests]
     runs-on: ubuntu-latest
     timeout-minutes: 10
