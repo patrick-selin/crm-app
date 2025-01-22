@@ -9,7 +9,7 @@
     "dev": "env NODE_ENV=development tsx watch src/index.js",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:unit": "vitest --config vitest.unit.config.ts",
+    "test:unit": "vitest --config vitest.unit.config.ts --coverage",
     "test:unit:ci": "vitest run --config vitest.unit.config.ts  --coverage",
     "test:integration": "env NODE_ENV=test vitest --config vitest.integration.config.ts",
     "test:integration:ci": "env NODE_ENV=test vitest run --config ./vitest.integration.config.ts",

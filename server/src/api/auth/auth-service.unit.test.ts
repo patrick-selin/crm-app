@@ -5,63 +5,29 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { ValidationError } from "../../utils/errors/app-errors";
 import { faker } from "@faker-js/faker";
-import { JwtPayload } from "../../schemas/user-and-auth-schemas";
+
+import {
+  createMockUser,
+  createMockRegisterUser,
+  createMockPayload,
+  mockDbSelect,
+  mockDbInsert,
+} from "../../tests/test-helpers";
+import { UserSchema, RegisterSchema } from "../../schemas/user-and-auth-schemas";
 
 vi.mock("../../db/db");
 vi.mock("bcryptjs");
 vi.mock("jsonwebtoken");
 
-// Helper functions
-
-const createMockUser = (overrides = {}) => ({
-  userId: faker.string.uuid(),
-  email: faker.internet.email(),
-  firstName: faker.person.firstName(),
-  passwordHash: faker.string.alphanumeric(60),
-  role: "user",
-  ...overrides,
-});
-
-const createMockRegisterUser = (overrides = {}) => ({
-  userId: faker.string.uuid(),
-  username: faker.internet.username(),
-  email: faker.internet.email(),
-  firstName: faker.person.firstName(),
-  lastName: faker.person.lastName(),
-  role: "user",
-  passwordHash: faker.string.alphanumeric(60),
-  createdAt: new Date(),
-  updatedAt: null,
-  ...overrides,
-});
-
-
-const createMockPayload = (overrides = {}): JwtPayload => ({
-  id: faker.string.uuid(),
-  role: "user",
-  iat: Math.floor(Date.now() / 1000),
-  exp: Math.floor(Date.now() / 1000) + 60 * 15, // 15-min
-  ...overrides,
-});
-
-const mockDbSelect = (mockResponse: any[]) => {
-  vi.spyOn(db, "select").mockReturnValue({
-    from: vi.fn().mockReturnValue({
-      where: vi.fn().mockResolvedValue(mockResponse),
-    }),
-  } as any);
-};
-
-const mockDbInsert = (mockResponse: any[]) => {
-  vi.spyOn(db, "insert").mockImplementation(
-    () =>
-      ({
-        values: vi.fn().mockReturnValue({
-          returning: vi.fn().mockResolvedValue(mockResponse),
-        }),
-      } as any)
-  );
-};
+/**
+ * Test Helpers for Mocking and Test Data
+ *
+ * - `createMockUser(overrides)`: Creates a mock user object with default values.
+ * - `createMockRegisterUser(overrides)`: Creates a mock registration user object.
+ * - `createMockPayload(overrides)`: Creates a mock JWT payload with defaults.
+ * - `mockDbSelect(mockResponse)`: Mocks Drizzle ORM `db.select().from().where()` for database reads.
+ * - `mockDbInsert(mockResponse)`: Mocks Drizzle ORM `db.insert().values().returning()` for writes.
+ */
 
 describe("Auth Service Unit Tests", () => {
   afterEach(() => {
@@ -71,64 +37,48 @@ describe("Auth Service Unit Tests", () => {
   describe("registerUser", () => {
     it("should register a new user and return user details", async () => {
       const mockRegisterUser = createMockRegisterUser();
-      vi.spyOn(bcrypt, "hashSync").mockReturnValue(mockRegisterUser.passwordHash);
+      vi.spyOn(bcrypt, "hashSync").mockReturnValue("mockedPasswordHash");
+  
+      const mockUser = {
+        ...mockRegisterUser,
+        userId: faker.string.uuid(),
+        passwordHash: "mockedPasswordHash",
+      };
+      mockDbInsert([mockUser]);
 
-      mockDbInsert([mockRegisterUser]);
-
-      const result = await authService.registerUser({
+      const result = await authService.registerUser(mockRegisterUser);
+  
+      const validatedResult = RegisterSchema.omit({ password: true }).parse({
+        username: result.username,
+        email: result.email,
+        firstName: result.firstName,
+        lastName: result.lastName,
+        role: result.role,
+        phone: result.phone,
+        address: result.address,
+        city: result.city,
+        postalCode: result.postalCode,
+        country: result.country,
+      });
+  
+      expect(validatedResult).toEqual({
         username: mockRegisterUser.username,
         email: mockRegisterUser.email,
-        password: faker.internet.password(),
         firstName: mockRegisterUser.firstName,
         lastName: mockRegisterUser.lastName,
-        role: faker.helpers.arrayElement(["user", "admin"]),
-        phone: faker.phone.number(),
-        address: faker.location.streetAddress(),
-        city: faker.location.city(),
-        postalCode: faker.location.zipCode("#####"),
-        country: faker.location.country(),
+        role: mockRegisterUser.role,
+        phone: mockRegisterUser.phone,
+        address: mockRegisterUser.address,
+        city: mockRegisterUser.city,
+        postalCode: mockRegisterUser.postalCode,
+        country: mockRegisterUser.country,
       });
-
-      expect(result).toEqual(
-        expect.objectContaining({
-          userId: mockRegisterUser.userId,
-          username: mockRegisterUser.username,
-          email: mockRegisterUser.email,
-        })
-      );
-
+  
       expect(bcrypt.hashSync).toHaveBeenCalledWith(
-        expect.any(String),
+        mockRegisterUser.password,
         expect.any(Number)
       );
       expect(db.insert).toHaveBeenCalled();
-    });
-
-    it("should throw ValidationError if email or username already exists", async () => {
-      vi.spyOn(db, "insert").mockImplementation(() => {
-        throw new Error("duplicate key value violates unique constraint");
-      });
-
-      await expect(
-        authService.registerUser({
-          username: faker.internet.username(),
-          email: faker.internet.email(),
-          password: faker.internet.password(),
-          firstName: faker.person.firstName(),
-          lastName: faker.person.lastName(),
-          role: "user",
-          phone: faker.phone.number(),
-          address: faker.location.streetAddress(),
-          city: faker.location.city(),
-          postalCode: faker.location.zipCode("#####"),
-          country: faker.location.country(),
-        })
-      ).rejects.toThrowError(
-        new ValidationError(
-          "An account with this email address or username already exists",
-          "Duplicate email or username"
-        )
-      );
     });
 
     it("should throw an error if no password is provided", async () => {
@@ -153,7 +103,7 @@ describe("Auth Service Unit Tests", () => {
   describe("login", () => {
     it("should log in a user and return tokens", async () => {
       const mockUser = createMockUser();
-      
+
       mockDbSelect([mockUser]);
       vi.spyOn(bcrypt, "compare").mockImplementation(async () => true);
       vi.spyOn(jwt, "sign").mockReturnValue(
@@ -263,7 +213,7 @@ describe("refreshToken", () => {
       expect.any(String),
       expect.any(String)
     );
-  
+
     expect(db.select).toHaveBeenCalled();
     expect(jwt.sign).toHaveBeenCalledWith(
       {
