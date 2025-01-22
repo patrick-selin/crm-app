@@ -15,5 +15,9 @@ services:
     image: ${FRONTEND_IMAGE}
     container_name: frontend-proxy
     ports:
-      - "80:80"
+       - "80:80"
+       - "443:443"
     restart: unless-stopped
+    # volumes:
+    #   - /etc/ssl/certs:/etc/ssl/certs        
+    #   - /etc/ssl/private:/etc/ssl/private
