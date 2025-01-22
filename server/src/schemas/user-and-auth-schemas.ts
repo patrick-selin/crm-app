@@ -55,6 +55,17 @@ export const LoginSchema = z.object({
   password: z.string(),
 });
 
+export const AuthUserScema = z.object({
+  id: z.string().uuid(),
+  firstName: z
+    .string()
+    .min(2, { message: "First name is required" })
+    .max(50, { message: "First name must not exceed 50 characters" }),
+  email: z.string().email(),
+  role: z.enum(["admin", "user"]),
+});
+
+
 export const JwtPayloadSchema = z.object({
   id: z.string().uuid(),
   role: z.enum(["admin", "user"]),

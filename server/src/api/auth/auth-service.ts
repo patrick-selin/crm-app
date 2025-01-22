@@ -11,6 +11,9 @@ import {
 import logger from "../../utils/logger";
 import { ValidationError } from "../../utils/errors/app-errors";
 
+const JWT_SECRET = config.JWT_SECRET!;
+const REFRESH_SECRET = config.REFRESH_SECRET!;
+
 export const registerUser = async (data: RegisterSchema) => {
   logger.info("Service: Registering new user...");
 
@@ -49,9 +52,6 @@ export const registerUser = async (data: RegisterSchema) => {
     throw error;
   }
 };
-
-const JWT_SECRET = config.JWT_SECRET!;
-const REFRESH_SECRET = config.REFRESH_SECRET!;
 
 export const login = async (data: LoginSchema) => {
   const { email, password } = data;

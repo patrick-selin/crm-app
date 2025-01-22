@@ -5,8 +5,7 @@ import fs from "fs";
 const databaseUrl =
   config.NODE_ENV === "test" ? config.TEST_DATABASE_URL : config.DATABASE_URL;
 
-console.log(`node huu: ${config.NODE_ENV}`);
-console.log(`db url huu: ${databaseUrl}`);
+console.log(`node enc: ${config.NODE_ENV}`);
 
 if (!databaseUrl) {
   throw new Error("Database URL is not defined");

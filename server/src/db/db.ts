@@ -24,6 +24,5 @@ const sslConfig =
     : {};
 
 const queryClient = postgres(databaseUrl, sslConfig);
-console.log(`Connecting to database: ${config.POSTGRES_DB}`);
 
 export const db: DbClient = drizzle(queryClient, { schema, logger: true });

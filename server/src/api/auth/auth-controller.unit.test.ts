@@ -9,7 +9,7 @@ import {
 import * as authService from "./auth-service";
 import { Request, Response } from "express";
 import { faker } from "@faker-js/faker";
-import { ValidationError } from "../../utils/errors/app-errors";
+import { ValidationError, UnauthorizedError } from "../../utils/errors/app-errors";
 
 vi.mock("./auth-service");
 
@@ -136,7 +136,7 @@ describe("Auth Controller Unit Tests", () => {
 
       await getAuthDetails(req as Request, res as Response, next);
 
-      expect(next).toHaveBeenCalledWith(expect.any(ValidationError));
+      expect(next).toHaveBeenCalledWith(expect.any(UnauthorizedError));
     });
   });
 

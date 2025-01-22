@@ -9,8 +9,8 @@ POST {{baseUrl}}/auth/register HTTP/1.1
 content-type: application/json
 
 {
-  "username": "cytt3heippa",
-  "email": "uut@testi.fi",
+  "username": "sbbb",
+  "email": "bbbb@testi.fi",
   "password": "salasana",
   "firstName": "Patrick",
   "lastName": "Sel",
@@ -27,20 +27,20 @@ POST {{baseUrl}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
-  "email": "patu@testi.fi",
+  "email": "bbbb@testi.fi",
   "password": "salasana"
 }
 
 ### GET /auth/me
 GET {{baseUrl}}/auth/me HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MzU0Nzc3LCJleHAiOjE3MzczNTQ3OTJ9.Q20fJTEH3xdXjJ2UyjSRoNlrlP1CYXZOCg1aC3eN0-A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc3MzMxNWY1LWZjM2UtNGFkMS05OTY4LTQxMWMxMjJjZDgxOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3NTM0Njg2LCJleHAiOjE3Mzc1MzU1ODZ9.bRQX-QTVxeyRPpJpRx-2z2h2MRTavDZQnd_qJ_ugByo
 ### POST /auth/refresh
 POST {{baseUrl}}/auth/refresh HTTP/1.1
 Content-Type: application/json
 
 {
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsImlhdCI6MTczNzM1MzA3MSwiZXhwIjoxNzM5NzcyMjcxfQ.19RDXB0HCJReFGA099qgeMmsqBHVIpyZ8PfsWquatfs"
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc3MzMxNWY1LWZjM2UtNGFkMS05OTY4LTQxMWMxMjJjZDgxOCIsImlhdCI6MTczNzUzNjE3OCwiZXhwIjoxNzM4NzQ1Nzc4fQ.0EFE4TYBxXUNdOIxNiAnstOqmnJyagFGnakAl6Kcsio"
 }
 
 
