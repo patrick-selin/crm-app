@@ -31,7 +31,7 @@ describe("Auth API Integration Tests", () => {
   beforeAll(async () => {
     RegisterSchema.parse(mockRegisterUser);
 
-    await db.delete(users);
+    // await db.delete(users);
     await db.insert(users).values({
       ...mockRegisterUser,
       passwordHash: await bcrypt.hash(mockRegisterUser.password, 10),
@@ -53,7 +53,7 @@ describe("Auth API Integration Tests", () => {
   });
 
   afterAll(async () => {
-    await db.delete(users).where(eq(users.email, mockRegisterUser.email));
+    await db.delete(users);
   });
 
   describe("POST /api/v1/auth/register", () => {
@@ -200,12 +200,6 @@ describe("Auth API Integration Tests", () => {
         .set("Authorization", `Bearer ${accessToken}`)
         .send({ refreshToken });
 
-      console.log("**** !!!!!!! ****");
-      console.log(accessToken);
-
-      console.log("**** !!!!!!! ****");
-      console.log(response.status);
-
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("accessToken");
       const decodedPayload = JwtPayloadSchema.parse(
@@ -218,7 +212,7 @@ describe("Auth API Integration Tests", () => {
     });
 
     it("should return 400 for invalid refresh token", async () => {
-        RefreshTokenSchema.parse({ refreshToken });
+      RefreshTokenSchema.parse({ refreshToken });
       const response = await api
         .post("/api/v1/auth/refresh")
         .send({ refreshToken: "invalid" });
