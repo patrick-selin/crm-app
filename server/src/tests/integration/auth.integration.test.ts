@@ -6,6 +6,7 @@ import { users } from "../../db/schemas/users";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { config } from "../../config/config";
 
 import {
   UserSchema,
@@ -13,12 +14,9 @@ import {
   LoginSchema,
   JwtPayloadSchema,
   RefreshTokenSchema,
+  AuthUserScema,
 } from "../../schemas/user-and-auth-schemas";
-import {
-  createMockUser,
-  createMockRegisterUser,
-  createMockPayload,
-} from "../test-helpers";
+import { createMockRegisterUser } from "../test-helpers";
 
 describe("Auth API Integration Tests", () => {
   const api = request(app);
@@ -27,23 +25,38 @@ describe("Auth API Integration Tests", () => {
   let accessToken: string;
   let refreshToken: string;
 
+  const JWT_SECRET = config.JWT_SECRET!;
+  const REFRESH_SECRET = config.REFRESH_SECRET!;
+
   beforeAll(async () => {
     RegisterSchema.parse(mockRegisterUser);
 
-    await db.delete(users).where(eq(users.role, "user"));
+    await db.delete(users);
     await db.insert(users).values({
       ...mockRegisterUser,
       passwordHash: await bcrypt.hash(mockRegisterUser.password, 10),
     });
+
+    const [dbUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, mockRegisterUser.email));
+
+    if (!dbUser) throw new Error("Failed to fetch test user from database");
+
+    const payload = {
+      id: dbUser.userId,
+      role: dbUser.role,
+    };
+    accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" });
+    refreshToken = jwt.sign(payload, REFRESH_SECRET, { expiresIn: "14d" });
   });
 
   afterAll(async () => {
-    // Clean up the test database
-    //   await db.delete(users);
-    //   await db.delete(users).where(eq(users.email, mockRegisterUser.email));
+    await db.delete(users).where(eq(users.email, mockRegisterUser.email));
   });
 
-  describe.skip("POST /api/v1/auth/register", () => {
+  describe("POST /api/v1/auth/register", () => {
     it("should register a new user successfully", async () => {
       const newUser = createMockRegisterUser();
       RegisterSchema.parse(newUser);
@@ -89,9 +102,6 @@ describe("Auth API Integration Tests", () => {
     it("should return 400 for invalid registration data", async () => {
       const invalidUser = { email: "invalidemail", password: "short" };
 
-      const validationResult = RegisterSchema.safeParse(invalidUser);
-      expect(validationResult.success).toBe(false);
-
       const response = await api
         .post("/api/v1/auth/register")
         .send(invalidUser);
@@ -103,10 +113,15 @@ describe("Auth API Integration Tests", () => {
 
   describe("POST /api/v1/auth/login", () => {
     it("should log in successfully and return tokens", async () => {
-      const response = await api.post("/api/v1/auth/login").send({
+      const validLoginData = {
         email: mockRegisterUser.email,
         password: mockRegisterUser.password,
-      });
+      };
+      LoginSchema.parse(validLoginData);
+
+      const response = await api
+        .post("/api/v1/auth/login")
+        .send(validLoginData);
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty("accessToken");
@@ -115,9 +130,8 @@ describe("Auth API Integration Tests", () => {
       accessToken = response.body.accessToken;
       refreshToken = response.body.refreshToken;
 
-      // Validate JWT payload
       const decodedPayload = JwtPayloadSchema.parse(
-        jwt.verify(accessToken, process.env.JWT_SECRET!)
+        jwt.verify(accessToken, JWT_SECRET!)
       );
       expect(decodedPayload).toMatchObject({
         id: decodedPayload.id,
@@ -125,7 +139,7 @@ describe("Auth API Integration Tests", () => {
       });
     });
 
-    it("should return 401 for invalid credentials", async () => {
+    it("should return 400 for invalid credentials", async () => {
       const response = await api.post("/api/v1/auth/login").send({
         email: mockRegisterUser.email,
         password: "wrongpassword",
@@ -139,5 +153,81 @@ describe("Auth API Integration Tests", () => {
     });
   });
 
+  describe("GET /api/v1/auth/me", () => {
+    it("should return authenticated user details", async () => {
+      const response = await api
+        .get("/api/v1/auth/me")
+        .set("Authorization", `Bearer ${accessToken}`);
 
+      expect(response.status).toBe(200);
+
+      const validatedUser = AuthUserScema.parse(response.body);
+
+      expect(validatedUser).toMatchObject({
+        id: expect.any(String),
+        firstName: mockRegisterUser.firstName,
+        email: mockRegisterUser.email,
+        role: mockRegisterUser.role,
+      });
+    });
+
+    it("should return 401 for missing or invalid token", async () => {
+      const noTokenResponse = await api.get("/api/v1/auth/me");
+
+      expect(noTokenResponse.status).toBe(401);
+      expect(noTokenResponse.body).toMatchObject({
+        error: "UNAUTHORIZED",
+        message: "Missing Authorization Header",
+      });
+
+      // Test invalid token
+      const invalidTokenResponse = await api
+        .get("/api/v1/auth/me")
+        .set("Authorization", "Bearer invalidtoken");
+
+      expect(invalidTokenResponse.status).toBe(401);
+      expect(invalidTokenResponse.body).toMatchObject({
+        error: "UNAUTHORIZED",
+        message: "Invalid Token",
+      });
+    });
+  });
+
+  describe("POST /api/v1/auth/refresh", () => {
+    it("should return a new access token with a valid refresh token", async () => {
+      const response = await api
+        .post("/api/v1/auth/refresh")
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send({ refreshToken });
+
+      console.log("**** !!!!!!! ****");
+      console.log(accessToken);
+
+      console.log("**** !!!!!!! ****");
+      console.log(response.status);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("accessToken");
+      const decodedPayload = JwtPayloadSchema.parse(
+        jwt.verify(response.body.accessToken, JWT_SECRET!)
+      );
+      expect(decodedPayload).toMatchObject({
+        id: decodedPayload.id,
+        role: decodedPayload.role,
+      });
+    });
+
+    it("should return 400 for invalid refresh token", async () => {
+        RefreshTokenSchema.parse({ refreshToken });
+      const response = await api
+        .post("/api/v1/auth/refresh")
+        .send({ refreshToken: "invalid" });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        error: "VALIDATION_ERROR",
+        message: "Invalid Refresh Token",
+      });
+    });
+  });
 });

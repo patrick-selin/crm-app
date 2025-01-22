@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import logger from "../../utils/logger";
 import * as authService from "./auth-service";
-import { ValidationError } from "../../utils/errors/app-errors";
+import { ValidationError, UnauthorizedError } from "../../utils/errors/app-errors";
 
 export const registerUser = async (
   req: Request,
@@ -50,7 +50,7 @@ export const getAuthDetails = async (
 ) => {
   try {
     if (!req.user) {
-      throw new ValidationError("Unauthorized", "User is not authenticated");
+      throw new UnauthorizedError("Unauthorized", "User is not authenticated");
     }
 
     const user = await authService.getAuthDetails(req.user.id);

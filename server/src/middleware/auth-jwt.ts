@@ -12,9 +12,10 @@ export const authenticateJWT = (
 ) => {
   const { authorization } = req.headers;
 
+  // Handle missing or malformed Authorization header
   if (!authorization || !authorization.startsWith("Bearer ")) {
     return next(
-      new ValidationError(
+      new UnauthorizedError(
         "Missing Authorization Header",
         "Authorization header is required and must start with 'Bearer '"
       )
@@ -23,6 +24,7 @@ export const authenticateJWT = (
 
   const token = authorization.split(" ")[1];
 
+  // Ensure JWT secret is configured
   if (!config.JWT_SECRET) {
     return next(
       new ValidationError(
@@ -33,17 +35,19 @@ export const authenticateJWT = (
   }
 
   try {
+    // Verify JWT token
     const decoded = jwt.verify(token, config.JWT_SECRET) as jwt.JwtPayload;
 
+    // Validate payload structure using Zod schema
     const validatedPayload = JwtPayloadSchema.parse(decoded);
 
-
+    // Attach validated user info to the request object
     req.user = validatedPayload;
 
     return next();
   } catch (error) {
+    // Handle token expiration
     if (error instanceof jwt.TokenExpiredError) {
-      console.error("Access token expired:", error.message);
       return next(
         new UnauthorizedError(
           "Access Token Expired",
@@ -52,15 +56,18 @@ export const authenticateJWT = (
       );
     }
 
+    // Handle invalid or malformed tokens
     if (error instanceof jwt.JsonWebTokenError) {
-      console.error("Invalid JWT:", error.message);
       return next(
-        new ValidationError("Invalid Token", "JWT verification failed")
+        new UnauthorizedError(
+          "Invalid Token",
+          "Invalid or malformed JWT"
+        )
       );
     }
 
+    // Handle Zod validation errors
     if (error instanceof ZodError) {
-      console.error("Invalid Token Payload:", error.issues);
       return next(
         new ValidationError(
           "Invalid Token Payload",
@@ -73,6 +80,7 @@ export const authenticateJWT = (
       );
     }
 
+    // Log and forward unexpected errors
     console.error("Unexpected error in JWT authentication:", error);
     return next(error);
   }
