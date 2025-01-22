@@ -13,7 +13,7 @@ import {
   mockDbSelect,
   mockDbInsert,
 } from "../../tests/test-helpers";
-import { UserSchema, RegisterSchema } from "../../schemas/user-and-auth-schemas";
+import { RegisterSchema } from "../../schemas/user-and-auth-schemas";
 
 vi.mock("../../db/db");
 vi.mock("bcryptjs");

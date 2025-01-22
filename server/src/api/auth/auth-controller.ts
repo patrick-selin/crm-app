@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import logger from "../../utils/logger";
 import * as authService from "./auth-service";
-import { ValidationError, UnauthorizedError } from "../../utils/errors/app-errors";
+import { UnauthorizedError } from "../../utils/errors/app-errors";
 
 export const registerUser = async (
   req: Request,
