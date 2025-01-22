@@ -30,5 +30,4 @@ RUN groupadd -r nodejs && useradd -r -g nodejs nodejs
 RUN chown -R nodejs:nodejs /usr/src/app
 USER nodejs
 
-# CMD node build/src/index.js
 CMD ["node", "build/src/index.js"]

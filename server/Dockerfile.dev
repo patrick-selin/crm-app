@@ -1,4 +1,4 @@
-# Dockerfile.dev for server/backend
+# Dockerfile.dev for Node.js server/backend
 FROM node:20.11.1-alpine AS builder
 
 WORKDIR /usr/src/app

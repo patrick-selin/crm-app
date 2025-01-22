@@ -18,6 +18,11 @@ services:
        - "80:80"
        - "443:443"
     restart: unless-stopped
-    # volumes:
-    #   - /etc/ssl/certs:/etc/ssl/certs        
-    #   - /etc/ssl/private:/etc/ssl/private
+    volumes:
+        - ./client/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+        - /etc/letsencrypt/live/staging.crm-appi.live/fullchain.pem:/etc/ssl/certs/fullchain.pem:ro
+        - /etc/letsencrypt/live/staging.crm-appi.live/privkey.pem:/etc/ssl/private/privkey.pem:ro
+        - /etc/letsencrypt:/etc/letsencrypt:ro
+    environment:
+      NODE_ENV: production
+  
