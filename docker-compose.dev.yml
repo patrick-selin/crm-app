@@ -17,6 +17,21 @@ services:
     env_file:
       - server/.env.development
 
+  spring-server:
+    container_name: crm-app-spring-server
+    build:
+      context: ./spring-server/crm-app
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+      - "35729:35729"
+    depends_on:
+      - database-sql
+    env_file:
+      - spring-server/crm-app/.env.development  
+    volumes:
+    - ./spring-server/crm-app:/app
+
   database-sql:
     container_name: crm-app-postgresql-db
     image: postgres:16.4-bullseye
@@ -44,7 +59,6 @@ services:
     depends_on:
       - database-sql
     command: ["npx", "tsx", "/usr/src/app/src/db/run-sql-job.ts"]
-    
 
   migrate:
     container_name: crm-app-db-migrate
@@ -101,6 +115,7 @@ services:
     depends_on:
       - server
       - client
+      - spring-server
 
 volumes:
   postgres_data:

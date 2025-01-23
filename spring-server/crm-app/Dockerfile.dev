@@ -1,0 +1,21 @@
+# Dockerfile.dev for Spring Boot
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+
+# Copy Maven wrapper and configuration files
+COPY ./mvnw .
+COPY ./mvnw.cmd .
+COPY ./pom.xml .
+COPY ./.mvn ./.mvn
+
+# Resolve dependencies
+RUN ./mvnw dependency:resolve dependency:resolve-plugins
+
+# Copy application source code
+COPY ./src ./src
+
+# Expose application and LiveReload ports
+EXPOSE 8080 35729
+
+# Start Spring Boot with DevTools enabled
+CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.profiles=developer"]
