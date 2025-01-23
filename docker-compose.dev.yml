@@ -25,14 +25,12 @@ services:
     ports:
       - "8080:8080"
       - "35729:35729"
-    environment:
-      SPRING_PROFILES_ACTIVE: development
-
     depends_on:
       - database-sql
+    env_file:
+      - spring-server/crm-app/.env.development  
     volumes:
-      - ./spring-server:/usr/src/app
-      - /app/target
+    - ./spring-server/crm-app:/app
 
   database-sql:
     container_name: crm-app-postgresql-db

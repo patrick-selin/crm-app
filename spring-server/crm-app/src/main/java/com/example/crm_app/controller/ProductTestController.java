@@ -15,15 +15,15 @@ public class ProductTestController {
         return List.of(
                 Map.of(
                         "id", "1",
-                        "name", "Laptop LOCAL TWO THREE",
-                        "price", 5522226.0,
-                        "stock", 10,
+                        "name", "Laptop",
+                        "price", 899.0,
+                        "stock", 15,
                         "category", "Electronics"
                 ),
                 Map.of(
                         "id", "2",
-                        "name", "PhonePho POoho",
-                        "price", 87623423425.0,
+                        "name", "Phone",
+                        "price", 279.0,
                         "stock", 20,
                         "category", "Electronics"
                 )
