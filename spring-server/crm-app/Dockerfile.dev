@@ -1,6 +1,6 @@
 # Dockerfile.dev for Spring Boot server/backend
-FROM eclipse-temurin:17-jdk
-WORKDIR /app
+FROM eclipse-temurin:21-jdk
+WORKDIR /usr/src/app
 
 COPY ./mvnw .
 COPY ./mvnw.cmd .
@@ -10,6 +10,6 @@ RUN ./mvnw dependency:resolve dependency:resolve-plugins
 
 COPY ./src ./src
 
-EXPOSE 8080
+EXPOSE 8080 35729
 
-CMD ["./mvnw", "spring-boot:run"]
+CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.profiles=developer"]
