@@ -1,0 +1,21 @@
+# Dockerfile.prod for Spring Boot server/backend
+# temppi 
+FROM eclipse-temurin:17-jdk AS build
+WORKDIR /app
+
+COPY ./mvnw.cmd .
+COPY ./pom.xml .
+COPY ./.mvn ./.mvn
+RUN ./mvnw dependency:resolve dependency:resolve-plugins
+
+COPY ./src ./src
+RUN ./mvnw clean package -DskipTests
+
+FROM eclipse-temurin:17-jre
+WORKDIR /usr/src/app
+
+COPY --from=build /app/target/*.jar ./app.jar
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "app.jar"]
