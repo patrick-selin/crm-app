@@ -3,9 +3,17 @@
 ### GET spring
 GET http://localhost:80/api/v1/products/test HTTP/1.1
 
+### GET spring
+GET http://localhost:80/api/v1/products/db-info HTTP/1.1
+
+### GET spring
+GET http://localhost:80/api/v1/products HTTP/1.1
+
+### GET spring
+GET http://localhost:80/api/v1/products/db-info-two HTTP/1.1
 
 ### GET node
-GET http://localhost:80/api/v1/customers/ HTTP/1.1
+GET http://localhost:80/api/v1/customers HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsImZpcnN0TmFtZSI6IlBhdHJpY2siLCJyb2xlIjoidXNlciIsImlhdCI6MTczNzYyMzY5NSwiZXhwIjoxNzM3NjI0NTk1fQ.wpV0DZtL8S0IPxhBy_HbzW7p4JeFgOqbjsEkvlfCKns
 
 

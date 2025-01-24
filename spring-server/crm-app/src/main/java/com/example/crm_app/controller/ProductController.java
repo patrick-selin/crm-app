@@ -1,5 +1,7 @@
 package com.example.crm_app.controller;
 
+import com.example.crm_app.entity.Product;
+import com.example.crm_app.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,36 +15,25 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/products")
-public class ProductTestController {
+public class ProductController {
 
     @Autowired
     private DataSource dataSource;
 
-    @GetMapping("/db-info")
+    @Autowired
+    private ProductRepository productRepository;
+
+//    @GetMapping
+    @GetMapping()
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    @GetMapping("/db-info-two")
     public Map<String, String> getDatabaseInfo() throws SQLException {
         Map<String, String> dbInfo = new HashMap<>();
         dbInfo.put("Database URL", dataSource.getConnection().getMetaData().getURL());
         dbInfo.put("Database Username", dataSource.getConnection().getMetaData().getUserName());
         return dbInfo;
-    }
-
-    @GetMapping("/test")
-    public List<Map<String, Object>> getProductTest() {
-        return List.of(
-                Map.of(
-                        "id", "1",
-                        "name", "Laptop",
-                        "price", 899.0,
-                        "stock", 15,
-                        "category", "Electronics"
-                ),
-                Map.of(
-                        "id", "2",
-                        "name", "Phone",
-                        "price", 279.0,
-                        "stock", 20,
-                        "category", "Electronics"
-                )
-        );
     }
 }
