@@ -253,7 +253,7 @@ jobs:
         run: |
           export SPRING_PROFILES_ACTIVE=test
           docker-compose -f docker-compose.ci.yml exec spring-server ./mvnw test
-        working-directory: ./spring-server/crm-app  
+        # working-directory: ./spring-server/crm-app  
         continue-on-error: true
   
       - name: Upload Integration Test Results
