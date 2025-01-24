@@ -111,7 +111,6 @@ jobs:
           path: server/coverage
 
   integration-tests:
-    # ala aja int testeja jos ei push tai merge to dev branch?
     if: >
       (
         (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/dev')) ||
@@ -134,6 +133,12 @@ jobs:
 
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       REFRESH_SECRETL: ${{ secrets.REFRESH_SECRET }}
+
+      SPRING_PROFILES_ACTIVE: test
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL_TEST }} 
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.POSTGRES_USER }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
     steps:
       - name: Checkout code
@@ -239,11 +244,18 @@ jobs:
       #         docker exec crm-app-postgresql-db psql -U ${{ secrets.POSTGRES_USER }} -d crm_app_db_test -c "SELECT * FROM customers;"
       #       continue-on-error: true
 
-      - name: Run Integration Tests
+      - name: Run Node.js Backend Integration Tests
         run: |
           npm run test:integration:server:ci
         continue-on-error: true
 
+      - name: Run Spring Boot Backend Tests
+        run: |
+          export SPRING_PROFILES_ACTIVE=test
+          docker-compose -f docker-compose.ci.yml exec spring-server ./mvnw test
+        working-directory: ./spring-server/crm-app  
+        continue-on-error: true
+  
       - name: Upload Integration Test Results
         uses: actions/upload-artifact@v4
         if: always()
@@ -251,3 +263,5 @@ jobs:
           name: integration-test-results
           path: ./integration-tests/results
         continue-on-error: true
+  
+ 
