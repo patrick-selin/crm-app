@@ -136,6 +136,7 @@ jobs:
 
       SPRING_PROFILES_ACTIVE: test
       SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL_TEST }} 
+      SPRING_DATASOURCE_URL_TEST: jdbc:postgresql://database-sql:5432/crm_app_db_test
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
       SPRING_DATASOURCE_USERNAME: ${{ secrets.POSTGRES_USER }}
       SPRING_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -249,13 +250,23 @@ jobs:
           npm run test:integration:server:ci
         continue-on-error: true
 
+      
+      - name: Export Profile
+        run: export SPRING_PROFILES_ACTIVE=test
+        continue-on-error: true 
+
+      - name: Debug Spring Server Logs
+        run: |
+          docker-compose -f docker-compose.ci.yml logs spring-server   
+        continue-on-error: true
+
+        
       - name: Run Spring Boot Backend Tests
         run: |
           export SPRING_PROFILES_ACTIVE=test
           docker-compose -f docker-compose.ci.yml exec spring-server ./mvnw test
-        # working-directory: ./spring-server/crm-app  
-        continue-on-error: true
-  
+        continue-on-error: true  
+
       - name: Upload Integration Test Results
         uses: actions/upload-artifact@v4
         if: always()
