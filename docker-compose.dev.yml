@@ -22,9 +22,9 @@ services:
     build:
       context: ./spring-server/crm-app
       dockerfile: Dockerfile.dev
-    ports:
-      - "8080:8080"
-      - "35729:35729"
+    # ports:
+    #   - "8080:8080"
+    #   - "35729:35729"
     depends_on:
       - database-sql
     env_file:
