@@ -30,8 +30,8 @@ services:
       context: ./spring-server/crm-app
       dockerfile: Dockerfile.dev
     environment:  
-      SPRING_PROFILES_ACTIVE: developer
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_PROFILES_ACTIVE: test
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_TEST} 
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
