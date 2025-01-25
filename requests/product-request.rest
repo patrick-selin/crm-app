@@ -1,4 +1,4 @@
-
+@baseUrlStag = https://staging.crm-appi.live/api/v1
 
 ### GET spring
 GET http://localhost:80/api/v1/products/test HTTP/1.1
@@ -22,3 +22,11 @@ GET http://localhost:8080/api/v1/products/test HTTP/1.1
 
 ### GET spring
 GET http://localhost:35729/api/v1/products/test HTTP/1.1
+
+
+
+
+### AWS
+
+### GET /products
+GET {{baseUrlStag}}/products HTTP/1.1
