@@ -63,7 +63,7 @@ jobs:
           echo "SPRING_SERVER_PORT=${{ secrets.SPRING_SERVER_PORT }}" >> .env
           echo "DATABASE_URL_STAG=${{ secrets.DATABASE_URL_STAG }}" >> .env
 
-          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" >> .env
+          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL_STAG }}" >> .env
           echo "SPRING_DATASOURCE_USERNAME=${{ secrets.POSTGRES_USER }}" >> .env
           echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
 
