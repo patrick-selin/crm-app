@@ -45,7 +45,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: |
-            ${{ matrix.app == 'client' && './client' || matrix.app == 'server' && './server' || './spring-serve/crm-app' }}
+            ${{ matrix.app == 'client' && './client' || matrix.app == 'server' && './server' || './spring-server/crm-app' }}
           file: |
             ${{ matrix.app == 'client' && './client/Dockerfile.prod' || matrix.app == 'server' && './server/Dockerfile.prod' || './spring-server/crm-app/Dockerfile.prod' }}
           push: true

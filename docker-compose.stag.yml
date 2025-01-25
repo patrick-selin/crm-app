@@ -11,18 +11,31 @@ services:
       POSTGRES_DB: crm_app_db_stag
       DATABASE_URL: ${DATABASE_URL_STAG}
 
+  spring-server:
+    container_name: crm-app-spring-server
+    image: ${SPRING_SERVER_IMAGE}
+    restart: unless-stopped
+    ports:
+      - "${SPRING_SERVER_PORT}:${SPRING_SERVER_PORT}"
+    environment:
+      SPRING_PROFILES_ACTIVE: staging
+      SPRING_DATASOURCE_URL: ${DATABASE_URL_STAG}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SERVER_PORT: ${SPRING_SERVER_PORT}
+
   frontend-proxy:
     image: ${FRONTEND_IMAGE}
     container_name: frontend-proxy
     ports:
-       - "80:80"
-       - "443:443"
+      - "80:80"
+      - "443:443"
     restart: unless-stopped
     volumes:
-        - ./client/nginx.prod.conf:/etc/nginx/nginx.conf:ro
-        - /etc/letsencrypt/live/staging.crm-appi.live/fullchain.pem:/etc/ssl/certs/fullchain.pem:ro
-        - /etc/letsencrypt/live/staging.crm-appi.live/privkey.pem:/etc/ssl/private/privkey.pem:ro
-        - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./client/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt/live/staging.crm-appi.live/fullchain.pem:/etc/ssl/certs/fullchain.pem:ro
+      - /etc/letsencrypt/live/staging.crm-appi.live/privkey.pem:/etc/ssl/private/privkey.pem:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     environment:
       NODE_ENV: production
-  
