@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: [client, server]
+        app: [client, server, spring-server]
 
     steps:
       - name: Checkout code
@@ -44,8 +44,10 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
-          context: ${{ matrix.app == 'client' && './client' || './server' }}
-          file: ${{ matrix.app == 'client' && './client/Dockerfile.prod' || './server/Dockerfile.prod' }}
+          context: |
+            ${{ matrix.app == 'client' && './client' || matrix.app == 'server' && './server' || './spring-serve/crm-app' }}
+          file: |
+            ${{ matrix.app == 'client' && './client/Dockerfile.prod' || matrix.app == 'server' && './server/Dockerfile.prod' || './spring-server/crm-app/Dockerfile.prod' }}
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/crm-app:${{ matrix.app }}-${{ github.sha }}
