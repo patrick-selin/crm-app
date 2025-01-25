@@ -45,28 +45,32 @@ jobs:
         run: |
           echo "SERVER_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/crm-app:server-${{ github.event.workflow_run.outputs.server_image_sha }}" >> $GITHUB_ENV
           echo "FRONTEND_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/crm-app:client-${{ github.event.workflow_run.outputs.client_image_sha }}" >> $GITHUB_ENV
+          echo "SPRING_SERVER_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/crm-app:spring-server-${{ github.event.workflow_run.outputs.spring_server_image_sha }}" >> $GITHUB_ENV
 
       - name: Debug Image Variables
         run: |
           echo "SERVER_IMAGE=$SERVER_IMAGE"
           echo "FRONTEND_IMAGE=$FRONTEND_IMAGE"
-
-      - name: Debug Image Tags
-        run: |
-          echo "Server Image: ${{ secrets.DOCKERHUB_USERNAME }}/crm-app:server-${{ github.sha }}"
-          echo "Client Image: ${{ secrets.DOCKERHUB_USERNAME }}/crm-app:client-${{ github.sha }}"
+          echo "SPRING_SERVER_IMAGE=$SPRING_SERVER_IMAGE"
 
       - name: Create .env File for Staging
         run: |
           echo "SERVER_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/crm-app:server-${{ github.sha }}" > .env
           echo "FRONTEND_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/crm-app:client-${{ github.sha }}" >> .env
+          echo "SPRING_SERVER_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/crm-app:spring-server-${{ github.sha }}" >> .env
           echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
           echo "SERVER_HOST=${{ secrets.SERVER_HOST }}" >> .env
+          echo "SPRING_SERVER_PORT=${{ secrets.SPRING_SERVER_PORT }}" >> .env
           echo "DATABASE_URL_STAG=${{ secrets.DATABASE_URL_STAG }}" >> .env
+
+          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" >> .env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.POSTGRES_USER }}" >> .env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
           echo "REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}" >> .env
 
-      - name: Configure SSH ffor EC2 Access
+      - name: Configure SSH for EC2 Access
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}

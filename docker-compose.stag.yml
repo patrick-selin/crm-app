@@ -10,6 +10,8 @@ services:
       SERVER_HOST: ${SERVER_HOST}
       POSTGRES_DB: crm_app_db_stag
       DATABASE_URL: ${DATABASE_URL_STAG}
+      JWT_SECRET: ${JWT_SECRET}
+      REFRESH_SECRET: ${REFRESH_SECRET}
 
   spring-server:
     container_name: crm-app-spring-server
@@ -19,11 +21,15 @@ services:
       - "${SPRING_SERVER_PORT}:${SPRING_SERVER_PORT}"
     environment:
       SPRING_PROFILES_ACTIVE: staging
-      SPRING_DATASOURCE_URL: ${DATABASE_URL_STAG}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
       SERVER_PORT: ${SPRING_SERVER_PORT}
+
+      JWT_SECRET: ${JWT_SECRET}
+      REFRESH_SECRET: ${REFRESH_SECRET}
 
   frontend-proxy:
     image: ${FRONTEND_IMAGE}
