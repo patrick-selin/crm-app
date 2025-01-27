@@ -9,7 +9,11 @@ import {
 import * as authService from "./auth-service";
 import { Request, Response } from "express";
 import { faker } from "@faker-js/faker";
-import { ValidationError, UnauthorizedError } from "../../utils/errors/app-errors";
+import {
+  ValidationError,
+  UnauthorizedError,
+} from "../../utils/errors/app-errors";
+import { setupControllerTest } from "../../tests/test-helpers";
 
 vi.mock("./auth-service");
 
@@ -19,12 +23,7 @@ describe("Auth Controller Unit Tests", () => {
   let next: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    req = {};
-    res = {
-      status: vi.fn().mockReturnThis(),
-      json: vi.fn(),
-    };
-    next = vi.fn();
+    ({ req, res, next } = setupControllerTest());
   });
 
   afterEach(() => {
