@@ -85,7 +85,7 @@ export const CustomersQuerySchema = z
     sort: z
       .string()
       .regex(
-        /^(city|country|firstName|lastName|address|postalCode):(asc|desc)$/i,
+        /^(city|country|firstName|lastName|address|postalCode|createdAt|email):(asc|desc)$/i,
         "Sort format should be 'column:asc' or 'column:desc'"
       )
       .optional(),
@@ -112,7 +112,7 @@ export const CustomersSummaryQuerySchema = z
     sort: z
       .string()
       .regex(
-        /^(firstName|lastName|email|totalSpent|numOfOrders|lastOrderDate):(asc|desc)$/i,
+        /^(firstName|lastName|email|totalSpent|numOfOrders|lastOrderDate|createdAt):(asc|desc)$/i,
         "Sort format should be 'column:asc' or 'column:desc'"
       )
       .optional(),

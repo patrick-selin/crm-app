@@ -2,6 +2,7 @@ import { Modal, Button, Group, Text } from "@mantine/core";
 import { useDeleteCustomer } from "../api/customers-queries";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
+import { AxiosError } from "axios";
 
 const DeleteCustomerModal = ({
   opened,
@@ -26,18 +27,24 @@ const DeleteCustomerModal = ({
         onClose();
         navigate("/customers");
       },
-      onError: (error) => {
+      onError: (error: unknown) => {
+        let message = "Failed to delete customer.";
+  
+        if (error instanceof AxiosError) {
+          message = error.response?.data?.message || error.message || message;
+        } else if (error instanceof Error) {
+          message = error.message;
+        }
+
         notifications.show({
           title: "Error",
-          message:
-            error instanceof Error
-              ? error.message
-              : "Failed to delete customer.",
+          message,
           color: "red",
         });
       },
     });
   };
+  
 
   return (
     <Modal opened={opened} onClose={onClose} title="Confirm Delete" centered>

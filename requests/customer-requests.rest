@@ -1,7 +1,7 @@
 @baseUrl = http://localhost/api/v1
 @baseUrlStag = http://ec2-13-60-156-45.eu-north-1.compute.amazonaws.com/api/v1
 
-@access-token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgwNjczODhlLThjMTMtNDE2ZC1hMjhjLTRkOGFkZjFmM2U5MSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3MTk4MDkzLCJleHAiOjE3Mzc1NDM2OTN9.EVQwbCRtRl4__v-GcxcEanwpZlfl5lYlDOr6qufdi-c
+@access-token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc3MzMxNWY1LWZjM2UtNGFkMS05OTY4LTQxMWMxMjJjZDgxOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3OTgxNDM2LCJleHAiOjE3Mzc5ODIzMzZ9.98_u3hCnOZuH02a1gYCCreVivckd634apDvsVHtE5-4
 @access-token-stag = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmYjZmYmM3LTI1NmYtNGIwYy1iMmM5LTc1ZDAzYzliOThkNSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3Mjk2Mzg1LCJleHAiOjE3MzcyOTcyODV9.6Qcgi2l7AY-Un80gKhomLpEj9IJZOf5M3ilgrGPL-KQ
 
 
@@ -14,7 +14,7 @@ Authorization: Bearer {{access-token}}
 Content-Type: application/json
 
 ### GET /customers, with query params
-GET {{baseUrl}}/customers?sort=firstName:asc HTTP/1.1
+GET {{baseUrl}}/customers?search=John&sort=firstName:asc&page=1&limit=3 HTTP/1.1
 # /customers?search=John&sort=firstName:asc&page=1&limit=3
 Authorization: Bearer {{access-token}}
 Content-Type: application/json

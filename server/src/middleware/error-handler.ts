@@ -24,14 +24,9 @@ export function errorHandler(
 
   //  Zod validation errors
   if (err instanceof ZodError) {
-    logger.warn("Validation error occurred", {
-      method: req.method,
-      url: req.url,
-      details: err.issues,
-    });
-
     return res.status(HttpStatusCodes.BAD_REQUEST).json({
       error: "Validation Error",
+      message: "Invalid input provided",
       details: err.issues.map((issue) => ({
         path: issue.path.join("."),
         message: issue.message,
@@ -66,6 +61,7 @@ export function errorHandler(
 
   return res.status(HttpStatusCodes.INTERNAL_ERROR).json({
     error: "Internal Server Error",
+    message: "An unexpected error occurred. Please try again later.",
     statusCode: HttpStatusCodes.INTERNAL_ERROR,
   });
 }
