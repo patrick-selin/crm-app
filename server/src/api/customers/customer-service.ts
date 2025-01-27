@@ -7,7 +7,7 @@ import { orderItems } from "../../db/schemas/order-items";
 import {
   // parseSort,
   calculateOffset,
-  // createSearchAndFilterConditions,
+  createSearchAndFilterConditions,
 } from "../../utils/query-helpers";
 import logger from "../../utils/logger";
 
@@ -44,27 +44,12 @@ export const getCustomers = async ({
   logger.info("Service: Fetching all customers with params...");
 
   const offset = calculateOffset(page, limit);
-  const baseConditions = [];
 
-  // Search
-  if (search) {
-    baseConditions.push(
-      sql`${customers.firstName} ILIKE ${`%${search}%`} OR ${
-        customers.lastName
-      } ILIKE ${`%${search}%`} OR ${
-        customers.email
-      } ILIKE ${`%${search}%`} OR ${customers.city} ILIKE ${`%${search}%`}`
-    );
-  }
-
-  // Filters
-  if (filters) {
-    for (const [key, value] of Object.entries(filters)) {
-      baseConditions.push(sql`${sql.identifier(key)} = ${value}`);
-    }
-  }
-
-  const conditions = baseConditions.length ? and(...baseConditions) : undefined;
+  const conditions = createSearchAndFilterConditions(
+    search,
+    filters,
+    [customers.firstName, customers.lastName, customers.email, customers.city]
+  );
 
   // Base query
   const query = db
@@ -131,25 +116,11 @@ export const getCustomersWithMetrics = async ({
 
   const offset = calculateOffset(page, limit);
 
-  const baseConditions = [];
-
-  // Search
-  if (search) {
-    baseConditions.push(
-      sql`${customers.firstName} ILIKE ${`%${search}%`} OR ${
-        customers.lastName
-      } ILIKE ${`%${search}%`} OR ${customers.email} ILIKE ${`%${search}%`}`
-    );
-  }
-
-  // Filters
-  if (filters) {
-    for (const [key, value] of Object.entries(filters)) {
-      baseConditions.push(sql`${sql.identifier(key)} = ${value}`);
-    }
-  }
-
-  const conditions = baseConditions.length ? and(...baseConditions) : undefined;
+  const conditions = createSearchAndFilterConditions(
+    search,
+    filters,
+    [customers.firstName, customers.lastName, customers.email]
+  );
 
   // Base query
   const query = db
