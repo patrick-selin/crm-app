@@ -1,11 +1,11 @@
 // customer-service.ts
 import { db } from "../../db/db";
-import { sql, eq, and } from "drizzle-orm";
+import { sql, eq, and, SQL } from "drizzle-orm";
 import { customers } from "../../db/schemas/customers";
 import { orders } from "../../db/schemas/orders";
 import { orderItems } from "../../db/schemas/order-items";
 import {
-  // parseSort,
+  parseSorting,
   calculateOffset,
   createSearchAndFilterConditions,
 } from "../../utils/query-helpers";
@@ -21,11 +21,11 @@ import {
 } from "../../schemas/customer-schemas";
 import { OrderSchema, OrderItemSchema } from "../../schemas/order-schemas";
 import { ConflictError, BadRequestError } from "../../utils/errors/app-errors";
+import { PgColumn } from "drizzle-orm/pg-core";
 
 const isPostgresUniqueViolation = (error: any): boolean => {
   return error;
 };
-
 
 //
 export const getCustomers = async ({
@@ -45,11 +45,24 @@ export const getCustomers = async ({
 
   const offset = calculateOffset(page, limit);
 
-  const conditions = createSearchAndFilterConditions(
-    search,
-    filters,
-    [customers.firstName, customers.lastName, customers.email, customers.city]
-  );
+  const conditions = createSearchAndFilterConditions(search, filters, [
+    customers.firstName,
+    customers.lastName,
+    customers.email,
+    customers.city,
+  ]);
+
+  // Sorting
+  const sortMapping: Record<string, PgColumn> = {
+    firstName: customers.firstName,
+    lastName: customers.lastName,
+    email: customers.email,
+    city: customers.city,
+    country: customers.country,
+    createdAt: customers.createdAt,
+  };
+
+  const orderBy = parseSorting(sort, sortMapping);
 
   // Base query
   const query = db
@@ -57,33 +70,12 @@ export const getCustomers = async ({
     .from(customers)
     .where(conditions)
     .offset(offset)
-    .limit(limit);
-
-  // Sorting
-  const sortMapping: Record<string, string> = {
-    firstName: "first_name",
-    lastName: "last_name",
-    email: "email",
-    city: "city",
-    country: "country",
-    createdAt: "created_at",
-  };
-
-  if (sort) {
-    const [column, direction] = sort.split(":");
-    const dbColumn = sortMapping[column];
-
-    if (dbColumn) {
-      query.orderBy(
-        sql`${sql.identifier(dbColumn)} ${sql.raw(direction.toUpperCase())}`
-      );
-    } else {
-      throw new Error(`Invalid sort column: ${column}`);
-    }
-  }
+    .limit(limit)
+    .orderBy(orderBy);
 
   const results = await query;
-  
+
+  // Fetch total count
   const totalResult = await db
     .select({ count: sql<number>`COUNT(*)` })
     .from(customers)
@@ -122,6 +114,18 @@ export const getCustomersWithMetrics = async ({
     [customers.firstName, customers.lastName, customers.email]
   );
 
+  // Sorting
+  const sortMapping: Record<string, PgColumn | SQL<any>> = {
+    firstName: customers.firstName,
+    lastName: customers.lastName,
+    email: customers.email,
+    lastOrderDate: sql`COALESCE(MAX(${orders.orderDate}), NULL)`,
+    numOfOrders: sql`CAST(COALESCE(COUNT(${orders.orderId}), 0) AS INTEGER)`,
+    totalSpent: sql`CAST(COALESCE(SUM(${orders.totalAmount}), 0) AS DECIMAL)`,
+  };
+
+  const orderBy = parseSorting(sort, sortMapping);
+
   // Base query
   const query = db
     .select({
@@ -146,37 +150,19 @@ export const getCustomersWithMetrics = async ({
     .groupBy(customers.customerId)
     .where(conditions)
     .offset(offset)
-    .limit(limit);
-
-  // Sorting
-  if (sort) {
-    const [column, direction] = sort.split(":");
-    const validSortColumns: Record<string, any> = {
-      firstName: customers.firstName,
-      lastName: customers.lastName,
-      email: customers.email,
-      lastOrderDate: sql`COALESCE(MAX(${orders.orderDate}), NULL)`,
-      numOfOrders: sql`COALESCE(COUNT(${orders.orderId}), 0)`,
-      totalSpent: sql`COALESCE(SUM(${orders.totalAmount}), 0)`,
-    };
-
-    if (validSortColumns[column]) {
-      query.orderBy(
-        sql`${validSortColumns[column]} ${sql.raw(direction.toUpperCase())}`
-      );
-    } else {
-      throw new Error(`Invalid sort column: ${column}`);
-    }
-  }
+    .limit(limit)
+    .orderBy(orderBy);
 
   const rawResults = await query;
 
+  // Convert totalSpent to a number
   const processedResults = rawResults.map((result) => ({
     ...result,
     lastOrderDate: result.lastOrderDate ? result.lastOrderDate : "No orders",
     totalSpent: Number(result.totalSpent),
   }));
 
+  // Fetch total count
   const totalResult = await db
     .select({ count: sql<number>`COUNT(*)` })
     .from(customers)
@@ -191,12 +177,6 @@ export const getCustomersWithMetrics = async ({
     data: z.array(CustomerSummarySchema).parse(processedResults),
   };
 };
-
-
-
-//
-
-
 
 export const getCustomerById = async (id: string) => {
   logger.info(`Service: Fetching customer by ID = ${id}`);
