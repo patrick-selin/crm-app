@@ -155,14 +155,12 @@ export const getCustomersWithMetrics = async ({
 
   const rawResults = await query;
 
-  // Convert totalSpent to a number
   const processedResults = rawResults.map((result) => ({
     ...result,
     lastOrderDate: result.lastOrderDate ? result.lastOrderDate : "No orders",
     totalSpent: Number(result.totalSpent),
   }));
-
-  // Fetch total count
+  
   const totalResult = await db
     .select({ count: sql<number>`COUNT(*)` })
     .from(customers)

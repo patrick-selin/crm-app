@@ -4,7 +4,7 @@ import * as customerService from "./customer-service";
 import { CustomerIdSchema } from "../../schemas/customer-schemas";
 import logger from "../../utils/logger";
 import { ZodError } from "zod";
-import { ValidationError, NotFoundError } from "../../utils/errors/app-errors";
+import { ValidationError, NotFoundError, BadRequestError } from "../../utils/errors/app-errors";
 
 export const listCustomers = async (
   req: Request,
@@ -147,7 +147,6 @@ export const getCustomerOrderDetails = async (
 };
 
 // TEMP-------
-
 // export const listCustomerOrders = async (
 //   req: Request,
 //   res: Response,
@@ -228,8 +227,18 @@ export const deleteCustomer = async (
       );
     }
     res.status(204).send();
-  } catch (error) {
+  } catch (error: any) {
     logger.error("Controller error in deleteCustomer:", { error });
+
+    if (error.code === "23503") {
+      return next(
+        new BadRequestError(
+          "Cannot delete customer with existing orders.",
+          `The customer ID ${req.params.id} has related orders and cannot be deleted.`
+        )
+      );
+    }
+
     next(error);
   }
 };
