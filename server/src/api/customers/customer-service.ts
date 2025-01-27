@@ -4,6 +4,11 @@ import { sql, eq, and } from "drizzle-orm";
 import { customers } from "../../db/schemas/customers";
 import { orders } from "../../db/schemas/orders";
 import { orderItems } from "../../db/schemas/order-items";
+import {
+  // parseSort,
+  calculateOffset,
+  // createSearchAndFilterConditions,
+} from "../../utils/query-helpers";
 import logger from "../../utils/logger";
 
 import { z } from "zod";
@@ -21,6 +26,8 @@ const isPostgresUniqueViolation = (error: any): boolean => {
   return error;
 };
 
+
+//
 export const getCustomers = async ({
   search,
   sort = "createdAt:desc",
@@ -36,7 +43,7 @@ export const getCustomers = async ({
 }) => {
   logger.info("Service: Fetching all customers with params...");
 
-  const offset = (page - 1) * limit;
+  const offset = calculateOffset(page, limit);
   const baseConditions = [];
 
   // Search
@@ -91,8 +98,7 @@ export const getCustomers = async ({
   }
 
   const results = await query;
-
-  // Fetch total count
+  
   const totalResult = await db
     .select({ count: sql<number>`COUNT(*)` })
     .from(customers)
@@ -123,7 +129,7 @@ export const getCustomersWithMetrics = async ({
 }) => {
   logger.info("Service: Fetching customers with metrics and params...");
 
-  const offset = (page - 1) * limit;
+  const offset = calculateOffset(page, limit);
 
   const baseConditions = [];
 
@@ -194,16 +200,12 @@ export const getCustomersWithMetrics = async ({
 
   const rawResults = await query;
 
-  // console.log("RAW results::", JSON.stringify(rawResults, null, 2));
-
-  // Convert totalSpent to a number
   const processedResults = rawResults.map((result) => ({
     ...result,
     lastOrderDate: result.lastOrderDate ? result.lastOrderDate : "No orders",
     totalSpent: Number(result.totalSpent),
   }));
 
-  // Fetch total count
   const totalResult = await db
     .select({ count: sql<number>`COUNT(*)` })
     .from(customers)
@@ -218,6 +220,12 @@ export const getCustomersWithMetrics = async ({
     data: z.array(CustomerSummarySchema).parse(processedResults),
   };
 };
+
+
+
+//
+
+
 
 export const getCustomerById = async (id: string) => {
   logger.info(`Service: Fetching customer by ID = ${id}`);

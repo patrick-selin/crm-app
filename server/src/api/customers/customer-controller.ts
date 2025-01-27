@@ -15,8 +15,13 @@ export const listCustomers = async (
     logger.info("Controller invoked: listAllCustomers");
     logger.info("Query Parameters:", req.query);
 
-    const { search, sort, page = "1", limit = "10", ...queryFilters } =
-      req.query as any;
+    const {
+      search,
+      sort,
+      page = "1",
+      limit = "10",
+      ...queryFilters
+    } = req.query as any;
 
     const filters = Object.keys(queryFilters).reduce((acc, key) => {
       acc[key] = queryFilters[key] as string;
@@ -95,7 +100,6 @@ export const getCustomerById = async (
   }
 };
 
-
 export const getCustomerOrders = async (
   req: Request,
   res: Response,
@@ -161,7 +165,6 @@ export const getCustomerOrderDetails = async (
 //   }
 // };
 // -------
-
 
 export const createCustomer = async (
   req: Request,
