@@ -38,7 +38,7 @@ describe("Auth Service Unit Tests", () => {
     it("should register a new user and return user details", async () => {
       const mockRegisterUser = createMockRegisterUser();
       vi.spyOn(bcrypt, "hashSync").mockReturnValue("mockedPasswordHash");
-  
+
       const mockUser = {
         ...mockRegisterUser,
         userId: faker.string.uuid(),
@@ -47,7 +47,7 @@ describe("Auth Service Unit Tests", () => {
       mockDbInsert([mockUser]);
 
       const result = await authService.registerUser(mockRegisterUser);
-  
+
       const validatedResult = RegisterSchema.omit({ password: true }).parse({
         username: result.username,
         email: result.email,
@@ -60,7 +60,7 @@ describe("Auth Service Unit Tests", () => {
         postalCode: result.postalCode,
         country: result.country,
       });
-  
+
       expect(validatedResult).toEqual({
         username: mockRegisterUser.username,
         email: mockRegisterUser.email,
@@ -73,7 +73,7 @@ describe("Auth Service Unit Tests", () => {
         postalCode: mockRegisterUser.postalCode,
         country: mockRegisterUser.country,
       });
-  
+
       expect(bcrypt.hashSync).toHaveBeenCalledWith(
         mockRegisterUser.password,
         expect.any(Number)

@@ -4,42 +4,41 @@ import * as customerService from "./customer-service";
 import { CustomerIdSchema } from "../../schemas/customer-schemas";
 import logger from "../../utils/logger";
 import { ZodError } from "zod";
-import { ValidationError, NotFoundError, BadRequestError } from "../../utils/errors/app-errors";
+import {
+  ValidationError,
+  NotFoundError,
+  BadRequestError,
+} from "../../utils/errors/app-errors";
+import { extractFilters, parsePagination } from "../../utils/request-helpers";
 
 export const listCustomers = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
+  logger.info("Controller invoked: listCustomers");
+
   try {
-    logger.info("Controller invoked: listAllCustomers");
-    logger.info("Query Parameters:", req.query);
+    const { search, sort, page, limit } = req.query as Record<string, string>;
+    const filters = extractFilters(req.query);
 
-    const {
-      search,
-      sort,
-      page = "1",
-      limit = "10",
-      ...queryFilters
-    } = req.query as any;
-
-    const filters = Object.keys(queryFilters).reduce((acc, key) => {
-      acc[key] = queryFilters[key] as string;
-      return acc;
-    }, {} as Record<string, string>);
+    const { page: parsedPage, limit: parsedLimit } = parsePagination(
+      page,
+      limit
+    );
 
     const customers = await customerService.getCustomers({
-      search: search as string,
-      sort: sort as string,
-      page: parseInt(page, 10),
-      limit: parseInt(limit, 10),
+      search,
+      sort,
+      page: parsedPage,
+      limit: parsedLimit,
       filters,
     });
 
-    logger.info("Customers retrieved:", customers);
+    logger.info("Customers retrieved successfully", { total: customers.total });
     res.status(200).json(customers);
   } catch (error) {
-    logger.error("Controller error in listAllCustomers:", { error });
+    logger.error("Error occurred in listCustomers", { error });
     next(error);
   }
 };
@@ -48,28 +47,32 @@ export const listCustomersWithMetrics = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  try {
-    logger.info("Controller invoked: listCustomersWithMetrics");
-    const { search, sort, page, limit, ...queryFilters } = req.query as any;
+): Promise<void> => {
+  logger.info("Controller invoked: listCustomersWithMetrics");
 
-    const filters = Object.keys(queryFilters).reduce((acc, key) => {
-      acc[key] = queryFilters[key] as string;
-      return acc;
-    }, {} as Record<string, string>);
+  try {
+    const { search, sort, page, limit } = req.query as Record<string, string>;
+    const filters = extractFilters(req.query);
+
+    const { page: parsedPage, limit: parsedLimit } = parsePagination(
+      page,
+      limit
+    );
 
     const customers = await customerService.getCustomersWithMetrics({
-      search: search as string,
-      sort: sort as string,
-      page: parseInt(page as string, 10) || 1,
-      limit: parseInt(limit as string, 10) || 10,
+      search,
+      sort,
+      page: parsedPage,
+      limit: parsedLimit,
       filters,
     });
 
-    logger.info("Customers retrieved with metrics:", customers);
+    logger.info("Customers with metrics retrieved successfully", {
+      total: customers.total,
+    });
     res.status(200).json(customers);
   } catch (error) {
-    logger.error("Controller error in listCustomersWithMetrics:", { error });
+    logger.error("Error occurred in listCustomersWithMetrics", { error });
     next(error);
   }
 };
