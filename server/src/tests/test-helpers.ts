@@ -2,7 +2,7 @@
 import { db } from "../db/db";
 import { JwtPayload } from "../schemas/user-and-auth-schemas";
 import { faker } from "@faker-js/faker";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 
 /**
  * Test Helpers for Mocking and Test Data
