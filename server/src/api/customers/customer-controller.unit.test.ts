@@ -7,7 +7,11 @@ import {
   createMockCustomer,
   createMockCustomerWithMetrics,
 } from "../../tests/test-helpers";
-import { NotFoundError } from "../../utils/errors/app-errors";
+import {
+  BadRequestError,
+  NotFoundError,
+  ValidationError,
+} from "../../utils/errors/app-errors";
 import { Request, Response } from "express";
 
 vi.mock("./customer-service");
@@ -171,10 +175,10 @@ describe("Customer Controller Unit Tests", () => {
 
     it("should handle NotFoundError and pass it to next", async () => {
       const error = new NotFoundError("Customer not found");
-      const validNonExistentId = "9c92d8a1-2c13-4f4a-9b3f-14dbac8b4fdc";
+      const validIdNotExistent = "9c92d8a1-2c13-4f4a-9b3f-14dbac8b4fdc";
       mockCustomerService.getCustomerById.mockRejectedValueOnce(error);
 
-      req.params = { id: validNonExistentId }; 
+      req.params = { id: validIdNotExistent };
 
       await customerController.getCustomerById(
         req as Request,
@@ -186,4 +190,95 @@ describe("Customer Controller Unit Tests", () => {
     });
   });
 
+  describe("createCustomer", () => {
+    it("should create a new customer", async () => {
+      const mockCustomer = createMockCustomer();
+      mockCustomerService.addCustomer.mockResolvedValueOnce(mockCustomer);
+
+      req.body = mockCustomer;
+
+      await customerController.createCustomer(
+        req as Request,
+        res as Response,
+        next
+      );
+
+      expect(mockCustomerService.addCustomer).toHaveBeenCalledWith(
+        mockCustomer
+      );
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith(mockCustomer);
+    });
+
+    it("should handle validation errors and pass them to next", async () => {
+      const error = new ValidationError("Invalid customer data");
+      mockCustomerService.addCustomer.mockRejectedValueOnce(error);
+
+      req.body = {};
+
+      await customerController.createCustomer(
+        req as Request,
+        res as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe("deleteCustomer", () => {
+    it("should delete a customer and return 204", async () => {
+      const mockCustomerId = "9c92d8a1-2c13-4f4a-9b3f-14dbac8b4fdc";
+      mockCustomerService.deleteCustomer.mockResolvedValueOnce(true);
+
+      req.params = { id: mockCustomerId };
+
+      await customerController.deleteCustomer(
+        req as Request,
+        res as Response,
+        next
+      );
+
+      expect(mockCustomerService.deleteCustomer).toHaveBeenCalledWith(
+        mockCustomerId
+      );
+      expect(res.status).toHaveBeenCalledWith(204);
+      expect(res.send).toHaveBeenCalled();
+    });
+
+    it("should handle NotFoundError", async () => {
+      const validIdNotExistent = "9c92d8a1-2c13-4f4a-9b3f-14dbac8b4fdc";
+      const error = new NotFoundError(
+        "Customer not found",
+        `No record to delete for customer ID = ${validIdNotExistent}`
+      );
+
+      mockCustomerService.deleteCustomer.mockResolvedValueOnce(false);
+
+      req.params = { id: validIdNotExistent };
+
+      await customerController.deleteCustomer(
+        req as Request,
+        res as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(error);
+    });
+
+    it("should handle BadRequestError for related orders", async () => {
+      const error = new BadRequestError("Cannot delete customer with orders");
+      mockCustomerService.deleteCustomer.mockRejectedValueOnce(error);
+
+      req.params = { id: "9c92d8a1-2c13-4f4a-9b3f-14dbac8b4fdc" };
+
+      await customerController.deleteCustomer(
+        req as Request,
+        res as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
 });
