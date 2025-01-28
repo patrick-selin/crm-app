@@ -1,7 +1,7 @@
 @baseUrl = http://localhost/api/v1
 @baseUrlStag = http://ec2-13-60-156-45.eu-north-1.compute.amazonaws.com/api/v1
 
-@access-token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc3MzMxNWY1LWZjM2UtNGFkMS05OTY4LTQxMWMxMjJjZDgxOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3OTk1MjM3LCJleHAiOjE3Mzc5OTYxMzd9.T8_CL-g11nqbpYtodFKcjQxnNy7a73_Z9yCV4nWx3jQ
+@access-token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc3MzMxNWY1LWZjM2UtNGFkMS05OTY4LTQxMWMxMjJjZDgxOCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM4MDU2NDk3LCJleHAiOjE3MzgwNTczOTd9.824QsdPbSRdUtVO2s-7WNoWTdw79kxykA_NeCbw8bRg
 @access-token-stag = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmYjZmYmM3LTI1NmYtNGIwYy1iMmM5LTc1ZDAzYzliOThkNSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3Mjk2Mzg1LCJleHAiOjE3MzcyOTcyODV9.6Qcgi2l7AY-Un80gKhomLpEj9IJZOf5M3ilgrGPL-KQ
 
 
@@ -30,7 +30,7 @@ Authorization: Bearer {{access-token}}
 Content-Type: application/json
 
 ### GET /customers/:id
-GET {{baseUrl}}/customers/a3cd1535-5cfb-4e9d-a200-87919f6890f5 HTTP/1.1
+GET {{baseUrl}}/customers/81ce3a22-bed7-4252-bf38-57bd655043ec HTTP/1.1
 Authorization: Bearer {{access-token}}
 Content-Type: application/json
 
@@ -50,9 +50,9 @@ Authorization: Bearer {{access-token}}
 Content-Type: application/json
 
 {
-  "firstName": "cJwuskka33",
-  "lastName": "Poikas2",
-  "email": "jucckwksadd33@example.fi",
+  "firstName": "ccJcwuskka33",
+  "lastName": "Poicckas2",
+  "email": "jucckwkcsadd33@example.fi",
   "phone": "2401234567",
   "address": "Heippakatu 12",
   "city": "Helsinki",
@@ -61,7 +61,7 @@ Content-Type: application/json
 }
 
 ### UPDATE /customers/:id
-PUT {{baseUrl}}/customers/995dd88b-35ba-4863-88fc-1e4ae7f517e7 HTTP/1.1
+PUT {{baseUrl}}/customers/77d7253b-0ed1-491d-a682-020c7898c6fc HTTP/1.1
 Authorization: Bearer {{access-token}}
 Content-Type: application/json
 
@@ -72,7 +72,7 @@ Content-Type: application/json
 }
 
 ### DELETE /customers/:id
-DELETE {{baseUrl}}/customers/771a2fac-210d-4d40-8412-6ea69aa41dc9 HTTP/1.1
+DELETE {{baseUrl}}/customers/77d7253b-0ed1-491d-a682-020c7898c6fc HTTP/1.1
 Authorization: Bearer {{access-token}}
 Content-Type: application/json
 
