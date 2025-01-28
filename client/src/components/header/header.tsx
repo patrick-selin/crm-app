@@ -41,7 +41,7 @@ const Header = () => {
               className={classes.logoicon}
               style={{ width: 24, height: 24 }}
             />
-            CRM App
+            CRM Appi
           </NavLink>
 
           {/* Desktop navigation */}

@@ -12,6 +12,7 @@ import Profile from "../pages/profile";
 // import AdminPanel from "../pages/admin-panel";
 import SignIn from "../pages/sign-in";
 import Register from "../pages/register";
+import Welcome from "../pages/welcome"
 //
 import ProtectedRoute from "./protected-route";
 // import AdminRoute from "./admin-route";
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <AppLayout />,
     children: [
-      { path: "/", element: <Dashboard /> },
+      { path: "/", element: <Welcome /> },
       {
         path: "dashboard",
         element: (
