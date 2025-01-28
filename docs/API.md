@@ -26,6 +26,7 @@ The API endpoints available, request/response examples, authentication, and erro
       - [POST `/auth/refresh`](#post-authrefresh)
     - [2. **Customers**](#2-customers)
       - [GET `/customers`](#get-customers)
+      - [GET `/customers/summary`](#get-customerssummary)
       - [GET `/customers/:id`](#get-customersid)
       - [GET `/customers/:id/orders`](#get-customersidorders)
       - [GET `/customers/:id/orders/:orderId`](#get-customersidordersorderid)
@@ -232,7 +233,6 @@ Register a new user.
 #### POST `/auth/login`
 
 Authenticate a user and retrieve a JWT token.
-
 - **Request Body**:
 
   ```json
@@ -302,6 +302,7 @@ Retrieve a list of customers with optional filters and pagination.
   - `search`: Search term for customer names.
 
 - **Response**:
+
   ```json
   {
     "total": "99",
@@ -333,6 +334,39 @@ Retrieve a list of customers with optional filters and pagination.
         "country": "Finland",
         "createdAt": "2025-01-26T18:00:00.890Z",
         "updatedAt": "2025-01-27T12:32:15.353Z"
+      }
+    ]
+  }
+  ```
+
+  #### GET `/customers/summary`
+
+  Retrieve a summary of customer metrics, including total spent, number of orders, and last order date.
+
+- **Response**:
+  ```json
+  {
+    "total": "100",
+    "page": 1,
+    "limit": 10,
+    "data": [
+      {
+        "customerId": "1f938068-8232-44ed-954c-ad063237e148",
+        "firstName": "Frank",
+        "lastName": "Lewis",
+        "email": "customer-7eb45cd7@example.com",
+        "lastOrderDate": "2025-01-28T09:00:00.098Z",
+        "numOfOrders": 1,
+        "totalSpent": 4605.52
+      },
+      {
+        "customerId": "c6ed9874-dc80-40f3-a996-c2a8b9479ade",
+        "firstName": "Mona",
+        "lastName": "King",
+        "email": "customer-0c498996@example.com",
+        "lastOrderDate": "2025-01-28T08:00:00.447Z",
+        "numOfOrders": 7,
+        "totalSpent": 24914.65
       }
     ]
   }
@@ -421,7 +455,6 @@ Retrieve detailed information about a specific order for a customer.
 Create a new customer.
 
 - **Request Body**:
-
   ```json
   {
     "firstName": "Jane",

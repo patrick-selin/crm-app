@@ -128,7 +128,7 @@ The project uses **Vitest** for unit and integration testing, and **Playwright**
 
 Run integration tests using the test database:
 ```bash
-npm run test:integration
+npm run test:integration:server"
 ```
 
 #### End-to-End Tests
@@ -137,5 +137,3 @@ Run E2E tests using Playwright:
 ```bash
 npm run test:e2e
 ```
-
-

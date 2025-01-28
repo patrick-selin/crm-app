@@ -20,17 +20,18 @@ Explore the repository for more details on the architecture, API documentation a
 
 ## Features
 
-- **Frontend capabilities**: Responsive UI, reusable components, React Router for navigation and Stack Query for server state management and caching.
+- **Frontend capabilities**: Responsive UI, reusable components, React Router for navigation and TanStack Query for server state management and caching.
 - **Validation**: Ensures data integrity on both client and server.
 - **Error handling**: User-friendly notifications and logging.
 - **Customer management**: CRUD operations with server-side pagination, search, sort, and filters.
 - **Fully dockerized environment** for both development, CI/CD testing and staging.
-- **CI/CD pipelines**: Automated testing, build, and deployment processes.
+- **CI/CD pipelines**: Automated testing, build, and staging deployment processes.
 - **Comprehensive testing**: Unit, and integration tests using modern testing frameworks.
 
 ## Technologies
 
-- **Frontend**: React, TypeScript, CSS, Mantine UI, React Router, Tansctack Query
+
+- **Frontend**: React, TypeScript, CSS, Mantine UI, React Router, TanStack Query
 - **Backend**: Node.js, Express, TypeScript
 - **Database**: PostgreSQL, Drizzle ORM
 - **Infrastructure**: AWS (EC2, RDS, ECR, ECS), Terraform
@@ -109,7 +110,7 @@ The project consists of the following directories:
 - **/docs**: Project documentation.
 - **/nginx**: Reverse proxy configuration.
 - **/server**: Typescript/Node.js/Express server for the backend.
-- **/server/db**: PostgreSQL setup, Drizzle ORM, and migration scripts.
+- **/server/db**: PostgreSQL setup, Drizzle ORM and migration scripts.
 - **/spring-boot**: Java/Spring Boot server for the product catalog.
 - **/terraform**: Infrastructure setup and provisioning using Terraform.
 
@@ -118,7 +119,6 @@ The project consists of the following directories:
 For more detailed documentation, see:
 
 - **[API Documentation](docs/API.md)**: Endpoints, request/response samples, data validation, authentication, and error handling.
-- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)**: High-level overview of the app's architecture.
 - **[SETUP.md](docs/SETUP.md)**: Detailed setup instructions.
 - **[TESTING.md](docs/TESTING.md)**: Testing strategy and tools.
 
