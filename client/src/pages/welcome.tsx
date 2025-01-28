@@ -4,22 +4,15 @@ import {
     Title,
     Text,
     Button,
-    Group,
-    CopyButton,
+    // Group,
+    // CopyButton,
     Flex,
   } from "@mantine/core";
   import { Link } from "react-router";
   import SignInForm from "../components/sign-in-form";
+  import GenerateDemoUserButton from "../components/generate-demo-user-button";
 
   const Welcome: React.FC = () => {
-    const demoCredentials = {
-      email: "demo@example.com",
-      password: "password123",
-    };
-  
-    const handleGenerateUser = () => {
-      console.log("Generate user clicked");
-    };
   
     return (
     <Container size="md" style={{ padding: "2rem" }}>
@@ -43,24 +36,7 @@ import {
               for future updates.
             </Text>
 
-            <Group align="center" style={{ marginBottom: "1rem" }}>
-              <Button
-                variant="gradient"
-                gradient={{ from: "teal", to: "blue" }}
-                onClick={handleGenerateUser}
-              >
-                Generate Demo User
-              </Button>
-              <CopyButton
-                value={`Email: ${demoCredentials.email}\nPassword: ${demoCredentials.password}`}
-              >
-                {({ copied, copy }) => (
-                  <Button onClick={copy} color={copied ? "green" : "blue"}>
-                    {copied ? "Copied!" : "Copy Login Credentials"}
-                  </Button>
-                )}
-              </CopyButton>
-            </Group>
+            <GenerateDemoUserButton />
           </div>
 
           {/* Sign-In Form Section */}
