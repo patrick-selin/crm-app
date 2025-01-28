@@ -36,7 +36,8 @@ export const UserSchema = z.object({
   country: z
     .string()
     .min(1, { message: "Country is required" })
-    .max(50, { message: "Country must not exceed 50 characters" }),
+    .max(50, { message: "Country must not exceed 50 characters" })
+    .optional(),
   createdAt: z.date(),
   updatedAt: z.date().nullable(),
 });
@@ -45,6 +46,7 @@ export const RegisterSchema = UserSchema.omit({
   userId: true,
   createdAt: true,
   updatedAt: true,
+  role: true,
   passwordHash: true,
 }).extend({
   password: z.string().min(6, "Password must be at least 6 characters long"),

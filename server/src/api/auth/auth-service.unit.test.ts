@@ -13,7 +13,7 @@ import {
   mockDbSelect,
   mockDbInsert,
 } from "../../tests/test-helpers";
-import { RegisterSchema } from "../../schemas/user-and-auth-schemas";
+import { UserSchema } from "../../schemas/user-and-auth-schemas";
 
 vi.mock("../../db/db");
 vi.mock("bcryptjs");
@@ -21,7 +21,6 @@ vi.mock("jsonwebtoken");
 
 /**
  * Test Helpers for Mocking and Test Data
- *
  * - `createMockUser(overrides)`: Creates a mock user object with default values.
  * - `createMockRegisterUser(overrides)`: Creates a mock registration user object.
  * - `createMockPayload(overrides)`: Creates a mock JWT payload with defaults.
@@ -38,42 +37,38 @@ describe("Auth Service Unit Tests", () => {
     it("should register a new user and return user details", async () => {
       const mockRegisterUser = createMockRegisterUser();
       vi.spyOn(bcrypt, "hashSync").mockReturnValue("mockedPasswordHash");
-
+  
       const mockUser = {
         ...mockRegisterUser,
         userId: faker.string.uuid(),
         passwordHash: "mockedPasswordHash",
+        role: "user",
       };
       mockDbInsert([mockUser]);
 
       const result = await authService.registerUser(mockRegisterUser);
-
-      const validatedResult = RegisterSchema.omit({ password: true }).parse({
-        username: result.username,
-        email: result.email,
-        firstName: result.firstName,
-        lastName: result.lastName,
-        role: result.role,
-        phone: result.phone,
-        address: result.address,
-        city: result.city,
-        postalCode: result.postalCode,
-        country: result.country,
-      });
-
+  
+      const validatedResult = UserSchema.omit({
+        userId: true,
+        createdAt: true,
+        updatedAt: true,
+        passwordHash: true,
+      }).parse(result);
+    
+  
       expect(validatedResult).toEqual({
         username: mockRegisterUser.username,
         email: mockRegisterUser.email,
         firstName: mockRegisterUser.firstName,
         lastName: mockRegisterUser.lastName,
-        role: mockRegisterUser.role,
+        role: "user",
         phone: mockRegisterUser.phone,
         address: mockRegisterUser.address,
         city: mockRegisterUser.city,
         postalCode: mockRegisterUser.postalCode,
         country: mockRegisterUser.country,
       });
-
+  
       expect(bcrypt.hashSync).toHaveBeenCalledWith(
         mockRegisterUser.password,
         expect.any(Number)
@@ -89,7 +84,6 @@ describe("Auth Service Unit Tests", () => {
           password: "",
           firstName: faker.person.firstName(),
           lastName: faker.person.lastName(),
-          role: "user",
           phone: faker.phone.number(),
           address: faker.location.streetAddress(),
           city: faker.location.city(),
