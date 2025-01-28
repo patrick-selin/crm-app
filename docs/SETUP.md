@@ -137,4 +137,3 @@ Run E2E tests using Playwright:
 ```bash
 npm run test:e2e
 ```
-

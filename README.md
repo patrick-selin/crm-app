@@ -30,6 +30,7 @@ Explore the repository for more details on the architecture, API documentation a
 
 ## Technologies
 
+
 - **Frontend**: React, TypeScript, CSS, Mantine UI, React Router, TanStack Query
 - **Backend**: Node.js, Express, TypeScript
 - **Database**: PostgreSQL, Drizzle ORM

@@ -233,7 +233,6 @@ Register a new user.
 #### POST `/auth/login`
 
 Authenticate a user and retrieve a JWT token.
-
 - **Request Body**:
 
   ```json
@@ -456,7 +455,6 @@ Retrieve detailed information about a specific order for a customer.
 Create a new customer.
 
 - **Request Body**:
-
   ```json
   {
     "firstName": "Jane",
