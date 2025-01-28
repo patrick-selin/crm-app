@@ -5,6 +5,7 @@ import * as customerService from "./customer-service";
 import {
   setupControllerTest,
   createMockCustomer,
+  createMockCustomerWithMetrics,
 } from "../../tests/test-helpers";
 import { NotFoundError } from "../../utils/errors/app-errors";
 import { Request, Response } from "express";
@@ -25,13 +26,14 @@ describe("Customer Controller Unit Tests", () => {
     vi.clearAllMocks();
   });
 
-  describe.only("listCustomers", () => {
+  describe("listCustomers", () => {
     it("should return a list of customers", async () => {
       const mockCustomers = [
         createMockCustomer(),
         createMockCustomer(),
         createMockCustomer(),
       ];
+
       mockCustomerService.getCustomers.mockResolvedValueOnce({
         total: 3,
         page: 1,
@@ -78,4 +80,110 @@ describe("Customer Controller Unit Tests", () => {
       expect(next).toHaveBeenCalledWith(error);
     });
   });
+
+  describe("listCustomersWithMetrics", () => {
+    it("should return a list of customers with metrics", async () => {
+      const mockCustomers = [
+        createMockCustomerWithMetrics(),
+        createMockCustomerWithMetrics(),
+      ];
+      const mockResponse = {
+        total: 2,
+        page: 1,
+        limit: 10,
+        data: mockCustomers,
+      };
+
+      mockCustomerService.getCustomersWithMetrics.mockResolvedValueOnce(
+        mockResponse
+      );
+
+      req.query = { page: "1", limit: "10" };
+
+      await customerController.listCustomersWithMetrics(
+        req as Request,
+        res as Response,
+        next
+      );
+
+      expect(mockCustomerService.getCustomersWithMetrics).toHaveBeenCalledWith({
+        search: undefined,
+        sort: undefined,
+        page: 1,
+        limit: 10,
+        filters: {},
+      });
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(mockResponse);
+    });
+
+    it("should pass errors to next when the service throws an error", async () => {
+      const serviceError = new Error("Service Error");
+
+      mockCustomerService.getCustomersWithMetrics.mockRejectedValueOnce(
+        serviceError
+      );
+
+      req.query = { page: "1", limit: "10" };
+
+      await customerController.listCustomersWithMetrics(
+        req as Request,
+        res as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(serviceError);
+    });
+
+    it("should pass errors to next when request query parsing fails", async () => {
+      req.query = undefined;
+
+      await customerController.listCustomersWithMetrics(
+        req as Request,
+        res as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(expect.any(TypeError));
+    });
+  });
+
+  describe("getCustomerById", () => {
+    it("should return a customer by ID", async () => {
+      const mockCustomer = createMockCustomer();
+      mockCustomerService.getCustomerById.mockResolvedValueOnce(mockCustomer);
+
+      req.params = { id: mockCustomer.customerId };
+
+      await customerController.getCustomerById(
+        req as Request,
+        res as Response,
+        next
+      );
+
+      expect(mockCustomerService.getCustomerById).toHaveBeenCalledWith(
+        mockCustomer.customerId
+      );
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(mockCustomer);
+    });
+
+    it("should handle NotFoundError and pass it to next", async () => {
+      const error = new NotFoundError("Customer not found");
+      const validNonExistentId = "9c92d8a1-2c13-4f4a-9b3f-14dbac8b4fdc";
+      mockCustomerService.getCustomerById.mockRejectedValueOnce(error);
+
+      req.params = { id: validNonExistentId }; 
+
+      await customerController.getCustomerById(
+        req as Request,
+        res as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+
 });
