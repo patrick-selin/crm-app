@@ -9,8 +9,8 @@ POST {{baseUrl}}/auth/register HTTP/1.1
 content-type: application/json
 
 {
-  "username": "ssssAbbb",
-  "email": "bbsssAdbsb@testi.fi",
+  "username": "hello",
+  "email": "hello@testi.fi",
   "password": "salasana",
   "firstName": "Patrick",
   "lastName": "Sel",
@@ -26,7 +26,7 @@ POST {{baseUrl}}/auth/login HTTP/1.1
 content-type: application/json
 
 {
-  "email": "bbbb@testi.fi",
+  "email": "hello@testi.fi",
   "password": "salasana"
 }
 

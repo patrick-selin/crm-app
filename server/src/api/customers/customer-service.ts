@@ -226,6 +226,8 @@ export const getCustomerOrderDetails = async (
     .from(orders)
     .where(and(eq(orders.orderId, orderId), eq(orders.customerId, customerId)));
 
+    console.log("DEBUG: Retrieved Order:", order); 
+
   if (!order) {
     return null;
   }

@@ -87,6 +87,24 @@ export const createMockCustomerWithMetrics = (overrides = {}) => ({
   ...overrides,
 });
 
+export const createMockOrder = () => ({
+  orderId: faker.string.uuid(),
+  customerId: faker.string.uuid(),
+  totalAmount: faker.finance.amount({ min: 5, max: 1000, dec: 2 }),
+  paymentStatus: faker.helpers.arrayElement(["Completed", "Pending", "Overdue"]),
+  orderDate: faker.date.past(),
+  createdAt: faker.date.past(),
+  updatedAt: faker.date.recent(),
+});
+
+export const createMockOrderItem = (orderId: string) => ({
+  orderItemId: faker.string.uuid(),
+  orderId,
+  productId: faker.string.uuid(),
+  quantity: faker.number.int({ min: 1, max: 10 }),
+  price: faker.finance.amount({ min: 5, max: 200, dec: 2 }),
+});
+
 export const createMockPayload = (overrides = {}): JwtPayload => ({
   id: faker.string.uuid(),
   role: "user",

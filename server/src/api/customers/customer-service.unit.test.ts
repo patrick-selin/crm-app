@@ -10,10 +10,10 @@ import {
   mockDbInsert,
   mockDbDelete,
   mockDbUpdate,
+  createMockOrder,
 } from "../../tests/test-helpers";
 import { NotFoundError, BadRequestError } from "../../utils/errors/app-errors";
 import { faker } from "@faker-js/faker";
-
 
 vi.mock("../../db/db");
 describe("Customer Service Unit Tests", () => {
@@ -23,10 +23,7 @@ describe("Customer Service Unit Tests", () => {
 
   describe("getCustomers", () => {
     it("should fetch and return customers", async () => {
-      const mockCustomers = [
-        createMockCustomer(),
-        createMockCustomer(),
-      ];
+      const mockCustomers = [createMockCustomer(), createMockCustomer()];
       mockDbPaginatedSelect(mockCustomers);
 
       const result = await customerService.getCustomers({
@@ -78,7 +75,7 @@ describe("Customer Service Unit Tests", () => {
     });
 
     it("should handle no customers with metrics found", async () => {
-        mockDbJoinSelect([]);
+      mockDbJoinSelect([]);
 
       const result = await customerService.getCustomersWithMetrics({
         search: "",
@@ -117,6 +114,115 @@ describe("Customer Service Unit Tests", () => {
     });
   });
 
+  describe("getCustomerOrders", () => {
+    it("should fetch and return customer orders", async () => {
+      const mockOrders = [createMockOrder(), createMockOrder()];
+      mockDbSelect(mockOrders);
+
+      const result = await customerService.getCustomerOrders(
+        faker.string.uuid()
+      );
+
+      expect(result).toEqual(
+        mockOrders.map((order) => ({
+          orderId: order.orderId,
+          totalAmount: parseFloat(order.totalAmount),
+          paymentStatus: order.paymentStatus,
+          orderDate: order.orderDate,
+        }))
+      );
+      expect(db.select).toHaveBeenCalled();
+    });
+
+    it("should return an empty array if no orders are found", async () => {
+      mockDbSelect([]);
+
+      const result = await customerService.getCustomerOrders(
+        faker.string.uuid()
+      );
+
+      expect(result).toEqual([]);
+      expect(db.select).toHaveBeenCalled();
+    });
+  });
+
+// remember to debug
+//   describe("getCustomerOrderDetails", () => {
+//     it("should fetch order details with items", async () => {
+//       const mockOrder = createMockOrder();
+//       console.log("MOCK ORDER ::" + JSON.stringify(mockOrder));
+//       const mockOrderItems = [
+//         createMockOrderItem(mockOrder.orderId),
+//         createMockOrderItem(mockOrder.orderId),
+//       ];
+//       console.log("MOCK ORDERITEMS ::" + JSON.stringify(mockOrderItems));
+  
+//       mockDbSelect([mockOrder]); 
+//       mockDbSelect(mockOrderItems); 
+//       const result = await customerService.getCustomerOrderDetails(
+//         mockOrder.customerId,
+//         mockOrder.orderId
+//       );
+//       console.log("RESULT ::" + result);
+//       console.log("object");
+  
+//       expect(result).toEqual({
+//         order: {
+//           ...mockOrder,
+//           totalAmount: parseFloat(mockOrder.totalAmount.toString()),
+//           paymentStatus: mockOrder.paymentStatus,
+//           orderDate: mockOrder.orderDate,
+//           createdAt: mockOrder.createdAt,
+//           updatedAt: mockOrder.updatedAt,
+//         },
+//         items: mockOrderItems.map((item) => ({
+//           ...item,
+//           price: parseFloat(item.price.toString()),
+//         })),
+//       });
+  
+//       expect(db.select).toHaveBeenCalledTimes(2);
+//     });
+  
+//     it("should return null if order is not found", async () => {
+//       mockDbSelect([]);
+  
+//       const result = await customerService.getCustomerOrderDetails(
+//         faker.string.uuid(),
+//         faker.string.uuid()
+//       );
+  
+//       expect(result).toBeNull();
+//       expect(db.select).toHaveBeenCalledTimes(1);
+//     });
+  
+//     it("should return order details without items if no items exist", async () => {
+//       const mockOrder = createMockOrder();
+  
+//       mockDbSelect([mockOrder]);
+//       mockDbSelect([]);
+//       const result = await customerService.getCustomerOrderDetails(
+//         mockOrder.customerId,
+//         mockOrder.orderId
+//       );
+  
+//       expect(result).toEqual({
+//         order: {
+//           ...mockOrder,
+//           totalAmount: parseFloat(mockOrder.totalAmount.toString()),
+//           paymentStatus: mockOrder.paymentStatus,
+//           orderDate: mockOrder.orderDate,
+//           createdAt: mockOrder.createdAt,
+//           updatedAt: mockOrder.updatedAt,
+//         },
+//         items: [],
+//       });
+  
+//       expect(db.select).toHaveBeenCalledTimes(2);
+//     });
+//   });
+  
+
   describe("addCustomer", () => {
     it("should create and return a new customer", async () => {
       const mockCustomer = createMockCustomer();
@@ -131,58 +237,57 @@ describe("Customer Service Unit Tests", () => {
     it("should throw BadRequestError for invalid customer data", async () => {
       const invalidCustomer = { email: "invalidEmail" };
 
-      await expect(customerService.addCustomer(invalidCustomer)).rejects.toThrow(
-        BadRequestError
-      );
+      await expect(
+        customerService.addCustomer(invalidCustomer)
+      ).rejects.toThrow(BadRequestError);
     });
   });
 
   describe("updateCustomer", () => {
     it("should update and return the customer", async () => {
       const mockCustomer = createMockCustomer();
-      mockDbUpdate([mockCustomer]); 
-  
+      mockDbUpdate([mockCustomer]);
+
       const result = await customerService.updateCustomer(
         mockCustomer.customerId,
         { firstName: "Updated" }
       );
-  
+
       expect(result).toEqual(mockCustomer);
       expect(db.update).toHaveBeenCalled();
     });
-  
+
     it("should return null if customer to update does not exist", async () => {
       mockDbUpdate([]);
-  
-      const result = await customerService.updateCustomer(
-        faker.string.uuid(),
-        { firstName: "Updated" }
-      );
-  
+
+      const result = await customerService.updateCustomer(faker.string.uuid(), {
+        firstName: "Updated",
+      });
+
       expect(result).toBeNull();
       expect(db.update).toHaveBeenCalled();
     });
   });
-  
+
   describe("deleteCustomer", () => {
     it("should delete a customer and return true", async () => {
       mockDbDelete([{ affectedRows: 1 }]);
-  
+
       const result = await customerService.deleteCustomer(faker.string.uuid());
-  
+
       expect(result).toBe(true);
       expect(db.delete).toHaveBeenCalled();
     });
-  
+
     it("should return false if customer does not exist", async () => {
-      mockDbDelete([]); 
-  
+      mockDbDelete([]);
+
       const result = await customerService.deleteCustomer(faker.string.uuid());
-  
+
       expect(result).toBe(false);
       expect(db.delete).toHaveBeenCalled();
     });
   });
 
-  
+
 });
