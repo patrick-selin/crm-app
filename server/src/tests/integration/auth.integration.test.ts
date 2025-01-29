@@ -1,4 +1,4 @@
-// src/tests/integration/auth-controller.integration.test.ts
+// src/tests/integration/auth.integration.test.ts
 import request from "supertest";
 import app from "../../server";
 import { db } from "../../db/db";
@@ -31,7 +31,7 @@ describe("Auth API Integration Tests", () => {
   beforeAll(async () => {
     RegisterSchema.parse(mockRegisterUser);
 
-    // await db.delete(users);
+  
     await db.insert(users).values({
       ...mockRegisterUser,
       passwordHash: await bcrypt.hash(mockRegisterUser.password, 10),

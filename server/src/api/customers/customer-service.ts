@@ -11,7 +11,7 @@ import {
 } from "../../utils/query-helpers";
 import logger from "../../utils/logger";
 
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import {
   CustomerSchema,
   CustomerSummarySchema,
@@ -20,7 +20,11 @@ import {
   UpdateCustomerSchema,
 } from "../../schemas/customer-schemas";
 import { OrderSchema, OrderItemSchema } from "../../schemas/order-schemas";
-import { ConflictError, BadRequestError } from "../../utils/errors/app-errors";
+import {
+  ConflictError,
+  BadRequestError,
+  NotFoundError,
+} from "../../utils/errors/app-errors";
 import { PgColumn } from "drizzle-orm/pg-core";
 
 const isPostgresUniqueViolation = (error: any): boolean => {
@@ -108,11 +112,11 @@ export const getCustomersWithMetrics = async ({
 
   const offset = calculateOffset(page, limit);
 
-  const conditions = createSearchAndFilterConditions(
-    search,
-    filters,
-    [customers.firstName, customers.lastName, customers.email]
-  );
+  const conditions = createSearchAndFilterConditions(search, filters, [
+    customers.firstName,
+    customers.lastName,
+    customers.email,
+  ]);
 
   // Sorting
   const sortMapping: Record<string, PgColumn | SQL<any>> = {
@@ -160,7 +164,7 @@ export const getCustomersWithMetrics = async ({
     lastOrderDate: result.lastOrderDate ? result.lastOrderDate : "No orders",
     totalSpent: Number(result.totalSpent),
   }));
-  
+
   const totalResult = await db
     .select({ count: sql<number>`COUNT(*)` })
     .from(customers)
@@ -183,6 +187,10 @@ export const getCustomerById = async (id: string) => {
     .select()
     .from(customers)
     .where(eq(customers.customerId, id));
+
+  if (!customer) {
+    throw new NotFoundError(`Customer with ID ${id} not found`);
+  }
 
   return customer ? CustomerSchema.parse(customer) : null;
 };
@@ -221,6 +229,8 @@ export const getCustomerOrderDetails = async (
     .select()
     .from(orders)
     .where(and(eq(orders.orderId, orderId), eq(orders.customerId, customerId)));
+
+  console.log("DEBUG: Retrieved Order:", order);
 
   if (!order) {
     return null;
@@ -264,6 +274,7 @@ export const getCustomerOrderDetails = async (
 export const addCustomer = async (customerData: unknown) => {
   try {
     logger.info("Service: Creating a new customer...");
+
     const validatedCustomer = CreateCustomerSchema.parse(customerData);
 
     const [newCustomer] = await db
@@ -274,15 +285,24 @@ export const addCustomer = async (customerData: unknown) => {
     logger.info("New customer created:", newCustomer);
     return newCustomer;
   } catch (error) {
-    const e = error as Error;
+    if (error instanceof ZodError) {
+      throw new BadRequestError(
+        "Invalid customer data",
+        error.errors
+          .map((err) => `${err.path.join(".")}: ${err.message}`)
+          .join(", ")
+      );
+    }
+
     if (isPostgresUniqueViolation(error)) {
       throw new ConflictError(
         "A customer with this email already exists",
-        `Unique constraint violation: ${e.message}`,
-        e.stack
+        `Unique constraint violation: ${(error as Error).message}`,
+        (error as Error).stack
       );
     }
-    throw error;
+
+    throw error; // Rethrow other errors
   }
 };
 
@@ -303,15 +323,24 @@ export const updateCustomer = async (id: string, data: unknown) => {
     .where(eq(customers.customerId, id))
     .returning();
 
-  return updated ? CustomerSchema.parse(updated) : null;
+  if (!updated) {
+    throw new NotFoundError("Customer not found", `ID = ${id}`);
+  }
+
+  return CustomerSchema.parse(updated);
 };
 
 export const deleteCustomer = async (id: string) => {
   logger.info(`Service: Deleting customer ID = ${id}`);
+
   const result = await db
     .delete(customers)
     .where(eq(customers.customerId, id))
     .returning();
 
-  return result.length > 0;
+  if (result.length === 0) {
+    throw new NotFoundError("Customer not found", `ID = ${id}`);
+  }
+
+  return true;
 };

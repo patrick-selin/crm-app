@@ -248,8 +248,6 @@ jobs:
       - name: Run Node.js Backend Integration Tests
         run: |
           npm run test:integration:server:ci
-        continue-on-error: true
-
       
       - name: Export Profile
         run: export SPRING_PROFILES_ACTIVE=test
