@@ -253,7 +253,7 @@ describe("Customer Controller Unit Tests", () => {
         `No record to delete for customer ID = ${validIdNotExistent}`
       );
 
-      mockCustomerService.deleteCustomer.mockResolvedValueOnce(false);
+      mockCustomerService.deleteCustomer.mockRejectedValueOnce(error);
 
       req.params = { id: validIdNotExistent };
 

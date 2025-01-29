@@ -108,7 +108,10 @@ describe("Customer API Integration Tests", () => {
     });
 
     it("should return 400 BadRequestError for invalid data", async () => {
-      const invalidCustomer = { firstName: "", email: "invalid-email" };
+      const invalidCustomer = {
+        firstName: "",
+        email: "invalid-email@.testi.fi",
+      };
       const response = await api
         .post("/api/v1/customers")
         .set("Authorization", `Bearer ${accessToken}`)
@@ -116,6 +119,96 @@ describe("Customer API Integration Tests", () => {
 
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty("error", "VALIDATION_ERROR");
+    });
+  });
+
+  describe("GET /api/v1/customers/:id", () => {
+    it("should return customer details", async () => {
+      const response = await api
+        .get(`/api/v1/customers/${testCustomer.customerId}`)
+        .set("Authorization", `Bearer ${accessToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toMatchObject({
+        customerId: testCustomer.customerId,
+        firstName: testCustomer.firstName,
+        lastName: testCustomer.lastName,
+        email: testCustomer.email,
+      });
+
+      CustomerSchema.parse(response.body);
+    });
+
+    it("should return 404 NotFoundError if customer is not found", async () => {
+      const validIdNotExistent = "9c92d8a1-2c13-4f4a-9b3f-14dbac8b4fdc";
+      const response = await api
+        .get(`/api/v1/customers/${validIdNotExistent}`)
+        .set("Authorization", `Bearer ${accessToken}`);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toHaveProperty("error", "NOT_FOUND");
+    });
+  });
+
+  describe("PUT /api/v1/customers/:id", () => {
+    it("should update an existing customer", async () => {
+      const updateData = { firstName: "Updated Name" };
+      UpdateCustomerSchema.parse(updateData);
+
+      const response = await api
+        .put(`/api/v1/customers/${testCustomer.customerId}`)
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send(updateData);
+
+      expect(response.status).toBe(200);
+      expect(response.body.firstName).toBe(updateData.firstName);
+    });
+
+    it("should return 400 BadRequestError for invalid update data", async () => {
+      const response = await api
+        .put(`/api/v1/customers/${testCustomer.customerId}`)
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send({ email: "invalid-email" });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty("error", "VALIDATION_ERROR");
+    });
+
+    it("should return 404 NotFoundError if customer is not found", async () => {
+      const validIdNotExistent = "9c92d8a1-2c13-4f4a-9b3f-14dbac8b4fdc";
+      const response = await api
+        .put(`/api/v1/customers/${validIdNotExistent}`)
+        .set("Authorization", `Bearer ${accessToken}`)
+        .send({ firstName: "Random" });
+
+      expect(response.status).toBe(404);
+      expect(response.body).toHaveProperty("error", "NOT_FOUND");
+    });
+  });
+
+  describe("DELETE /api/v1/customers/:id", () => {
+    it("should delete a customer", async () => {
+      const newCustomer = createMockCustomer();
+      const [dbCustomer] = await db
+        .insert(customers)
+        .values(newCustomer)
+        .returning();
+
+      const response = await api
+        .delete(`/api/v1/customers/${dbCustomer.customerId}`)
+        .set("Authorization", `Bearer ${accessToken}`);
+
+      expect(response.status).toBe(204);
+    });
+
+    it("should return 404 NotFoundError if customer is not found", async () => {
+        const validIdNotExistent = "9c92d8a1-2c13-4f4a-9b3f-14dbac8b4fdc";
+        const response = await api
+        .delete(`/api/v1/customers/${validIdNotExistent}`)
+        .set("Authorization", `Bearer ${accessToken}`);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toHaveProperty("error", "NOT_FOUND");
     });
   });
 });

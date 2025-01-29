@@ -221,14 +221,8 @@ export const deleteCustomer = async (
   try {
     logger.info("Controller invoked: deleteCustomer");
     const { id } = req.params;
-    const success = await customerService.deleteCustomer(id);
 
-    if (!success) {
-      throw new NotFoundError(
-        "Customer not found",
-        `No record to delete for customer ID = ${id}`
-      );
-    }
+    await customerService.deleteCustomer(id);
     res.status(204).send();
   } catch (error: any) {
     logger.error("Controller error in deleteCustomer:", { error });

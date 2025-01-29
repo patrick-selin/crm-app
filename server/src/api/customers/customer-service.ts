@@ -20,7 +20,11 @@ import {
   UpdateCustomerSchema,
 } from "../../schemas/customer-schemas";
 import { OrderSchema, OrderItemSchema } from "../../schemas/order-schemas";
-import { ConflictError, BadRequestError, NotFoundError } from "../../utils/errors/app-errors";
+import {
+  ConflictError,
+  BadRequestError,
+  NotFoundError,
+} from "../../utils/errors/app-errors";
 import { PgColumn } from "drizzle-orm/pg-core";
 
 const isPostgresUniqueViolation = (error: any): boolean => {
@@ -226,7 +230,7 @@ export const getCustomerOrderDetails = async (
     .from(orders)
     .where(and(eq(orders.orderId, orderId), eq(orders.customerId, customerId)));
 
-    console.log("DEBUG: Retrieved Order:", order); 
+  console.log("DEBUG: Retrieved Order:", order);
 
   if (!order) {
     return null;
@@ -319,15 +323,24 @@ export const updateCustomer = async (id: string, data: unknown) => {
     .where(eq(customers.customerId, id))
     .returning();
 
-  return updated ? CustomerSchema.parse(updated) : null;
+  if (!updated) {
+    throw new NotFoundError("Customer not found", `ID = ${id}`);
+  }
+
+  return CustomerSchema.parse(updated);
 };
 
 export const deleteCustomer = async (id: string) => {
   logger.info(`Service: Deleting customer ID = ${id}`);
+
   const result = await db
     .delete(customers)
     .where(eq(customers.customerId, id))
     .returning();
 
-  return result.length > 0;
+  if (result.length === 0) {
+    throw new NotFoundError("Customer not found", `ID = ${id}`);
+  }
+
+  return true;
 };
