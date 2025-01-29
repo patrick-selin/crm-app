@@ -75,13 +75,17 @@ export const createMockCustomerWithMetrics = (overrides = {}) => ({
   firstName: faker.person.firstName(),
   lastName: faker.person.lastName(),
   email: faker.internet.email(),
-  lastOrderDate: faker.helpers.arrayElement([
-    faker.date.recent(),
+  lastOrderDate: faker.helpers.arrayElement([faker.date.recent()]),
+  numOfOrders: faker.helpers.arrayElement([
+    0,
+    faker.number.int({ min: 1, max: 10 }),
   ]),
-  numOfOrders: faker.helpers.arrayElement([0, faker.number.int({ min: 1, max: 10 })]),
-  totalSpent: faker.helpers.arrayElement([0, faker.number.float({ min: 10, max: 5000 })]),
+  totalSpent: faker.helpers.arrayElement([
+    0,
+    faker.number.float({ min: 10, max: 5000 }),
+  ]),
   ...overrides,
-})
+});
 
 export const createMockPayload = (overrides = {}): JwtPayload => ({
   id: faker.string.uuid(),
@@ -110,6 +114,18 @@ export const mockDbPaginatedSelect = (mockResponse: any[]) => {
         }),
       }),
     }),
+  } as any);
+};
+
+export const mockDbJoinSelect = (mockResponse: any[]) => {
+  vi.spyOn(db, "select").mockReturnValue({
+    from: vi.fn().mockReturnThis(),
+    leftJoin: vi.fn().mockReturnThis(),
+    groupBy: vi.fn().mockReturnThis(),
+    where: vi.fn().mockReturnThis(),
+    offset: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockReturnThis(),
+    orderBy: vi.fn().mockResolvedValue(mockResponse),
   } as any);
 };
 

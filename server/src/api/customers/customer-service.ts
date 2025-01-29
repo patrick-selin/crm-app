@@ -11,7 +11,7 @@ import {
 } from "../../utils/query-helpers";
 import logger from "../../utils/logger";
 
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import {
   CustomerSchema,
   CustomerSummarySchema,
@@ -20,7 +20,7 @@ import {
   UpdateCustomerSchema,
 } from "../../schemas/customer-schemas";
 import { OrderSchema, OrderItemSchema } from "../../schemas/order-schemas";
-import { ConflictError, BadRequestError } from "../../utils/errors/app-errors";
+import { ConflictError, BadRequestError, NotFoundError } from "../../utils/errors/app-errors";
 import { PgColumn } from "drizzle-orm/pg-core";
 
 const isPostgresUniqueViolation = (error: any): boolean => {
@@ -184,6 +184,10 @@ export const getCustomerById = async (id: string) => {
     .from(customers)
     .where(eq(customers.customerId, id));
 
+  if (!customer) {
+    throw new NotFoundError(`Customer with ID ${id} not found`);
+  }
+
   return customer ? CustomerSchema.parse(customer) : null;
 };
 
@@ -264,6 +268,7 @@ export const getCustomerOrderDetails = async (
 export const addCustomer = async (customerData: unknown) => {
   try {
     logger.info("Service: Creating a new customer...");
+
     const validatedCustomer = CreateCustomerSchema.parse(customerData);
 
     const [newCustomer] = await db
@@ -274,15 +279,24 @@ export const addCustomer = async (customerData: unknown) => {
     logger.info("New customer created:", newCustomer);
     return newCustomer;
   } catch (error) {
-    const e = error as Error;
+    if (error instanceof ZodError) {
+      throw new BadRequestError(
+        "Invalid customer data",
+        error.errors
+          .map((err) => `${err.path.join(".")}: ${err.message}`)
+          .join(", ")
+      );
+    }
+
     if (isPostgresUniqueViolation(error)) {
       throw new ConflictError(
         "A customer with this email already exists",
-        `Unique constraint violation: ${e.message}`,
-        e.stack
+        `Unique constraint violation: ${(error as Error).message}`,
+        (error as Error).stack
       );
     }
-    throw error;
+
+    throw error; // Rethrow other errors
   }
 };
 
