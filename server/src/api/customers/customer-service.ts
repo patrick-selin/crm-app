@@ -108,11 +108,11 @@ export const getCustomersWithMetrics = async ({
 
   const offset = calculateOffset(page, limit);
 
-  const conditions = createSearchAndFilterConditions(
-    search,
-    filters,
-    [customers.firstName, customers.lastName, customers.email]
-  );
+  const conditions = createSearchAndFilterConditions(search, filters, [
+    customers.firstName,
+    customers.lastName,
+    customers.email,
+  ]);
 
   // Sorting
   const sortMapping: Record<string, PgColumn | SQL<any>> = {
@@ -160,7 +160,7 @@ export const getCustomersWithMetrics = async ({
     lastOrderDate: result.lastOrderDate ? result.lastOrderDate : "No orders",
     totalSpent: Number(result.totalSpent),
   }));
-  
+
   const totalResult = await db
     .select({ count: sql<number>`COUNT(*)` })
     .from(customers)

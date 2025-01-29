@@ -99,6 +99,20 @@ export const mockDbSelect = (mockResponse: any[]) => {
   } as any);
 };
 
+export const mockDbPaginatedSelect = (mockResponse: any[]) => {
+  vi.spyOn(db, "select").mockReturnValue({
+    from: vi.fn().mockReturnValue({
+      where: vi.fn().mockReturnValue({
+        offset: vi.fn().mockReturnValue({
+          limit: vi.fn().mockReturnValue({
+            orderBy: vi.fn().mockResolvedValue(mockResponse),
+          }),
+        }),
+      }),
+    }),
+  } as any);
+};
+
 export const mockDbInsert = (mockResponse: any[]) => {
   vi.spyOn(db, "insert").mockImplementation(
     () =>
