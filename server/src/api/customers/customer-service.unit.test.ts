@@ -8,6 +8,8 @@ import {
   mockDbPaginatedSelect,
   mockDbJoinSelect,
   mockDbInsert,
+  mockDbDelete,
+  mockDbUpdate,
 } from "../../tests/test-helpers";
 import { NotFoundError, BadRequestError } from "../../utils/errors/app-errors";
 import { faker } from "@faker-js/faker";
@@ -135,4 +137,52 @@ describe("Customer Service Unit Tests", () => {
     });
   });
 
+  describe("updateCustomer", () => {
+    it("should update and return the customer", async () => {
+      const mockCustomer = createMockCustomer();
+      mockDbUpdate([mockCustomer]); 
+  
+      const result = await customerService.updateCustomer(
+        mockCustomer.customerId,
+        { firstName: "Updated" }
+      );
+  
+      expect(result).toEqual(mockCustomer);
+      expect(db.update).toHaveBeenCalled();
+    });
+  
+    it("should return null if customer to update does not exist", async () => {
+      mockDbUpdate([]);
+  
+      const result = await customerService.updateCustomer(
+        faker.string.uuid(),
+        { firstName: "Updated" }
+      );
+  
+      expect(result).toBeNull();
+      expect(db.update).toHaveBeenCalled();
+    });
+  });
+  
+  describe("deleteCustomer", () => {
+    it("should delete a customer and return true", async () => {
+      mockDbDelete([{ affectedRows: 1 }]);
+  
+      const result = await customerService.deleteCustomer(faker.string.uuid());
+  
+      expect(result).toBe(true);
+      expect(db.delete).toHaveBeenCalled();
+    });
+  
+    it("should return false if customer does not exist", async () => {
+      mockDbDelete([]); 
+  
+      const result = await customerService.deleteCustomer(faker.string.uuid());
+  
+      expect(result).toBe(false);
+      expect(db.delete).toHaveBeenCalled();
+    });
+  });
+
+  
 });

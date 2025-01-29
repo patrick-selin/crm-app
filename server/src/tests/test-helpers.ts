@@ -139,3 +139,21 @@ export const mockDbInsert = (mockResponse: any[]) => {
       } as any)
   );
 };
+
+export const mockDbDelete = (mockResponse: any) => {
+  vi.spyOn(db, "delete").mockReturnValue({
+    where: vi.fn().mockReturnValue({
+      returning: vi.fn().mockResolvedValue(mockResponse),
+    }),
+  } as any);
+};
+
+export const mockDbUpdate = (mockResponse: any) => {
+  vi.spyOn(db, "update").mockReturnValue({
+    set: vi.fn().mockReturnValue({
+      where: vi.fn().mockReturnValue({
+        returning: vi.fn().mockResolvedValue(mockResponse),
+      }),
+    }),
+  } as any);
+};
