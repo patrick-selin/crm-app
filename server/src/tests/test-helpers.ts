@@ -1,18 +1,26 @@
 // Helper functions
 import { db } from "../db/db";
-import { JwtPayload } from "../schemas/user-and-auth-schemas";
+import { JwtPayload, RegisterSchema, UserSchema } from "../schemas/user-and-auth-schemas";
 import { faker } from "@faker-js/faker";
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import { users } from "../db/schemas/users";
+import { config } from "../config/config";
+import { eq } from "drizzle-orm";
 
 /**
  * Test Helpers for Mocking and Test Data
  *
  * - `createMockUser(overrides)`: Creates a mock user object with default values.
  * - `createMockRegisterUser(overrides)`: Creates a mock registration user object.
+ * - `createMockCustomer(overrides)`: Creates a mock customer object.
+ * - `createMockOrder()`: Creates a mock order object.
+ * - `createMockOrderItem(orderId)`: Creates a mock order item object.
  * - `createMockPayload(overrides)`: Creates a mock JWT payload with defaults.
  * - `mockDbSelect(mockResponse)`: Mocks Drizzle ORM `db.select().from().where()` for database reads.
  * - `mockDbInsert(mockResponse)`: Mocks Drizzle ORM `db.insert().values().returning()` for writes.
- * - `etupControllerTest`: Mocks Express request, response, and next objects for testing controllers.
+ * - `setupControllerTest`: Mocks Express request, response, and next objects for testing controllers.
  */
 
 export const setupControllerTest = () => {
@@ -91,7 +99,11 @@ export const createMockOrder = () => ({
   orderId: faker.string.uuid(),
   customerId: faker.string.uuid(),
   totalAmount: faker.finance.amount({ min: 5, max: 1000, dec: 2 }),
-  paymentStatus: faker.helpers.arrayElement(["Completed", "Pending", "Overdue"]),
+  paymentStatus: faker.helpers.arrayElement([
+    "Completed",
+    "Pending",
+    "Overdue",
+  ]),
   orderDate: faker.date.past(),
   createdAt: faker.date.past(),
   updatedAt: faker.date.recent(),
@@ -113,6 +125,8 @@ export const createMockPayload = (overrides = {}): JwtPayload => ({
   ...overrides,
 });
 
+
+// MOCK DBs
 export const mockDbSelect = (mockResponse: any[]) => {
   vi.spyOn(db, "select").mockReturnValue({
     from: vi.fn().mockReturnValue({
@@ -174,4 +188,35 @@ export const mockDbUpdate = (mockResponse: any) => {
       }),
     }),
   } as any);
+};
+
+
+
+export const createTestUser = async () => {
+  const mockUser = createMockRegisterUser();
+  RegisterSchema.parse(mockUser);
+
+  await db.insert(users).values({
+    ...mockUser,
+    passwordHash: await bcrypt.hash(mockUser.password, 10),
+  });
+
+  const [dbUser] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, mockUser.email));
+
+  if (!dbUser) throw new Error("Error");
+
+  const payload = {
+    id: dbUser.userId,
+    role: dbUser.role,
+  };
+
+  const accessToken = jwt.sign(payload, config.JWT_SECRET!, { expiresIn: "15m" });
+  const refreshToken = jwt.sign(payload, config.REFRESH_SECRET!, { expiresIn: "14d" });
+
+  const validatedUser = UserSchema.parse(dbUser);
+
+  return { user: validatedUser, accessToken, refreshToken };
 };
