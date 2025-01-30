@@ -8,6 +8,7 @@ import { errorHandler } from "./middleware/error-handler";
 import healthCheckRoutes from "./api/health/health-routes";
 import authRoutes from "./api/auth/auth-routes";
 import customerRoutes from "./api/customers/customer-routes";
+import orderRoutes from "./api/orders/order-routes"
 
 const app: Application = express();
 
@@ -23,6 +24,7 @@ app.use((req, _res, next) => {
 app.use("/api/v1/health", healthCheckRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/customers", customerRoutes);
+app.use("/api/v1/orders", orderRoutes);
 // middleware
 app.use(unknownEndpoint);
 app.use(errorHandler);
