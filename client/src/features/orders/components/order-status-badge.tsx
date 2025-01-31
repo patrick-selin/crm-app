@@ -13,7 +13,7 @@ interface OrderStatusBadgeProps {
   initialStatus: string;
 }
 
-const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({ orderId, initialStatus }) => {
+const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({ initialStatus }) => {
   const [status, setStatus] = useState(initialStatus);
 
   const handleStatusChange = (newStatus: string) => {
