@@ -4,6 +4,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useOrders } from "../api/orders-queries";
 import OrderTableControls from "./orders-table-controls";
 import OrdersTableBody from "./orders-table-body";
+import BulkActionsControls from "./bulk-action-controls";
 
 const OrdersTable = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -36,7 +37,13 @@ const OrdersTable = () => {
         selectedOrders={selectedOrders}
         setSelectedOrders={setSelectedOrders}
       />
-
+      <BulkActionsControls
+        selectedOrders={selectedOrders}
+        setSelectedOrders={setSelectedOrders}
+        modalOpened={modalOpened}
+        open={open}
+        close={close}
+      />
     </div>
   );
 };

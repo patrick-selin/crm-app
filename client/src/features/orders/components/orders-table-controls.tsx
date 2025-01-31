@@ -1,7 +1,23 @@
 import { Group, TextInput } from "@mantine/core";
-import { DatePickerInput, DatesProvider, MonthPickerInput } from "@mantine/dates";
+import {
+  DatePickerInput,
+  DatesProvider,
+  MonthPickerInput,
+} from "@mantine/dates";
 
-const OrderTableControls = ({ searchInput, setSearchInput, dateRange, setDateRange }) => {
+interface OrderTableControlsProps {
+  searchInput: string;
+  setSearchInput: (value: string) => void;
+  dateRange: [Date | null, Date | null];
+  setDateRange: (value: [Date | null, Date | null]) => void;
+}
+
+const OrderTableControls: React.FC<OrderTableControlsProps> = ({
+  searchInput,
+  setSearchInput,
+  dateRange,
+  setDateRange,
+}) => {
   return (
     <Group mb="md">
       <TextInput
@@ -10,7 +26,11 @@ const OrderTableControls = ({ searchInput, setSearchInput, dateRange, setDateRan
         onChange={(e) => setSearchInput(e.target.value)}
       />
       <DatesProvider settings={{ consistentWeeks: true }}>
-        <MonthPickerInput label="Pick month" placeholder="Pick month" type="range" />
+        <MonthPickerInput
+          label="Pick month"
+          placeholder="Pick month"
+          type="range"
+        />
         <DatePickerInput
           label="Pick date"
           placeholder="Select date range"
