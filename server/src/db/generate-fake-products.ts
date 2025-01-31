@@ -71,9 +71,10 @@ const seedProducts = async () => {
   try {
     console.log("Seeding products...");
 
-    // await db.delete(products);
+    await db.delete(products);
 
-    const newProducts = generateProducts(2);
+    // Num of Products
+    const newProducts = generateProducts(20);
     await db.insert(products).values(newProducts);
 
     console.log("Products seeded successfully!");
