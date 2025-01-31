@@ -10,7 +10,7 @@ import { customers } from "./customers";
 export const orders = pgTable("orders", {
   orderId: uuid("order_id").primaryKey().defaultRandom(),
   customerId: uuid("customer_id")
-    .references(() => customers.customerId)
+    .references(() => customers.customerId, { onDelete: "cascade" })
     .notNull(),
   totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
   paymentStatus: varchar("payment_status", { length: 20 })
@@ -18,7 +18,6 @@ export const orders = pgTable("orders", {
     .notNull(),
   orderDate: timestamp("order_date").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdateFn(() => new Date()),
+  updatedAt: timestamp("updated_at").defaultNow().$onUpdateFn(() => new Date()),
 });
+

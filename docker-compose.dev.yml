@@ -59,19 +59,19 @@ services:
       timeout: 5s
       retries: 10
 
-  cron-job:
-    container_name: crm-app-cron-job
-    build:
-      context: ./server
-      dockerfile: Dockerfile.dev
-    env_file:
-      - server/.env.development
-    volumes:
-      - ./server:/usr/src/app
-      - /usr/src/app/node_modules
-    depends_on:
-      - database-sql
-    command: ["npx", "tsx", "/usr/src/app/src/db/run-sql-job.ts"]
+  # cron-job:
+  #   container_name: crm-app-cron-job
+  #   build:
+  #     context: ./server
+  #     dockerfile: Dockerfile.dev
+  #   env_file:
+  #     - server/.env.development
+  #   volumes:
+  #     - ./server:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   depends_on:
+  #     - database-sql
+  #   command: ["npx", "tsx", "/usr/src/app/src/db/run-sql-job.ts"]
 
   migrate:
     container_name: crm-app-db-migrate

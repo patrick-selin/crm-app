@@ -5,11 +5,12 @@ import { products } from "./products";
 export const orderItems = pgTable("order_items", {
   orderItemId: uuid("order_item_id").primaryKey().defaultRandom(),
   orderId: uuid("order_id")
-    .references(() => orders.orderId)
+    .references(() => orders.orderId, { onDelete: "cascade" })
     .notNull(),
   productId: uuid("product_id")
-    .references(() => products.productId)
+    .references(() => products.productId, { onDelete: "restrict" })
     .notNull(),
   quantity: integer("quantity").default(1).notNull(),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
 });
+

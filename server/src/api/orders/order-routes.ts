@@ -21,11 +21,11 @@ orderRoutes.get(
   orderController.getOrdersSummary
 );
 
-// orderRoutes.get(
-//   "/:id",
-//   authenticateJWT,
-//   // validateParams(OrderIdSchema),
-//   orderController.getOrderDetails
-// );
+orderRoutes.get(
+  "/:id",
+  authenticateJWT,
+  // validateParams(OrderIdSchema),
+  orderController.getOrderDetails
+);
 
 export default orderRoutes;
