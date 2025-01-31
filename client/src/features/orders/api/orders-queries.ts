@@ -1,5 +1,5 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { getOrders } from "./orders-api";
+import { getOrders, getOrdersSummary } from "./orders-api";
 
 export const useOrders = ({
   search,
@@ -21,4 +21,9 @@ export const useOrders = ({
   });
 };
 
-
+export const useOrdersSummary = () => {
+  return useQuery({
+    queryKey: ["ordersSummary"],
+    queryFn: getOrdersSummary,
+  });
+};

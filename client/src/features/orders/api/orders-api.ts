@@ -27,3 +27,7 @@ export const getOrders = async ({
   return response.data;
 };
 
+export const getOrdersSummary = async () => {
+  const response = await axiosInstance.get(`/orders/summary`);
+  return response.data;
+};
