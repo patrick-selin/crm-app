@@ -1,7 +1,7 @@
 @baseUrl = http://localhost/api/v1
 @baseUrlStag = http://ec2-13-60-156-45.eu-north-1.compute.amazonaws.com/api/v1
 
-@access-token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk5NmQxMzlhLWZlMzUtNDRhYS1iYTRkLTJmNzU2YmE2NGVkOSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM4MTM1ODQ2LCJleHAiOjE3MzgxMzY3NDZ9.SMoH9_rRAaJ5xNieFZl7wLkDHEAvktj4SVTMVdKCqz4
+@access-token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk5NmQxMzlhLWZlMzUtNDRhYS1iYTRkLTJmNzU2YmE2NGVkOSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM4MjIyNTg1LCJleHAiOjE3MzgyMjM0ODV9.00VQf3oOE6TZbCGp0A-QFBv-Aw0w9ra0wmlYn8K8jKg
 @access-token-stag = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmYjZmYmM3LTI1NmYtNGIwYy1iMmM5LTc1ZDAzYzliOThkNSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM3Mjk2Mzg1LCJleHAiOjE3MzcyOTcyODV9.6Qcgi2l7AY-Un80gKhomLpEj9IJZOf5M3ilgrGPL-KQ
 
 

@@ -1,6 +1,7 @@
 // styles/mantine-theme.ts
 import { createTheme } from "@mantine/core";
 import "@mantine/core/styles.css";
+import '@mantine/dates/styles.css';
 
 const theme = createTheme({
   fontFamily: "Public Sans, sans-serif",
