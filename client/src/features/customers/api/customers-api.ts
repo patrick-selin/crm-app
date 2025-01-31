@@ -35,6 +35,7 @@ export const getCustomers = async ({
   const response = await axiosInstance.get(`/customers?${params}`);
   return response.data;
 };
+
 export const getCustomersSummary = async ({
   search,
   sort,

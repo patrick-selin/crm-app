@@ -96,7 +96,8 @@ const seedOrders = async () => {
     const orderItemsToInsert = [];
     const customersToInsert = [];
 
-    for (let i = 0; i < 20; i++) {
+    // 1 for cron job, +20 if init seeding manually
+    for (let i = 0; i < 1; i++) {
       let customerId;
 
       // Ratio to create a new customer, 80% use existing

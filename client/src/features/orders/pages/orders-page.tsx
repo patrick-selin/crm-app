@@ -6,7 +6,7 @@ import OrdersSummary from "../components/orders-summary";
 
 const OrdersPage = () => {
 
-  const [activeTab, setActiveTab] = useState<string | null>("summary");
+  const [activeTab, setActiveTab] = useState<string | null>("all");
 
   return (
     <div>
@@ -18,10 +18,10 @@ const OrdersPage = () => {
       {/* Tabs */}
       <Tabs value={activeTab} onChange={setActiveTab}>
         <Tabs.List>
-          <Tabs.Tab value="details">All Orders</Tabs.Tab>
+          <Tabs.Tab value="all">All Orders</Tabs.Tab>
           <Tabs.Tab value="summary">Orders Summary</Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="details">
+        <Tabs.Panel value="all">
           <OrdersTable />
         </Tabs.Panel>
         <Tabs.Panel value="summary">
