@@ -1,10 +1,10 @@
-// pages/order.tsx
-import { Title } from "@mantine/core";
+// pages/orders.tsx
+import OrdersPage from "../features/orders/pages/orders-page";
 
 const Order = () => {
   return (
     <div>
-      <Title order={1}>Orders</Title>
+      <OrdersPage />
     </div>
   );
 };
