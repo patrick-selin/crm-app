@@ -13,13 +13,18 @@ interface OrdersTableBodyProps {
   selectedOrders: string[];
   setSelectedOrders: (value: string[]) => void;
 }
-
-
-const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({ orders, selectedOrders, setSelectedOrders }) => {
+const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
+  orders,
+  total,
+  selectedOrders,
+  setSelectedOrders,
+}) => {
+  console.log(total);
+  console.log(orders);
   return (
     <div>
       <Text size="sm" mb="sm" pl="sm">
-        Showing {orders.length} of {orders.total} orders
+        Showing {orders.length} of {total} orders
       </Text>
       <Table withRowBorders withTableBorder>
         <Table.Thead>

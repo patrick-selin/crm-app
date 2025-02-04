@@ -34,6 +34,7 @@ const OrdersTable = () => {
       />
       <OrdersTableBody
         orders={orders.data}
+        total={orders.total}
         selectedOrders={selectedOrders}
         setSelectedOrders={setSelectedOrders}
       />
