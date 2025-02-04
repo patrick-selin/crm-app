@@ -11,35 +11,38 @@ interface OrderTableRowProps {
       paymentStatus: string;
     };
     selectedOrders: string[];
-    setSelectedOrders: (value: string[]) => void;
+    setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
   }
-
   
-  const OrderTableRow: React.FC<OrderTableRowProps> = ({order, selectedOrders, setSelectedOrders }) => {
-  return (
-    <Table.Tr key={order.orderId}>
-      <Table.Td>
-        <input
-          type="checkbox"
-          checked={selectedOrders.includes(order.orderId)}
-          onChange={() =>
-            setSelectedOrders((prev) =>
-              prev.includes(order.orderId)
-                ? prev.filter((id) => id !== order.orderId)
-                : [...prev, order.orderId]
-            )
-          }
-        />
-      </Table.Td>
-      <Table.Td>{`${order.customer.firstName} ${order.customer.lastName}`}</Table.Td>
-      <Table.Td>{order.orderId}</Table.Td>
-      <Table.Td>${order.totalAmount.toFixed(2)}</Table.Td>
-      <Table.Td>{new Date(order.orderDate).toLocaleDateString()}</Table.Td>
-      <Table.Td>
-        <OrderStatusBadge orderId={order.orderId} initialStatus={order.paymentStatus} />
-      </Table.Td>
-    </Table.Tr>
-  );
-};
-
-export default OrderTableRow;
+  const OrderTableRow: React.FC<OrderTableRowProps> = ({
+    order,
+    selectedOrders,
+    setSelectedOrders,
+  }) => {
+    return (
+      <Table.Tr key={order.orderId}>
+        <Table.Td>
+          <input
+            type="checkbox"
+            checked={selectedOrders.includes(order.orderId)}
+            onChange={() => {
+              setSelectedOrders((prev: string[]) => {
+                return prev.includes(order.orderId)
+                  ? prev.filter((id) => id !== order.orderId)
+                  : [...prev, order.orderId];
+              });
+            }}
+          />
+        </Table.Td>
+        <Table.Td>{`${order.customer.firstName} ${order.customer.lastName}`}</Table.Td>
+        <Table.Td>{order.orderId}</Table.Td>
+        <Table.Td>${order.totalAmount.toFixed(2)}</Table.Td>
+        <Table.Td>{new Date(order.orderDate).toLocaleDateString()}</Table.Td>
+        <Table.Td>
+          <OrderStatusBadge orderId={order.orderId} initialStatus={order.paymentStatus} />
+        </Table.Td>
+      </Table.Tr>
+    );
+  };
+  
+  export default OrderTableRow;

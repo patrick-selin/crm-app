@@ -11,7 +11,8 @@ interface OrdersTableBodyProps {
   }[];
   total: number;
   selectedOrders: string[];
-  setSelectedOrders: (value: string[]) => void;
+  setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
+
 }
 const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
   orders,
