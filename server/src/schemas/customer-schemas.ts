@@ -34,7 +34,7 @@ export const CustomerSchema = z.object({
   country: z
     .string()
     .min(1, { message: "Country is required" })
-    .max(50, { message: "Country must not exceed 50 characters" }),
+    .max(70, { message: "Country must not exceed 70 characters" }),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date().nullable(),
 });
