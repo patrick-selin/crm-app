@@ -44,10 +44,11 @@ const generateOrder = (customerId: string) => {
     orderId: faker.string.uuid(),
     customerId,
     totalAmount: "0.00",
-    paymentStatus: faker.helpers.arrayElement([
-      "Completed",
+    orderStatus: faker.helpers.arrayElement([
       "Pending",
-      "Overdue",
+      "Processing",
+      "Completed",
+      "Canceled",
     ]),
     orderDate,
     createdAt: orderDate,
@@ -97,12 +98,15 @@ const seedOrders = async () => {
     const customersToInsert = [];
 
     // 1 for cron job, +20 if init seeding manually
-    for (let i = 0; i < 1; i++) {
+    const NEW_ORDERS = 50
+
+    for (let i = 0; i < NEW_ORDERS; i++) {
       let customerId;
 
       // Ratio to create a new customer, 80% use existing
+      const NEW_CUSTOMER_RATIO = 0.8
       if (
-        faker.number.float({ min: 0, max: 1, fractionDigits: 1 }) < 0.2 ||
+        faker.number.float({ min: 0, max: 1, fractionDigits: 1 }) < NEW_CUSTOMER_RATIO ||
         existingCustomers.length === 0
       ) {
         const newCustomer = createNewCustomer();

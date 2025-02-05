@@ -127,7 +127,7 @@ describe("Customer Service Unit Tests", () => {
         mockOrders.map((order) => ({
           orderId: order.orderId,
           totalAmount: parseFloat(order.totalAmount),
-          paymentStatus: order.paymentStatus,
+          orderStatus: order.orderStatus,
           orderDate: order.orderDate,
         }))
       );

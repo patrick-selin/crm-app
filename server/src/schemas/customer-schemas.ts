@@ -75,7 +75,7 @@ export const CustomerIdSchema = z.object({
 export const CustomerOrderSchema = z.object({
   orderId: z.string().uuid(),
   totalAmount: z.number().nonnegative(),
-  paymentStatus: z.enum(["Completed", "Pending", "Overdue"]),
+  orderStatus: z.enum(["Pending", "Processing", "Completed", "Canceled"]),
   orderDate: z.date(),
 });
 

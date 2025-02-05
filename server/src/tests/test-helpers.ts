@@ -99,10 +99,11 @@ export const createMockOrder = () => ({
   orderId: faker.string.uuid(),
   customerId: faker.string.uuid(),
   totalAmount: faker.finance.amount({ min: 5, max: 1000, dec: 2 }),
-  paymentStatus: faker.helpers.arrayElement([
-    "Completed",
+  orderStatus: faker.helpers.arrayElement([
     "Pending",
-    "Overdue",
+    "Processing",
+    "Completed",
+    "Canceled",
   ]),
   orderDate: faker.date.past(),
   createdAt: faker.date.past(),
