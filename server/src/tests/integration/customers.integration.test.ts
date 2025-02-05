@@ -17,7 +17,10 @@ describe("Customer API Integration Tests", () => {
   let testCustomer: any;
 
   beforeAll(async () => {
+    console.log("BEFORE ALL");
+    console.log("🔍 DATABASE URL:", process.env.TEST_DATABASE_URL);
     const { accessToken: token } = await createTestUser();
+    console.log("DEBUG: Token received →", token);
     accessToken = token;
 
     const mockCustomer = createMockCustomer();
@@ -202,8 +205,8 @@ describe("Customer API Integration Tests", () => {
     });
 
     it("should return 404 NotFoundError if customer is not found", async () => {
-        const validIdNotExistent = "9c92d8a1-2c13-4f4a-9b3f-14dbac8b4fdc";
-        const response = await api
+      const validIdNotExistent = "9c92d8a1-2c13-4f4a-9b3f-14dbac8b4fdc";
+      const response = await api
         .delete(`/api/v1/customers/${validIdNotExistent}`)
         .set("Authorization", `Bearer ${accessToken}`);
 

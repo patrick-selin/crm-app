@@ -206,7 +206,7 @@ export const getCustomerOrders = async (customerId: string) => {
     return {
       orderId: order.orderId,
       totalAmount: parseFloat(order.totalAmount),
-      paymentStatus: order.paymentStatus,
+      orderStatus: order.orderStatus,
       orderDate: order.orderDate,
     };
   });
@@ -239,7 +239,7 @@ export const getCustomerOrderDetails = async (
   const processedOrder = {
     ...order,
     totalAmount: parseFloat(order.totalAmount),
-    paymentStatus: order.paymentStatus,
+    orderStatus: order.orderStatus,
     orderDate: order.orderDate,
     createdAt: order.createdAt,
     updatedAt: order.updatedAt,

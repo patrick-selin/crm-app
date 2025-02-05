@@ -25,9 +25,9 @@ services:
     depends_on:
       - database-sql
     env_file:
-      - spring-server/crm-app/.env.development  
+      - spring-server/crm-app/.env.development
     volumes:
-    - ./spring-server/crm-app:/app
+      - ./spring-server/crm-app:/app
 
   spring-test:
     container_name: crm-app-spring-test
@@ -37,13 +37,12 @@ services:
     depends_on:
       - database-sql
     env_file:
-      - spring-server/crm-app/.env.development  
+      - spring-server/crm-app/.env.development
     command: ./mvnw test
     volumes:
       - ./spring-server/crm-app:/app
     environment:
       SPRING_PROFILES_ACTIVE: test
- 
 
   database-sql:
     container_name: crm-app-postgresql-db
@@ -58,21 +57,28 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    ports:
+      - "5432:5432"  #for local JB DataGrip connection
 
-  cron-job:
-      container_name: crm-app-cron-job
-      build:
-        context: ./server
-        dockerfile: Dockerfile.dev
-      env_file:
-        - server/.env.development
-      depends_on:
-        - database-sql
-        - server
-      volumes:
-        - ./server:/usr/src/app
-        - /usr/src/app/node_modules
-      command: ["/bin/sh", "-c", "while true; do npx tsx src/db/generate-fake-orders.ts; sleep 60; done"]
+  # cron-job:
+  #   container_name: crm-app-cron-job
+  #   build:
+  #     context: ./server
+  #     dockerfile: Dockerfile.dev
+  #   env_file:
+  #     - server/.env.development
+  #   depends_on:
+  #     - database-sql
+  #     - server
+  #   volumes:
+  #     - ./server:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   command:
+  #     [
+  #       "/bin/sh",
+  #       "-c",
+  #       "while true; do npx tsx src/db/generate-fake-orders.ts; sleep 60; done",
+  #     ]
 
   migrate:
     container_name: crm-app-db-migrate
