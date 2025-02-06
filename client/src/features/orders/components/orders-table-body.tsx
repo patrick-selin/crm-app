@@ -1,4 +1,5 @@
 import { Table, Text } from "@mantine/core";
+import { SortableHeader } from "./sortable-header";
 import OrderTableRow from "./orders-table-row";
 
 interface OrdersTableBodyProps {
@@ -12,12 +13,19 @@ interface OrdersTableBodyProps {
   total: number;
   selectedOrders: string[];
   setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+  onSort: (column: string) => void;
 }
+
 const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
   orders,
   total,
   selectedOrders,
   setSelectedOrders,
+  sortBy,
+  sortOrder,
+  onSort,
 }) => {
   return (
     <div>
@@ -28,11 +36,41 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Select</Table.Th>
-            <Table.Th>Customer</Table.Th>
-            <Table.Th>Order ID</Table.Th>
-            <Table.Th>Total Amount</Table.Th>
-            <Table.Th>Order Date</Table.Th>
-            <Table.Th>Order Status</Table.Th>
+            <SortableHeader
+              column="customer"
+              label="Customer"
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSort={onSort}
+            />
+            <SortableHeader
+              column="orderId"
+              label="Order ID"
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSort={onSort}
+            />
+            <SortableHeader
+              column="totalAmount"
+              label="Total Amount"
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSort={onSort}
+            />
+            <SortableHeader
+              column="orderDate"
+              label="Order Date"
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSort={onSort}
+            />
+            <SortableHeader
+              column="orderStatus"
+              label="Order Status"
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              onSort={onSort}
+            />
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>

@@ -1,0 +1,13 @@
+.sortable-header {
+  cursor: pointer;
+  display: inline-flex;
+  white-space: nowrap;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.sortable-header svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: gray;
+}
