@@ -1,15 +1,23 @@
 // shared/schemas/order-schemas.ts
 import { z } from "zod";
 
+export const OrderStatusEnum = z.enum(["Pending", "Processing", "Completed", "Canceled"]);
+
+// Order Schema
 export const OrderSchema = z.object({
   orderId: z.string().uuid(),
   customerId: z.string().uuid(),
-  totalAmount: z.number().nonnegative(),
-  orderStatus: z.enum(["Pending", "Processing", "Completed", "Canceled"]),
+  totalAmount: z.string(),
+  orderStatus: OrderStatusEnum,
   orderDate: z.date(),
   createdAt: z.date(),
-  updatedAt: z.date().optional().nullable(),
+  updatedAt: z.date(),
 });
+
+export const UpdateOrderStatusSchema = z.object({
+  orderStatus: OrderStatusEnum,
+});
+
 
 // export const PaginatedOrdersSchema = z.object({
 //   orders: z.array(OrderSchema),
@@ -46,3 +54,5 @@ export type Order = z.infer<typeof OrderSchema>;
 // export type PaginatedOrders = z.infer<typeof PaginatedOrdersSchema>;
 export type OrderItem = z.infer<typeof OrderItemSchema>;
 export type OrderDetailResponse = z.infer<typeof OrderDetailResponseSchema>;
+export type UpdateOrderStatus = z.infer<typeof UpdateOrderStatusSchema>;
+export type OrderQuery = z.infer<typeof OrderQuerySchema>;

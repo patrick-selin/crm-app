@@ -19,6 +19,8 @@ GET {{baseUrl}}/customers?search=John&sort=firstName:asc&page=1&limit=3 HTTP/1.1
 Authorization: Bearer {{access-token}}
 Content-Type: application/json
 
+
+
 ### GET /customers/summary
 GET {{baseUrl}}/customers/summary HTTP/1.1
 Authorization: Bearer {{access-token}}
