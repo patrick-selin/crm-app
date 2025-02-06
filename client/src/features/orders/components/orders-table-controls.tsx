@@ -10,9 +10,6 @@ interface OrderTableControlsProps {
   setSearchInput: (value: string) => void;
   dateRange: [Date | null, Date | null];
   setDateRange: (value: [Date | null, Date | null]) => void;
-  page: number;
-  setPage: (page: number) => void;
-  total: number;
 }
 
 const OrderTableControls: React.FC<OrderTableControlsProps> = ({
@@ -20,17 +17,17 @@ const OrderTableControls: React.FC<OrderTableControlsProps> = ({
   setSearchInput,
   dateRange,
   setDateRange,
-  page,
-  setPage,
-  total,
 }) => {
   return (
     <Group mb="md">
+      {/* Search Input */}
       <TextInput
         placeholder="Search by customer"
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
       />
+
+      {/* Date Pickers */}
       <DatesProvider settings={{ consistentWeeks: true }}>
         <MonthPickerInput label="Pick month" placeholder="Pick month" type="range" />
         <DatePickerInput
