@@ -13,13 +13,16 @@ const OrdersTable = () => {
     null,
   ]);
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [sort, setSort] = useState<string>("orderDate:desc");
+  const [page, setPage] = useState(1);
   const [modalOpened, { open, close }] = useDisclosure(false);
-
+  
+  console.log(`DATA RANGE from ORDER-TABLE :: ${dateRange}`);
   const {
     data: orders = { total: 0, page: 1, limit: 10, data: [] },
     isLoading,
     error,
-  } = useOrders({ search: searchInput, dateRange });
+  } = useOrders({ search: searchInput, dateRange, sort, page });
 
   if (isLoading) return <Text>Loading orders...</Text>;
   if (error) return <Text>Error fetching orders.</Text>;
@@ -31,6 +34,11 @@ const OrdersTable = () => {
         setSearchInput={setSearchInput}
         dateRange={dateRange}
         setDateRange={setDateRange}
+        sort={sort}
+        setSort={setSort}
+        page={page}
+        setPage={setPage}
+        total={orders.total}
       />
       <OrdersTableBody
         orders={orders.data}
@@ -47,6 +55,6 @@ const OrdersTable = () => {
       />
     </div>
   );
-};
+}
 
 export default OrdersTable;
