@@ -79,8 +79,8 @@ const OrderDetailDrawer = ({
     >
       <Title order={3}>Order Information</Title>
       <Text>Order ID: {order.orderId}</Text>
-      <Text>Total Amount: {order.totalAmount}</Text>
-      <Text>Payment Status: {order.paymentStatus}</Text>
+      <Text>Total Amount: ${order.totalAmount.toFixed(2)}</Text> 
+      <Text>Order Status: {order.orderStatus}</Text>
       <Text>Order Date: {new Date(order.orderDate).toLocaleDateString()}</Text>
 
       {order.updatedAt && (
