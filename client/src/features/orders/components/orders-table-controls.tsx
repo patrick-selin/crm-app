@@ -20,17 +20,16 @@ const OrderTableControls: React.FC<OrderTableControlsProps> = ({
 }) => {
   return (
     <Group mb="md">
+      {/* Search Input */}
       <TextInput
         placeholder="Search by customer"
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
       />
+
+      {/* Date Pickers */}
       <DatesProvider settings={{ consistentWeeks: true }}>
-        <MonthPickerInput
-          label="Pick month"
-          placeholder="Pick month"
-          type="range"
-        />
+        <MonthPickerInput label="Pick month" placeholder="Pick month" type="range" />
         <DatePickerInput
           label="Pick date"
           placeholder="Select date range"

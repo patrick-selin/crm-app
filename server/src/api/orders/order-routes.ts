@@ -2,7 +2,10 @@
 import { Router } from "express";
 import { authenticateJWT } from "../../middleware/auth-jwt";
 import * as orderController from "./order-controller";
-import { validateQuery, validateParams } from "../../middleware/validate-request";
+import {
+  validateQuery,
+  validateParams,
+} from "../../middleware/validate-request";
 import { OrderQuerySchema, OrderIdSchema } from "../../schemas/order-schemas";
 
 const orderRoutes = Router();
@@ -29,5 +32,7 @@ orderRoutes.get(
   validateParams(OrderIdSchema),
   orderController.getOrderDetails
 );
+
+
 
 export default orderRoutes;

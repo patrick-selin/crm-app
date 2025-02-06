@@ -17,11 +17,13 @@ export const getOrders = async ({
   const params = new URLSearchParams({
     ...(search && { search }),
     ...(sort && { sort }),
-    ...(limit && { limit: limit.toString() }),
-    ...(page && { page: page.toString() }),
+    limit: limit.toString(),
+    page: page.toString(),
     ...(dateRange[0] && { startDate: dateRange[0].toISOString() }),
     ...(dateRange[1] && { endDate: dateRange[1].toISOString() }),
   });
+
+  console.log(`PARAMS from API :: ${params}`);
 
   const response = await axiosInstance.get(`/orders?${params}`);
   return response.data;

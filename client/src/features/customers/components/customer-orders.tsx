@@ -20,7 +20,7 @@ const CustomerOrders = ({
           <Table.Tr>
             <Table.Th>Order ID</Table.Th>
             <Table.Th>Total Amount</Table.Th>
-            <Table.Th>Payment Status</Table.Th>
+            <Table.Th>Order Status</Table.Th>
             <Table.Th>Order Date</Table.Th>
           </Table.Tr>
         </Table.Thead>
@@ -33,7 +33,7 @@ const CustomerOrders = ({
             >
               <Table.Td>{order.orderId}</Table.Td>
               <Table.Td>{order.totalAmount}</Table.Td>
-              <Table.Td>{order.paymentStatus}</Table.Td>
+              <Table.Td>{order.orderStatus}</Table.Td>
               <Table.Td>
                 {new Date(order.orderDate).toLocaleDateString("en-US", {
                   year: "numeric",

@@ -58,7 +58,7 @@ services:
       timeout: 5s
       retries: 10
     ports:
-      - "5432:5432"  #for local JB DataGrip connection
+      - "5432:5432" #for local JB DataGrip connection
 
   # cron-job:
   #   container_name: crm-app-cron-job
@@ -92,24 +92,6 @@ services:
       - NODE_ENV=development
     env_file:
       - server/.env.development
-
-  # db-seed:
-  #   image: postgres:16.4-bullseye
-  #   depends_on:
-  #     database-sql:
-  #       condition: service_healthy
-  #     migrate:
-  #       condition: service_started
-  #   volumes:
-  #     - ./server/src/db/seed-db.sql:/seed-db.sql
-  #   env_file:
-  #     - server/.env.development
-  #   command: >
-  #     sh -c "
-  #       export PGPASSWORD=$$POSTGRES_PASSWORD &&
-  #       psql -h database-sql -U $$POSTGRES_USER -d crm_app_db_dev -f /seed-db.sql &&
-  #       psql -h database-sql -U $$POSTGRES_USER -d crm_app_db_test -f /seed-db.sql
-  #     "
 
   client:
     container_name: crm-app-client
