@@ -97,14 +97,14 @@ const seedOrders = async () => {
     const orderItemsToInsert = [];
     const customersToInsert = [];
 
-    // 1 for cron job, +20 if init seeding manually
-    const NEW_ORDERS = 50
+    // 1 for cron job, +20 if init db  seeding manually
+    const NEW_ORDERS = 1
 
     for (let i = 0; i < NEW_ORDERS; i++) {
       let customerId;
 
       // Ratio to create a new customer, 80% use existing
-      const NEW_CUSTOMER_RATIO = 0.8
+      const NEW_CUSTOMER_RATIO = 0.2
       if (
         faker.number.float({ min: 0, max: 1, fractionDigits: 1 }) < NEW_CUSTOMER_RATIO ||
         existingCustomers.length === 0
