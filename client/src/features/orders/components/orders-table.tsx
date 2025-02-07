@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Text } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useOrders } from "../api/orders-queries";
+import { Text, Button, Group } from "@mantine/core";
+import { useOrdersInfinite } from "../api/orders-queries";
 import OrderTableControls from "./orders-table-controls";
 import OrdersTableBody from "./orders-table-body";
 import BulkActionsControls from "./bulk-action-controls";
+import { useDisclosure } from "@mantine/hooks";
 
 const OrdersTable = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -12,16 +12,18 @@ const OrdersTable = () => {
   const [sortBy, setSortBy] = useState<string>("orderDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
-  const [page, setPage] = useState(1);
   const [modalOpened, { open, close }] = useDisclosure(false);
 
-  console.log(`DATA RANGE from ORDER-TABLE :: ${dateRange}`);
-  
   const {
-    data: orders = { total: 0, page: 1, limit: 10, data: [] },
+    data,
     isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
     error,
-  } = useOrders({ search: searchInput, dateRange, sort: `${sortBy}:${sortOrder}`, page });
+  } = useOrdersInfinite({ search: searchInput, sort: `${sortBy}:${sortOrder}`, dateRange });
+
+  const orders = data?.pages.flatMap((page) => page.data) || [];
 
   const handleSort = (column: string) => {
     if (sortBy === column) {
@@ -42,19 +44,26 @@ const OrdersTable = () => {
         setSearchInput={setSearchInput}
         dateRange={dateRange}
         setDateRange={setDateRange}
-        page={page}
-        setPage={setPage}
-        total={orders.total}
       />
+
       <OrdersTableBody
-        orders={orders.data}
-        total={orders.total}
+        orders={orders}
+        total={data?.pages[0]?.total || 0}
         selectedOrders={selectedOrders}
         setSelectedOrders={setSelectedOrders}
         sortBy={sortBy}
         sortOrder={sortOrder}
         onSort={handleSort}
       />
+
+      <Group justify="center" align="center" mt="md">
+        {hasNextPage && (
+          <Button onClick={() => fetchNextPage()} loading={isFetchingNextPage}>
+            Load More
+          </Button>
+        )}
+      </Group>
+
       <BulkActionsControls
         selectedOrders={selectedOrders}
         setSelectedOrders={setSelectedOrders}
