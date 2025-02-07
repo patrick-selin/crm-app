@@ -12,7 +12,6 @@ const OrdersTable = () => {
   const [sortBy, setSortBy] = useState<string>("orderDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
-
   const [modalOpened, { open, close }] = useDisclosure(false);
 
   const {
