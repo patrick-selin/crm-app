@@ -23,7 +23,7 @@ export const getOrders = async ({
     ...(dateRange[1] && { endDate: dateRange[1].toISOString() }),
   });
 
-  console.log(`PARAMS from API :: ${params}`);
+  // console.log(`PARAMS from API :: ${params}`);
 
   const response = await axiosInstance.get(`/orders?${params}`);
   return response.data;

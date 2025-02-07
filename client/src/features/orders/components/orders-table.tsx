@@ -15,7 +15,7 @@ const OrdersTable = () => {
   const [page, setPage] = useState(1);
   const [modalOpened, { open, close }] = useDisclosure(false);
 
-  console.log(`DATA RANGE from ORDER-TABLE :: ${dateRange}`);
+  // console.log(`DATA RANGE from ORDER-TABLE :: ${dateRange}`);
   
   const {
     data: orders = { total: 0, page: 1, limit: 10, data: [] },
