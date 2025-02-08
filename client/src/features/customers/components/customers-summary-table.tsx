@@ -1,8 +1,7 @@
-// features/customers/customers-summary-table.tsx
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useCustomersSummary } from "../api/customers-queries";
-import { Table, Text } from "@mantine/core";
+import { Loader, Table, Text } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import TableControls from "./table-controls";
 import TablePagination from "./table-pagination";
@@ -13,6 +12,7 @@ const CustomersSummaryTable = () => {
   const [limit, setLimit] = useState(10);
   const [activePage, setActivePage] = useState(1);
   const [debouncedSearch] = useDebouncedValue(searchInput, 500);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   const navigate = useNavigate();
   const {
@@ -26,12 +26,18 @@ const CustomersSummaryTable = () => {
     page: activePage,
   });
 
-  if (isLoading) return <p>Loading...</p>;
+  useEffect(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [customersSummary]);
+  if (isLoading) return <Loader color="blue" />;
   if (error) return <p>Error fetching customer summary.</p>;
 
   return (
     <div>
       <TableControls
+        ref={searchInputRef}
         search={searchInput}
         onSearchChange={setSearchInput}
         sort={sort}
@@ -48,10 +54,7 @@ const CustomersSummaryTable = () => {
           { value: "lastName:desc", label: "Last Name (Z-A)" },
           { value: "lastOrderDate:desc", label: "Last Order (Newest)" },
           { value: "lastOrderDate:asc", label: "Last Order (Oldest)" },
-          {
-            value: "numOfOrders:desc",
-            label: "Number of Orders (High to Low)",
-          },
+          { value: "numOfOrders:desc", label: "Number of Orders (High to Low)" },
           { value: "numOfOrders:asc", label: "Number of Orders (Low to High)" },
           { value: "totalSpent:desc", label: "Total Spent (High to Low)" },
           { value: "totalSpent:asc", label: "Total Spent (Low to High)" },
@@ -59,8 +62,7 @@ const CustomersSummaryTable = () => {
       />
 
       <Text size="sm" mb="sm" pl={"sm"}>
-        Showing {customersSummary.data.length} of {customersSummary.total}{" "}
-        customers
+        Showing {customersSummary.data.length} of {customersSummary.total} customers
       </Text>
 
       <Table withRowBorders withTableBorder>
@@ -87,14 +89,11 @@ const CustomersSummaryTable = () => {
               <Table.Td>
                 {customer.lastOrderDate &&
                 customer.lastOrderDate !== "No orders"
-                  ? new Date(customer.lastOrderDate).toLocaleDateString(
-                      "en-US",
-                      {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      }
-                    )
+                  ? new Date(customer.lastOrderDate).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })
                   : "N/A"}
               </Table.Td>
               <Table.Td>{customer.numOfOrders}</Table.Td>

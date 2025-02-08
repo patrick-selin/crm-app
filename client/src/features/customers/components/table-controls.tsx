@@ -1,5 +1,6 @@
 // features/customers/table-controls.tsx
 import { Group, Select, TextInput } from "@mantine/core";
+import { forwardRef } from "react";
 
 interface TableControlsProps {
   search: string;
@@ -9,55 +10,48 @@ interface TableControlsProps {
   limit: number;
   onLimitChange: (value: number) => void;
   sortOptions: { value: string; label: string }[];
+  searchInputRef?: React.RefObject<HTMLInputElement>;
 }
 
-const TableControls = ({
-  search,
-  onSearchChange,
-  sort,
-  onSortChange,
-  limit,
-  onLimitChange,
-  sortOptions,
-}: TableControlsProps) => {
-  return (
-    <Group justify="space-between" mb="md" pt="xl" pb="md">
-      {/* Search Input */}
+const TableControls = forwardRef<HTMLInputElement, TableControlsProps>(
+  ({ search, onSearchChange, sort, onSortChange, limit, onLimitChange, sortOptions }, ref) => {
+    return (
+      <Group justify="space-between" mb="md" pt="xl" pb="md">
 
-      <TextInput
-        label="Search by customer"
-        placeholder="Search..."
-        aria-label="Search"
-        value={search}
-        onChange={(event) => onSearchChange(event.target.value)}
-      />
+        <TextInput
+          label="Search by customer"
+          placeholder="Search..."
+          aria-label="Search"
+          value={search}
+          onChange={(event) => onSearchChange(event.target.value)}
+          ref={ref} // Assign ref to TextInput
+        />
 
-      {/* Sort Options */}
-      <Select
-        label="Sort by column"
-        placeholder="Choose..."
-        aria-label="Sort"
-        value={sort}
-        onChange={onSortChange}
-        data={sortOptions}
-      />
+        <Select
+          label="Sort by column"
+          placeholder="Choose..."
+          aria-label="Sort"
+          value={sort}
+          onChange={onSortChange}
+          data={sortOptions}
+        />
 
-      {/* Limit Options */}
-      <Select
-        label="Rows per page"
-        placeholder="Rows per page"
-        aria-label="Rows per page"
-        value={limit.toString()}
-        onChange={(value) => onLimitChange(Number(value))}
-        data={[
-          { value: "5", label: "5" },
-          { value: "10", label: "10" },
-          { value: "25", label: "25" },
-          { value: "50", label: "50" },
-        ]}
-      />
-    </Group>
-  );
-};
+        <Select
+          label="Rows per page"
+          placeholder="Rows per page"
+          aria-label="Rows per page"
+          value={limit.toString()}
+          onChange={(value) => onLimitChange(Number(value))}
+          data={[
+            { value: "5", label: "5" },
+            { value: "10", label: "10" },
+            { value: "25", label: "25" },
+            { value: "50", label: "50" },
+          ]}
+        />
+      </Group>
+    );
+  }
+);
 
 export default TableControls;

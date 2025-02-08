@@ -27,7 +27,6 @@ const OrderTableControls = forwardRef<
         ref={ref}
       />
 
-      {/* Date Pickers */}
       <DatesProvider settings={{ consistentWeeks: true }}>
         <MonthPickerInput
           label="Pick month"
