@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Text, Button, Group } from "@mantine/core";
+import { useState, useRef, useEffect } from "react";
+import { Text, Button, Group, Loader } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 import { useOrdersInfinite } from "../api/orders-queries";
 import OrderTableControls from "./orders-table-controls";
 import OrdersTableBody from "./orders-table-body";
@@ -8,12 +9,16 @@ import { useDisclosure } from "@mantine/hooks";
 
 const OrdersTable = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+    null,
+    null,
+  ]);
   const [sortBy, setSortBy] = useState<string>("orderDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [modalOpened, { open, close }] = useDisclosure(false);
-
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const [debouncedSearch] = useDebouncedValue(searchInput, 500);
   const {
     data,
     isLoading,
@@ -21,7 +26,17 @@ const OrdersTable = () => {
     fetchNextPage,
     hasNextPage,
     error,
-  } = useOrdersInfinite({ search: searchInput, sort: `${sortBy}:${sortOrder}`, dateRange });
+  } = useOrdersInfinite({
+    search: debouncedSearch,
+    sort: `${sortBy}:${sortOrder}`,
+    dateRange,
+  });
+
+  useEffect(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [data]);
 
   const orders = data?.pages.flatMap((page) => page.data) || [];
 
@@ -34,12 +49,13 @@ const OrdersTable = () => {
     }
   };
 
-  if (isLoading) return <Text>Loading orders...</Text>;
+  if (isLoading) return <Loader color="blue" />;
   if (error) return <Text>Error fetching orders.</Text>;
 
   return (
     <div>
       <OrderTableControls
+        ref={searchInputRef}
         searchInput={searchInput}
         setSearchInput={setSearchInput}
         dateRange={dateRange}
