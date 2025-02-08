@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Text, Button, Group } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 import { useOrdersInfinite } from "../api/orders-queries";
 import OrderTableControls from "./orders-table-controls";
 import OrdersTableBody from "./orders-table-body";
@@ -13,7 +14,7 @@ const OrdersTable = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [modalOpened, { open, close }] = useDisclosure(false);
-
+  const [debouncedSearch] = useDebouncedValue(searchInput, 500); 
   const {
     data,
     isLoading,
@@ -21,7 +22,11 @@ const OrdersTable = () => {
     fetchNextPage,
     hasNextPage,
     error,
-  } = useOrdersInfinite({ search: searchInput, sort: `${sortBy}:${sortOrder}`, dateRange });
+  } = useOrdersInfinite({
+    search: debouncedSearch,
+    sort: `${sortBy}:${sortOrder}`,
+    dateRange,
+  });
 
   const orders = data?.pages.flatMap((page) => page.data) || [];
 
