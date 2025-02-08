@@ -21,7 +21,7 @@ const TableControls = ({
   sortOptions,
 }: TableControlsProps) => {
   return (
-    <Group justify="space-between" mb="md" pt={"xl"} pb={"md"}>
+    <Group justify="space-between" mb="md" pt="xl" pb="md">
       {/* Search Input */}
 
       <TextInput

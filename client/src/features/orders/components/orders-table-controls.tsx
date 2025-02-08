@@ -18,9 +18,10 @@ const OrderTableControls = forwardRef<
   OrderTableControlsProps
 >(({ searchInput, setSearchInput, dateRange, setDateRange }, ref) => {
   return (
-    <Group mb="md" p="lg">
+    <Group mb="md" pt="xl" pb="md">
       <TextInput
-        placeholder="Search by customer"
+      label="Search by customer"
+        placeholder="Search..."
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
         ref={ref}
@@ -29,12 +30,12 @@ const OrderTableControls = forwardRef<
       {/* Date Pickers */}
       <DatesProvider settings={{ consistentWeeks: true }}>
         <MonthPickerInput
-          // label="Pick month"
+          label="Pick month"
           placeholder="Pick month"
           type="range"
         />
         <DatePickerInput
-          // label="Pick date"
+          label="Pick date"
           placeholder="Select date range"
           type="range"
           value={dateRange}

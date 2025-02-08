@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Text, Button, Group } from "@mantine/core";
+import { Text, Button, Group, Loader } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useOrdersInfinite } from "../api/orders-queries";
 import OrderTableControls from "./orders-table-controls";
@@ -49,7 +49,7 @@ const OrdersTable = () => {
     }
   };
 
-  if (isLoading) return <Text>Loading orders...</Text>;
+  if (isLoading) return <Loader color="blue" />;
   if (error) return <Text>Error fetching orders.</Text>;
 
   return (
