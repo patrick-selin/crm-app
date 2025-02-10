@@ -48,7 +48,10 @@ export const OrderQuerySchema = z.object({
   sort: z.string().optional(),
   page: z.string().regex(/^\d+$/).transform(Number).optional(),
   limit: z.string().regex(/^\d+$/).transform(Number).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
+
 
 export type Order = z.infer<typeof OrderSchema>;
 // export type PaginatedOrders = z.infer<typeof PaginatedOrdersSchema>;

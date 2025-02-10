@@ -33,6 +33,4 @@ orderRoutes.get(
   orderController.getOrderDetails
 );
 
-
-
 export default orderRoutes;

@@ -22,14 +22,23 @@ interface OrderTableControlsProps {
   onLimitChange: (value: number) => void;
 }
 
-const OrderTableControls = forwardRef<HTMLInputElement, OrderTableControlsProps>(
+const OrderTableControls = forwardRef<
+  HTMLInputElement,
+  OrderTableControlsProps
+>(
   (
-    { searchInput, setSearchInput, dateRange, setDateRange, limit, onLimitChange },
+    {
+      searchInput,
+      setSearchInput,
+      dateRange,
+      setDateRange,
+      limit,
+      onLimitChange,
+    },
     ref
   ) => {
     return (
       <Group mb="md" pt="xl" pb="md" justify="space-between">
-
         <Group>
           <TextInput
             label="Search by customer"
@@ -40,17 +49,26 @@ const OrderTableControls = forwardRef<HTMLInputElement, OrderTableControlsProps>
           />
 
           <DatesProvider settings={{ consistentWeeks: true }}>
-            <MonthPickerInput
+            {/* <MonthPickerInput
               label="Pick month"
               placeholder="Pick month"
               type="range"
-            />
+              clearable
+              onChange={(value) => {
+                console.log("DatePickerInput changed:", value);
+                setDateRange(value);
+              }}
+            /> */}
             <DatePickerInput
               label="Pick date range"
               placeholder="Select date range"
               type="range"
+              clearable
               value={dateRange}
-              onChange={setDateRange}
+              onChange={(value) => {
+                console.log("DatePickerInput changed:", value);
+                setDateRange(value);
+              }}
             />
           </DatesProvider>
         </Group>

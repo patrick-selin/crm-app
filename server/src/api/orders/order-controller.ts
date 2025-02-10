@@ -8,17 +8,25 @@ export const listOrders = async (req: Request, res: Response, next: NextFunction
   logger.info("Controller invoked: listOrders");
 
   try {
-    const { search, sort, page, limit } = req.query as Record<string, string>;
+    const { search, sort, page, limit, startDate, endDate } = req.query as Record<string, string>;
     const filters = extractFilters(req.query);
 
-    const { page: parsedPage, limit: parsedLimit } = parsePagination(page, limit);
+    //
+    // logger.info("Raw query parameters:", { search, sort, page, limit, startDate, endDate });
 
+    delete filters.startDate;
+    delete filters.endDate;
+
+    const { page: parsedPage, limit: parsedLimit } = parsePagination(page, limit);
+    
     const orders = await orderService.getOrders({
       search,
       sort,
       page: parsedPage,
       limit: parsedLimit,
       filters,
+      startDate,
+      endDate,
     });
 
     logger.info("Orders retrieved successfully", { total: orders.total });

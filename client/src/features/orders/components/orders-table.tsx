@@ -40,6 +40,10 @@ const OrdersTable = () => {
 
   const orders = data?.pages.flatMap((page) => page.data) || [];
 
+  useEffect(() => {
+    console.log("Updated dateRange:", dateRange);
+  }, [dateRange]);
+
   // When the user types (searchInput changes), ensure the search input stays focused.
   // Not working, loses the focus after re-render. Remember to debug.
   useEffect(() => {
