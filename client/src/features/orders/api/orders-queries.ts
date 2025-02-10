@@ -12,11 +12,16 @@ export const useOrdersInfinite = ({
   limit?: number;
   dateRange?: [Date | null, Date | null];
 }) => {
+  // Convert the date range into ISO strings (or null)
+  const startDate = dateRange && dateRange[0] ? dateRange[0].toISOString() : null;
+  const endDate = dateRange && dateRange[1] ? dateRange[1].toISOString() : null;
+
   return useInfiniteQuery({
-    queryKey: ["orders", { search, sort, limit, dateRange }],
-    queryFn: ({ pageParam = 1 }) => getOrders({ search, sort, limit, pageParam, dateRange }), // ✅ Fetch orders by page
+    queryKey: ["orders", { search, sort, limit, startDate, endDate }],
+    queryFn: ({ pageParam = 1 }) =>
+      getOrders({ search, sort, limit, pageParam, startDate, endDate }),
     getNextPageParam: (lastPage, allPages) => {
-      const nextPage = allPages.length + 1; 
+      const nextPage = allPages.length + 1;
       return lastPage.data.length < limit ? undefined : nextPage;
     },
     initialPageParam: 1,

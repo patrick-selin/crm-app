@@ -19,15 +19,12 @@ export const createSearchAndFilterConditions = (
 ): any => {
   const conditions = [];
 
-  
-
-if (search && searchableColumns && searchableColumns.length > 0) {
-  const searchConditions = searchableColumns.map(
-    (column) => sql`${column} ILIKE ${`%${search}%`}`
-  );
-  conditions.push(sql`(${sql.join(searchConditions, sql` OR `)})`);
-}
-
+  if (search && searchableColumns && searchableColumns.length > 0) {
+    const searchConditions = searchableColumns.map(
+      (column) => sql`${column} ILIKE ${`%${search}%`}`
+    );
+    conditions.push(sql`(${sql.join(searchConditions, sql` OR `)})`);
+  }
 
   if (filters) {
     for (const [key, value] of Object.entries(filters)) {
@@ -41,8 +38,6 @@ if (search && searchableColumns && searchableColumns.length > 0) {
 
   return conditions.length > 0 ? and(...conditions) : undefined;
 };
-
-
 
 // Parses sorting params to column and direction for SQL queries.
 export const parseSorting = (
@@ -63,4 +58,16 @@ export const parseSorting = (
   } else {
     throw new Error(`Invalid sort direction: ${direction}`);
   }
+};
+
+// Builds SQL conditions for filtering by date range.
+export const buildDateConditions = (startDate?: string, endDate?: string): SQL<any> | undefined => {
+  const conditions = [];
+  if (startDate) {
+    conditions.push(sql`${orders.orderDate} >= ${startDate}`);
+  }
+  if (endDate) {
+    conditions.push(sql`${orders.orderDate} <= ${endDate}`);
+  }
+  return conditions.length > 0 ? and(...conditions) : undefined;
 };

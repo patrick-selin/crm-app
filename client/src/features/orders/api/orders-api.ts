@@ -6,22 +6,26 @@ export const getOrders = async ({
   sort = "",
   limit = 10,
   pageParam = 1,
-  dateRange = [null, null],
+  startDate = null,
+  endDate = null,
 }: {
   search?: string;
   sort?: string;
   limit?: number;
   pageParam?: number;
-  dateRange?: [Date | null, Date | null];
+  startDate?: string | null;
+  endDate?: string | null;
 }) => {
   const params = new URLSearchParams({
     ...(search && { search }),
     ...(sort && { sort }),
     limit: limit.toString(),
     page: pageParam.toString(),
-    ...(dateRange[0] && { startDate: dateRange[0].toISOString() }),
-    ...(dateRange[1] && { endDate: dateRange[1].toISOString() }),
+    ...(startDate && { startDate }),
+    ...(endDate && { endDate }),
   });
+
+  console.log("URL params:", params.toString());
 
   const response = await axiosInstance.get(`/orders?${params}`);
   return response.data;

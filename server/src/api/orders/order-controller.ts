@@ -2,29 +2,20 @@
 import { Request, Response, NextFunction } from "express";
 import * as orderService from "./order-service";
 import logger from "../../utils/logger";
-import { extractFilters, parsePagination } from "../../utils/request-helpers";
+import { extractOrderQueryParams } from "../../utils/request-helpers";
 
-export const listOrders = async (req: Request, res: Response, next: NextFunction) => {
-  logger.info("Controller invoked: listOrders");
-
+export const listOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { search, sort, page, limit } = req.query as Record<string, string>;
-    const filters = extractFilters(req.query);
+    logger.info("Controller invoked: listOrders");
 
-    const { page: parsedPage, limit: parsedLimit } = parsePagination(page, limit);
-
-    const orders = await orderService.getOrders({
-      search,
-      sort,
-      page: parsedPage,
-      limit: parsedLimit,
-      filters,
-    });
-
-    logger.info("Orders retrieved successfully", { total: orders.total });
+    const queryParams = extractOrderQueryParams(req);
+    const orders = await orderService.getOrders(queryParams);
     res.status(200).json(orders);
   } catch (error) {
-    logger.error("Error in listOrders", { error });
     next(error);
   }
 };

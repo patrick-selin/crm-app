@@ -2,6 +2,13 @@
 import { Group, Select, TextInput } from "@mantine/core";
 import { forwardRef } from "react";
 
+const ROWS_PER_PAGE_OPTIONS = [
+  { value: "5", label: "5" },
+  { value: "10", label: "10" },
+  { value: "25", label: "25" },
+  { value: "50", label: "50" },
+];
+
 interface TableControlsProps {
   search: string;
   onSearchChange: (value: string) => void;
@@ -24,7 +31,7 @@ const TableControls = forwardRef<HTMLInputElement, TableControlsProps>(
           aria-label="Search"
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
-          ref={ref} // Assign ref to TextInput
+          ref={ref}
         />
 
         <Select
@@ -42,12 +49,7 @@ const TableControls = forwardRef<HTMLInputElement, TableControlsProps>(
           aria-label="Rows per page"
           value={limit.toString()}
           onChange={(value) => onLimitChange(Number(value))}
-          data={[
-            { value: "5", label: "5" },
-            { value: "10", label: "10" },
-            { value: "25", label: "25" },
-            { value: "50", label: "50" },
-          ]}
+          data={ROWS_PER_PAGE_OPTIONS}
         />
       </Group>
     );
