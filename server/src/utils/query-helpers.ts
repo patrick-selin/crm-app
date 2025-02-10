@@ -59,3 +59,15 @@ export const parseSorting = (
     throw new Error(`Invalid sort direction: ${direction}`);
   }
 };
+
+// Builds SQL conditions for filtering by date range.
+export const buildDateConditions = (startDate?: string, endDate?: string): SQL<any> | undefined => {
+  const conditions = [];
+  if (startDate) {
+    conditions.push(sql`${orders.orderDate} >= ${startDate}`);
+  }
+  if (endDate) {
+    conditions.push(sql`${orders.orderDate} <= ${endDate}`);
+  }
+  return conditions.length > 0 ? and(...conditions) : undefined;
+};

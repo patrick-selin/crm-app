@@ -7,6 +7,7 @@ import {
   parseSorting,
   calculateOffset,
   createSearchAndFilterConditions,
+  buildDateConditions,
 } from "../../utils/query-helpers";
 
 export const getOrders = async ({
@@ -22,23 +23,19 @@ export const getOrders = async ({
 
   const offset = calculateOffset(page, limit);
 
-  let conditions = createSearchAndFilterConditions(search, filters, [
+  const baseConditions = createSearchAndFilterConditions(search, filters, [
     customers.firstName,
     customers.lastName,
     sql`${orders.orderStatus}::TEXT`,
     sql`CAST(${orders.totalAmount} AS TEXT)`,
   ]);
 
-  if (startDate && endDate) {
-    const dateCondition = sql`${orders.orderDate} BETWEEN ${startDate} AND ${endDate}`;
-    conditions = conditions ? and(conditions, dateCondition) : dateCondition;
-  } else if (startDate) {
-    const dateCondition = sql`${orders.orderDate} >= ${startDate}`;
-    conditions = conditions ? and(conditions, dateCondition) : dateCondition;
-  } else if (endDate) {
-    const dateCondition = sql`${orders.orderDate} <= ${endDate}`;
-    conditions = conditions ? and(conditions, dateCondition) : dateCondition;
-  }
+  const dateConditions = buildDateConditions(startDate, endDate);
+
+  const combinedConditions =
+    baseConditions && dateConditions
+      ? and(baseConditions, dateConditions)
+      : baseConditions || dateConditions || sql`TRUE`;
 
   const sortMapping = {
     orderId: orders.orderId,
@@ -62,19 +59,21 @@ export const getOrders = async ({
     })
     .from(orders)
     .leftJoin(customers, eq(orders.customerId, customers.customerId))
-    .where(conditions ? conditions : sql`TRUE`)
+    .where(combinedConditions)
     .orderBy(orderBy)
     .offset(offset)
     .limit(limit);
 
+  // Log the generated SQL query for debugging.
+  logger.info("Generated SQL Query:", query.toSQL().sql);
+
   const results = await query;
-  //   console.log("DEBUG :: ", query.toSQL().sql);
 
   const totalCountQuery = await db
     .select({ count: sql<number>`COUNT(*)` })
     .from(orders)
     .leftJoin(customers, eq(orders.customerId, customers.customerId))
-    .where(conditions ? conditions : sql`TRUE`);
+    .where(combinedConditions);
 
   const totalOrders = totalCountQuery[0]?.count ?? 0;
 
