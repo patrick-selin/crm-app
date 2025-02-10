@@ -15,10 +15,15 @@ const OrdersTable = () => {
   ]);
   const [sortBy, setSortBy] = useState<string>("orderDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [limit, setLimit] = useState<number>(10);
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [modalOpened, { open, close }] = useDisclosure(false);
+
   const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
   const [debouncedSearch] = useDebouncedValue(searchInput, 500);
+
   const {
     data,
     isLoading,
@@ -29,16 +34,22 @@ const OrdersTable = () => {
   } = useOrdersInfinite({
     search: debouncedSearch,
     sort: `${sortBy}:${sortOrder}`,
+    limit,
     dateRange,
   });
 
+  const orders = data?.pages.flatMap((page) => page.data) || [];
+
+  // When the user types (searchInput changes), ensure the search input stays focused.
+  // Not working, loses the focus after re-render. Remember to debug.
   useEffect(() => {
-    if (searchInputRef.current) {
+    if (
+      searchInputRef.current &&
+      document.activeElement !== searchInputRef.current
+    ) {
       searchInputRef.current.focus();
     }
-  }, [data]);
-
-  const orders = data?.pages.flatMap((page) => page.data) || [];
+  }, [searchInput]);
 
   const handleSort = (column: string) => {
     if (sortBy === column) {
@@ -47,6 +58,14 @@ const OrdersTable = () => {
       setSortBy(column);
       setSortOrder("asc");
     }
+  };
+
+  const handleLoadMore = () => {
+    fetchNextPage().then(() => {
+      setTimeout(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    });
   };
 
   if (isLoading) return <Loader color="blue" />;
@@ -60,6 +79,8 @@ const OrdersTable = () => {
         setSearchInput={setSearchInput}
         dateRange={dateRange}
         setDateRange={setDateRange}
+        limit={limit}         
+        onLimitChange={setLimit}
       />
 
       <OrdersTableBody
@@ -72,9 +93,11 @@ const OrdersTable = () => {
         onSort={handleSort}
       />
 
+      <div ref={bottomRef} />
+
       <Group justify="center" align="center" mt="md">
         {hasNextPage && (
-          <Button onClick={() => fetchNextPage()} loading={isFetchingNextPage}>
+          <Button onClick={handleLoadMore} loading={isFetchingNextPage}>
             Load More
           </Button>
         )}
