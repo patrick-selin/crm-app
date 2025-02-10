@@ -28,29 +28,32 @@ const OrderTableControls = forwardRef<HTMLInputElement, OrderTableControlsProps>
     ref
   ) => {
     return (
-      <Group mb="md" pt="xl" pb="md">
-        <TextInput
-          label="Search by customer"
-          placeholder="Search..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          ref={ref}
-        />
+      <Group mb="md" pt="xl" pb="md" justify="space-between">
 
-        <DatesProvider settings={{ consistentWeeks: true }}>
-          <MonthPickerInput
-            label="Pick month"
-            placeholder="Pick month"
-            type="range"
+        <Group>
+          <TextInput
+            label="Search by customer"
+            placeholder="Search..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            ref={ref}
           />
-          <DatePickerInput
-            label="Pick date"
-            placeholder="Select date range"
-            type="range"
-            value={dateRange}
-            onChange={setDateRange}
-          />
-        </DatesProvider>
+
+          <DatesProvider settings={{ consistentWeeks: true }}>
+            <MonthPickerInput
+              label="Pick month"
+              placeholder="Pick month"
+              type="range"
+            />
+            <DatePickerInput
+              label="Pick date range"
+              placeholder="Select date range"
+              type="range"
+              value={dateRange}
+              onChange={setDateRange}
+            />
+          </DatesProvider>
+        </Group>
 
         <Select
           label="Rows per page"
