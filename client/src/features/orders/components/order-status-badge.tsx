@@ -34,6 +34,8 @@ const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({
       <Menu.Target>
         <Badge
           color={statusColors[status]}
+        //   fullWidth
+          autoContrast
           rightSection={
             <ActionIcon size="xs" variant="transparent">
               <ChevronDownIcon
@@ -44,7 +46,14 @@ const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({
               />
             </ActionIcon>
           }
-          style={{ cursor: "pointer" }}
+          styles={{
+            root: {
+              minWidth: 120,   
+              textAlign: 'right',
+              alignItems: 'center',
+              cursor: 'pointer',
+            },
+          }}
         >
           {status}
         </Badge>

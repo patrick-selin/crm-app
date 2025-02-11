@@ -77,14 +77,17 @@ const CustomersSummaryTable = () => {
         </Table.Thead>
         <Table.Tbody>
           {customersSummary.data.map((customer) => (
-            <Table.Tr
-              key={customer.customerId}
-              className="tablerow"
-              onClick={() => navigate(`/customers/${customer.customerId}`)}
-            >
-              <Table.Td>
-                {customer.firstName} {customer.lastName}
-              </Table.Td>
+             <Table.Tr key={customer.customerId} className="tablerow">
+             {/* Clickable Customer Name */}
+             <Table.Td>
+               <Text
+                 size="sm"
+                 style={{ cursor: "pointer", textDecoration: "underline" }}
+                 onClick={() => navigate(`/customers/${customer.customerId}`)}
+               >
+                 {customer.firstName} {customer.lastName}
+               </Text>
+             </Table.Td>
               <Table.Td>{customer.email}</Table.Td>
               <Table.Td>
                 {customer.lastOrderDate &&

@@ -69,7 +69,7 @@ export const login = async (data: LoginSchema) => {
     const accessToken = jwt.sign(
       { id: user.userId, role: user.role },
       JWT_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "15d" } // muuta
     );
     const refreshToken = jwt.sign({ id: user.userId }, REFRESH_SECRET, {
       expiresIn: "14d",

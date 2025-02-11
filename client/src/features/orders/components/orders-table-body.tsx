@@ -5,10 +5,21 @@ import OrderTableRow from "./orders-table-row";
 interface OrdersTableBodyProps {
   orders: {
     orderId: string;
+    customerId: string;
     customer: string;
     totalAmount: string;
     orderDate: string;
     orderStatus: string;
+    items: {
+      orderItemId: string;
+      productId: string;
+      name: string;
+      category: string;
+      sku: string;
+      price: number;
+      productImage: string;
+      quantity: number;
+    }[];
   }[];
   total: number;
   selectedOrders: string[];
@@ -27,6 +38,8 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
   sortOrder,
   onSort,
 }) => {
+  // console.log(JSON.stringify(orders));
+
   return (
     <div>
       <Text size="sm" mb="sm" pl="sm">
@@ -43,13 +56,7 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
               sortOrder={sortOrder}
               onSort={onSort}
             />
-            <SortableHeader
-              column="orderId"
-              label="Order ID"
-              sortBy={sortBy}
-              sortOrder={sortOrder}
-              onSort={onSort}
-            />
+            <Table.Th>Order ID</Table.Th>
             <SortableHeader
               column="totalAmount"
               label="Total Amount"
@@ -77,7 +84,7 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
           {orders.map((order) => (
             <OrderTableRow
               key={order.orderId}
-              order={order}
+              order={{ ...order, items: order.items || [] }}
               selectedOrders={selectedOrders}
               setSelectedOrders={setSelectedOrders}
             />

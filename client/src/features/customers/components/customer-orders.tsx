@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Table, Title } from "@mantine/core";
-import OrderDetailDrawer from "../../customers/components/order-detail-drawer";
 import { Order } from "../../../schemas/order-schemas";
 
 const CustomerOrders = ({
@@ -10,7 +9,7 @@ const CustomerOrders = ({
   customerId: string;
   orders: Order[];
 }) => {
-  const [selectedOrder, setSelectedOrder] = useState<null | string>(null);
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -29,10 +28,13 @@ const CustomerOrders = ({
             <Table.Tr
               key={order.orderId}
               className="tablerow"
-              onClick={() => setSelectedOrder(order.orderId)}
+              onClick={() => navigate(`/customers/${customerId}/orders/${order.orderId}`)}
+              style={{ cursor: "pointer" }}
             >
-              <Table.Td>{order.orderId}</Table.Td>
-              <Table.Td>{order.totalAmount}</Table.Td>
+              <Table.Td style={{ textDecoration: "underline" }}>
+                {order.orderId}
+              </Table.Td>
+              <Table.Td>${parseFloat(order.totalAmount).toFixed(2)}</Table.Td>
               <Table.Td>{order.orderStatus}</Table.Td>
               <Table.Td>
                 {new Date(order.orderDate).toLocaleDateString("en-US", {
@@ -45,15 +47,6 @@ const CustomerOrders = ({
           ))}
         </Table.Tbody>
       </Table>
-      {selectedOrder && (
-        <OrderDetailDrawer
-          orderId={selectedOrder}
-          customerId={customerId}
-          opened={!!selectedOrder}
-          onClose={() => setSelectedOrder(null)}
-        />
-      )}
-      
     </div>
   );
 };
