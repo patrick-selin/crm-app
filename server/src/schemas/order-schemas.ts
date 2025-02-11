@@ -26,16 +26,25 @@ export const UpdateOrderStatusSchema = z.object({
 //   limit: z.number().positive(),
 // });
 
-export const OrderIdSchema = z.object({
+export const CustomerOrderIdSchema = z.object({
   orderId: z.string().uuid(),
 });
+
+export const OrderIdSchema = z.object({
+  id: z.string().uuid(),
+});
+
 
 export const OrderItemSchema = z.object({
   orderItemId: z.string().uuid(),
   orderId: z.string().uuid(),
   productId: z.string().uuid(),
-  quantity: z.number().int().positive(),
+  name: z.string(),
+  category: z.string().optional(),
+  sku: z.string(),
   price: z.number().nonnegative(),
+  productImage: z.string(),
+  quantity: z.number().int().positive(),
 });
 
 export const OrderDetailResponseSchema = z.object({

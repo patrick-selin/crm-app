@@ -14,7 +14,7 @@ import {
   CustomersQuerySchema,
   CustomersSummaryQuerySchema,
 } from "../../schemas/customer-schemas";
-import { OrderIdSchema } from "../../schemas/order-schemas";
+import { CustomerOrderIdSchema, OrderIdSchema } from "../../schemas/order-schemas";
 
 const customerRoutes = Router();
 
@@ -54,7 +54,7 @@ customerRoutes.get(
 customerRoutes.get(
   "/:id/orders/:orderId",
   authenticateJWT,
-  validateParams(CustomerIdSchema.and(OrderIdSchema)),
+  validateParams(CustomerIdSchema.and(CustomerOrderIdSchema)),
   customerController.getCustomerOrderDetails
 );
 
