@@ -14,7 +14,7 @@ import {
   CustomersQuerySchema,
   CustomersSummaryQuerySchema,
 } from "../../schemas/customer-schemas";
-import { CustomerOrderIdSchema, OrderIdSchema } from "../../schemas/order-schemas";
+import { CustomerOrderIdSchema } from "../../schemas/order-schemas";
 
 const customerRoutes = Router();
 

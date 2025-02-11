@@ -89,38 +89,38 @@ export const getOrders = async ({
 };
 
 export const getOrderDetails = async (orderId: string) => {
-    logger.info(`Service: Fetching details for order ID = ${orderId}`);
-  
-    const [order] = await db
-      .select({
-        orderId: orders.orderId,
-        totalAmount: orders.totalAmount,
-        orderStatus: orders.orderStatus,
-        orderDate: orders.orderDate,
-        createdAt: orders.createdAt,
-        updatedAt: orders.updatedAt,
-        customerId: customers.customerId,
-        customerFirstName: customers.firstName,
-        customerLastName: customers.lastName,
-        customerEmail: customers.email,
-      })
-      .from(orders)
-      .leftJoin(customers, eq(orders.customerId, customers.customerId))
-      .where(eq(orders.orderId, orderId));
-  
-    if (!order) {
-      return null;
-    }
-  
-    logger.info(`DEBUG: Retrieved Order:`, order);
-  
-    // Normalize order object
-    const processedOrder = {
-      ...order,
-      totalAmount: parseFloat(order.totalAmount),
-    };
-  
-    const rawItems = await db
+  logger.info(`Service: Fetching details for order ID = ${orderId}`);
+
+  const [order] = await db
+    .select({
+      orderId: orders.orderId,
+      totalAmount: orders.totalAmount,
+      orderStatus: orders.orderStatus,
+      orderDate: orders.orderDate,
+      createdAt: orders.createdAt,
+      updatedAt: orders.updatedAt,
+      customerId: customers.customerId,
+      customerFirstName: customers.firstName,
+      customerLastName: customers.lastName,
+      customerEmail: customers.email,
+    })
+    .from(orders)
+    .leftJoin(customers, eq(orders.customerId, customers.customerId))
+    .where(eq(orders.orderId, orderId));
+
+  if (!order) {
+    return null;
+  }
+
+  logger.info(`DEBUG: Retrieved Order:`, order);
+
+  // Normalize order object
+  const processedOrder = {
+    ...order,
+    totalAmount: parseFloat(order.totalAmount),
+  };
+
+  const rawItems = await db
     .select({
       orderItemId: orderItems.orderItemId,
       orderId: orderItems.orderId,
@@ -129,29 +129,31 @@ export const getOrderDetails = async (orderId: string) => {
       category: products.category,
       sku: products.sku,
       price: products.price,
-      productImage: sql`COALESCE(products.product_images->>0, '')`.as("productImage"),
+      productImage: sql`COALESCE(products.product_images->>0, '')`.as(
+        "productImage"
+      ),
       quantity: orderItems.quantity,
     })
     .from(orderItems)
     .leftJoin(products, eq(orderItems.productId, products.productId))
     .where(eq(orderItems.orderId, orderId));
-  
-    logger.info(`DEBUG: Retrieved ${rawItems.length} order items`);
-  
-    const processedItems = rawItems.map((item) => ({
-        orderItemId: item.orderItemId,
-        orderId: item.orderId, 
-        productId: item.productId,
-        name: item.name,
-        category: item.category,
-        sku: item.sku,
-        price: parseFloat(item.price),
-        productImage: item.productImage ?? "",
-        quantity: item.quantity,
-      }));
-  
-    return {
-      order: OrderSchema.parse(processedOrder),
-      items: processedItems.map((item) => OrderItemSchema.parse(item)),
-    };
+
+  logger.info(`DEBUG: Retrieved ${rawItems.length} order items`);
+
+  const processedItems = rawItems.map((item) => ({
+    orderItemId: item.orderItemId,
+    orderId: item.orderId,
+    productId: item.productId,
+    name: item.name,
+    category: item.category,
+    sku: item.sku,
+    price: parseFloat(item.price ?? "0"),
+    productImage: item.productImage ?? "",
+    quantity: item.quantity,
+  }));
+
+  return {
+    order: OrderSchema.parse(processedOrder),
+    items: processedItems.map((item) => OrderItemSchema.parse(item)),
   };
+};
