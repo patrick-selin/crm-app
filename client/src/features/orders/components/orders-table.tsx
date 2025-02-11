@@ -40,10 +40,6 @@ const OrdersTable = () => {
 
   const orders = data?.pages.flatMap((page) => page.data) || [];
 
-  useEffect(() => {
-    console.log("Updated dateRange:", dateRange);
-  }, [dateRange]);
-
   // When the user types (searchInput changes), ensure the search input stays focused.
   // Not working, loses the focus after re-render. Remember to debug.
   useEffect(() => {
@@ -83,12 +79,15 @@ const OrdersTable = () => {
         setSearchInput={setSearchInput}
         dateRange={dateRange}
         setDateRange={setDateRange}
-        limit={limit}         
+        limit={limit}
         onLimitChange={setLimit}
       />
 
       <OrdersTableBody
-        orders={orders}
+        orders={orders.map((o) => ({
+          ...o,
+          items: o.items ?? [],
+        }))}
         total={data?.pages[0]?.total || 0}
         selectedOrders={selectedOrders}
         setSelectedOrders={setSelectedOrders}

@@ -5,7 +5,9 @@ import AppLayout from "../layouts/app-layout";
 import Dashboard from "../pages/dashboard";
 import Customers from "../pages/customers";
 import CustomerDetail from "../features/customers/pages/customer-detail-page";
-import OrderDetailPage from "../features/customers/pages/order-detail-page";
+// import OrderDetailPage from "../features/customers/pages/order-detail-page";
+import OrderDetailPage from "../features/orders/pages/order-detail-page";
+
 import Orders from "../pages/orders";
 import Products from "../pages/products";
 import Profile from "../pages/profile";
@@ -60,6 +62,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Orders />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "orders/:id",
+        element: (
+          <ProtectedRoute>
+            <OrderDetailPage />
           </ProtectedRoute>
         ),
       },

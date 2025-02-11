@@ -1,5 +1,6 @@
 // features/orders/orders-api.ts
 import axiosInstance from "../../../services/api-client";
+import { OrderDetailResponse } from "../../../schemas/order-schemas";
 
 export const getOrders = async ({
   search = "",
@@ -25,7 +26,7 @@ export const getOrders = async ({
     ...(endDate && { endDate }),
   });
 
-  console.log("URL params:", params.toString());
+  // console.log("URL params:", params.toString());
 
   const response = await axiosInstance.get(`/orders?${params}`);
   return response.data;
@@ -33,5 +34,10 @@ export const getOrders = async ({
 
 export const getOrdersSummary = async () => {
   const response = await axiosInstance.get(`/orders/summary`);
+  return response.data;
+};
+
+export const getOrderById = async (orderId: string): Promise<OrderDetailResponse> => {
+  const response = await axiosInstance.get(`/orders/${orderId}`);
   return response.data;
 };

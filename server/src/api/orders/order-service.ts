@@ -53,6 +53,7 @@ export const getOrders = async ({
   const query = db
     .select({
       orderId: orders.orderId,
+      customerId: customers.customerId,
       customer: sql`${customers.firstName} || ' ' || ${customers.lastName}`.as(
         "customer"
       ),
@@ -67,7 +68,6 @@ export const getOrders = async ({
     .offset(offset)
     .limit(limit);
 
-  // Log the generated SQL query for debugging.
   logger.info("Generated SQL Query:", query.toSQL().sql);
 
   const results = await query;

@@ -1,5 +1,6 @@
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import { getOrders, getOrdersSummary } from "./orders-api";
+import { getOrders, getOrdersSummary, getOrderById } from "./orders-api";
+import { OrderDetailResponse } from "../../../schemas/order-schemas";
 
 export const useOrdersInfinite = ({
   search,
@@ -35,3 +36,10 @@ export const useOrdersSummary = () => {
   });
 };
 
+export const useOrderDetail = (orderId: string) => {
+  return useQuery<OrderDetailResponse, Error>({
+    queryKey: ["orderDetail", orderId],
+    queryFn: () => getOrderById(orderId),
+    enabled: Boolean(orderId),
+  });
+};
