@@ -43,13 +43,7 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
               sortOrder={sortOrder}
               onSort={onSort}
             />
-            <SortableHeader
-              column="orderId"
-              label="Order ID"
-              sortBy={sortBy}
-              sortOrder={sortOrder}
-              onSort={onSort}
-            />
+            <Table.Th>Order ID</Table.Th>
             <SortableHeader
               column="totalAmount"
               label="Total Amount"
