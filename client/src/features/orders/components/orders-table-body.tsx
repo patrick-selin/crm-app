@@ -4,7 +4,7 @@ import OrderTableRow from "./orders-table-row";
 import { Order } from "../../../schemas/order-schemas";
 
 interface OrdersTableBodyProps {
-  orders: (Order & { customer: string })[];
+  orders: Order[];
   total: number;
   selectedOrders: string[];
   setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
