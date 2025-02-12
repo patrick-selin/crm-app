@@ -12,7 +12,6 @@ const CustomersPage = () => {
 
   return (
     <div>
-      {/* Header */}
       <Group justify="space-between">
         <Title order={1}>Customers</Title>
         <Button variant="primary" onClick={open}>

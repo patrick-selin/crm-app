@@ -7,7 +7,7 @@ interface OrdersTableBodyProps {
     orderId: string;
     customerId: string;
     customer: string;
-    totalAmount: string;
+    totalAmount: number;
     orderDate: string;
     orderStatus: string;
   }[];
