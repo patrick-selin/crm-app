@@ -1,16 +1,10 @@
 import { Table, Text } from "@mantine/core";
 import { SortableHeader } from "./sortable-header";
 import OrderTableRow from "./orders-table-row";
+import { Order } from "../../../schemas/order-schemas";
 
 interface OrdersTableBodyProps {
-  orders: {
-    orderId: string;
-    customerId: string;
-    customer: string;
-    totalAmount: number;
-    orderDate: string;
-    orderStatus: string;
-  }[];
+  orders: (Order & { customer: string })[];
   total: number;
   selectedOrders: string[];
   setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
