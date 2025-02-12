@@ -4,6 +4,7 @@ import { Table, Image, Text, Collapse, Button } from "@mantine/core";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router";
 import OrderStatusBadge from "./order-status-badge";
+import { OrderStatusType } from "../../../schemas/order-schemas";
 
 interface OrderTableRowProps {
   order: {
@@ -79,7 +80,7 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
         <Table.Td>
           <OrderStatusBadge
             orderId={order.orderId}
-            initialStatus={order.orderStatus}
+            initialStatus={order.orderStatus as OrderStatusType}
           />
         </Table.Td>
         <Table.Td>
@@ -102,7 +103,7 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
           colSpan={7}
           style={{
             padding: 0,
-            marginleft: 16,
+            marginleft: "1rem",
             backgroundColor:
               colorScheme === "dark"
                 ? theme.colors.dark[6]
@@ -113,7 +114,7 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
             <Table withRowBorders>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th style={{ paddingLeft: "1.5rem"  }}>Image</Table.Th>
+                  <Table.Th style={{ paddingLeft: "1.5rem" }}>Image</Table.Th>
                   <Table.Th>Product Name</Table.Th>
                   <Table.Th>Category</Table.Th>
                   <Table.Th>SKU</Table.Th>
@@ -121,11 +122,11 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
                   <Table.Th>Quantity</Table.Th>
                 </Table.Tr>
               </Table.Thead>
-              <Table.Tbody >
+              <Table.Tbody>
                 {orderItems.length > 0 ? (
                   orderItems.map((item) => (
-                    <Table.Tr key={item.orderItemId} >
-                      <Table.Td style={{ paddingLeft: "1.5rem"  }}>
+                    <Table.Tr key={item.orderItemId}>
+                      <Table.Td style={{ paddingLeft: "1.5rem" }}>
                         <Image
                           src={item.productImage || "/placeholder.png"}
                           alt={item.name}
@@ -142,7 +143,7 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
                   ))
                 ) : (
                   <Table.Tr>
-                     <Table.Td colSpan={6} style={{ paddingLeft: "1.5rem" }}> 
+                    <Table.Td colSpan={6} style={{ paddingLeft: "1.5rem" }}>
                       <Text
                         size="sm"
                         style={{

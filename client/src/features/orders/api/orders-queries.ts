@@ -1,4 +1,8 @@
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useQuery,
+  useInfiniteQuery,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import { getOrders, getOrdersSummary, getOrderById } from "./orders-api";
 import { OrderDetailResponse } from "../../../schemas/order-schemas";
 
@@ -14,7 +18,8 @@ export const useOrdersInfinite = ({
   dateRange?: [Date | null, Date | null];
 }) => {
   // Convert the date range into ISO strings (or null)
-  const startDate = dateRange && dateRange[0] ? dateRange[0].toISOString() : null;
+  const startDate =
+    dateRange && dateRange[0] ? dateRange[0].toISOString() : null;
   const endDate = dateRange && dateRange[1] ? dateRange[1].toISOString() : null;
 
   return useInfiniteQuery({
@@ -36,10 +41,12 @@ export const useOrdersSummary = () => {
   });
 };
 
-export const useOrderDetail = (orderId: string) => {
-  return useQuery<OrderDetailResponse, Error>({
+export const useOrderDetail = (
+  orderId?: string
+): UseQueryResult<OrderDetailResponse, Error> => {
+  return useQuery({
     queryKey: ["orderDetail", orderId],
-    queryFn: () => getOrderById(orderId),
+    queryFn: () => getOrderById(orderId!),
     enabled: Boolean(orderId),
   });
 };

@@ -18,14 +18,6 @@ export const UpdateOrderStatusSchema = z.object({
   orderStatus: OrderStatusEnum,
 });
 
-
-// export const PaginatedOrdersSchema = z.object({
-//   orders: z.array(OrderSchema),
-//   total: z.number().nonnegative(),
-//   page: z.number().min(1),
-//   limit: z.number().positive(),
-// });
-
 export const OrderIdSchema = z.object({
   orderId: z.string().uuid(),
 });
@@ -34,8 +26,12 @@ export const OrderItemSchema = z.object({
   orderItemId: z.string().uuid(),
   orderId: z.string().uuid(),
   productId: z.string().uuid(),
-  quantity: z.number().int().positive(),
+  name: z.string(),
+  category: z.string().optional(),
+  sku: z.string(),
   price: z.number().nonnegative(),
+  productImage: z.string(),
+  quantity: z.number().int().positive(),
 });
 
 export const OrderDetailResponseSchema = z.object({
@@ -58,3 +54,5 @@ export type OrderItem = z.infer<typeof OrderItemSchema>;
 export type OrderDetailResponse = z.infer<typeof OrderDetailResponseSchema>;
 export type UpdateOrderStatus = z.infer<typeof UpdateOrderStatusSchema>;
 export type OrderQuery = z.infer<typeof OrderQuerySchema>;
+export type OrderStatusType = z.infer<typeof OrderStatusEnum>;
+

@@ -1,10 +1,17 @@
+// orders/pages/order-detail-page.tsx
 import { useParams } from "react-router";
 import { useOrderDetail } from "../../orders/api/orders-queries";
 import { Loader, Text, Title, Table, Image } from "@mantine/core";
 
 const OrderDetailPage = () => {
-  const { id: orderId } = useParams<{ id: string }>();
-  const { data: orderDetail, isLoading, error } = useOrderDetail(orderId!);
+  const { orderId } = useParams<{ orderId: string }>();
+
+  const { data: orderDetail, isLoading, error } = useOrderDetail(orderId);
+
+  // console.log(`orderId: ${orderId}`);
+  if (!orderId) {
+    return <Text>Error: Order ID is required.</Text>;
+  }
 
   if (isLoading) return <Loader />;
   if (error || !orderDetail) return <Text>Error loading order details.</Text>;
@@ -55,7 +62,7 @@ const OrderDetailPage = () => {
           ) : (
             <Table.Tr>
               <Table.Td colSpan={6}>
-                <Text size="sm" color="gray">
+                <Text size="sm" c="gray">
                   No items in this order.
                 </Text>
               </Table.Td>

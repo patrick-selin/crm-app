@@ -11,12 +11,10 @@ import {
   addCustomer,
   getCustomerById,
   getCustomerOrders,
-  getOrderDetail,
   updateCustomerById,
   deleteCustomerById,
 } from "./customers-api";
 import { CustomersSummaryResponse } from "../../../schemas/customer-schemas";
-import { OrderDetailResponse } from "../../../schemas/order-schemas";
 
 export const useCustomers = ({
   search,
@@ -65,17 +63,6 @@ export const useCustomerOrders = (id: string) => {
     queryKey: ["customerOrders", id],
     queryFn: () => getCustomerOrders(id),
     enabled: Boolean(id),
-  });
-};
-
-export const useOrderDetail = (
-  customerId: string,
-  orderId: string
-): UseQueryResult<OrderDetailResponse, Error> => {
-  return useQuery({
-    queryKey: ["orderDetail", customerId, orderId],
-    queryFn: () => getOrderDetail(customerId, orderId),
-    enabled: Boolean(customerId && orderId),
   });
 };
 

@@ -2,13 +2,7 @@ import { useNavigate } from "react-router";
 import { Table, Title } from "@mantine/core";
 import { Order } from "../../../schemas/order-schemas";
 
-const CustomerOrders = ({
-  customerId,
-  orders,
-}: {
-  customerId: string;
-  orders: Order[];
-}) => {
+const CustomerOrders = ({ orders }: { orders: Order[] }) => {
   const navigate = useNavigate();
 
   return (
@@ -28,13 +22,16 @@ const CustomerOrders = ({
             <Table.Tr
               key={order.orderId}
               className="tablerow"
-              onClick={() => navigate(`/customers/${customerId}/orders/${order.orderId}`)}
+              onClick={() => {
+                const route = `/orders/${order.orderId}`;
+                navigate(route);
+              }}
               style={{ cursor: "pointer" }}
             >
               <Table.Td style={{ textDecoration: "underline" }}>
                 {order.orderId}
               </Table.Td>
-              <Table.Td>${parseFloat(order.totalAmount).toFixed(2)}</Table.Td>
+              <Table.Td>${order.totalAmount.toFixed(2)}</Table.Td>
               <Table.Td>{order.orderStatus}</Table.Td>
               <Table.Td>
                 {new Date(order.orderDate).toLocaleDateString("en-US", {
