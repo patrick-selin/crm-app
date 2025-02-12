@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Badge, Menu, ActionIcon } from "@mantine/core";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { OrderStatusEnum } from "../../../schemas/order-schemas";
+import { OrderStatusEnum, OrderStatusType } from "../../../schemas/order-schemas";
 
 const statusColors: Record<typeof OrderStatusEnum._type, string> = {
   Pending: "blue",
@@ -12,7 +12,7 @@ const statusColors: Record<typeof OrderStatusEnum._type, string> = {
 
 interface OrderStatusBadgeProps {
   orderId: string;
-  initialStatus: typeof OrderStatusEnum._type;
+  initialStatus: OrderStatusType;
 }
 
 const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({

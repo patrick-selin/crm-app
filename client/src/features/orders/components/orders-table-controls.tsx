@@ -66,7 +66,6 @@ const OrderTableControls = forwardRef<
               clearable
               value={dateRange}
               onChange={(value) => {
-                console.log("DatePickerInput changed:", value);
                 setDateRange(value);
               }}
             />
