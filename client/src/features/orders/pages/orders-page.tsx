@@ -10,7 +10,6 @@ const OrdersPage = () => {
 
   return (
     <div>
-      {/* Header */}
       <Group justify="space-between">
         <Title order={1}>Orders</Title>
       </Group>

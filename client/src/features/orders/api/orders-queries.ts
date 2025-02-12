@@ -50,3 +50,11 @@ export const useOrderDetail = (
     enabled: Boolean(orderId),
   });
 };
+
+export const useOrderItems = (orderId?: string) => {
+  return useQuery<OrderDetailResponse, Error>({
+    queryKey: ["orderItems", orderId],
+    queryFn: () => getOrderById(orderId!),
+    enabled: !!orderId,
+  });
+};

@@ -54,7 +54,10 @@ const CustomersSummaryTable = () => {
           { value: "lastName:desc", label: "Last Name (Z-A)" },
           { value: "lastOrderDate:desc", label: "Last Order (Newest)" },
           { value: "lastOrderDate:asc", label: "Last Order (Oldest)" },
-          { value: "numOfOrders:desc", label: "Number of Orders (High to Low)" },
+          {
+            value: "numOfOrders:desc",
+            label: "Number of Orders (High to Low)",
+          },
           { value: "numOfOrders:asc", label: "Number of Orders (Low to High)" },
           { value: "totalSpent:desc", label: "Total Spent (High to Low)" },
           { value: "totalSpent:asc", label: "Total Spent (Low to High)" },
@@ -62,7 +65,8 @@ const CustomersSummaryTable = () => {
       />
 
       <Text size="sm" mb="sm" pl={"sm"}>
-        Showing {customersSummary.data.length} of {customersSummary.total} customers
+        Showing {customersSummary.data.length} of {customersSummary.total}{" "}
+        customers
       </Text>
 
       <Table withRowBorders withTableBorder>
@@ -77,26 +81,31 @@ const CustomersSummaryTable = () => {
         </Table.Thead>
         <Table.Tbody>
           {customersSummary.data.map((customer) => (
-             <Table.Tr key={customer.customerId} className="tablerow">
-             {/* Clickable Customer Name */}
-             <Table.Td style={{ paddingTop: "0.75rem", paddingBottom: "0.75rem" }}>
-               <Text
-                 size="sm"
-                 style={{ cursor: "pointer", textDecoration: "underline" }}
-                 onClick={() => navigate(`/customers/${customer.customerId}`)}
-               >
-                 {customer.firstName} {customer.lastName}
-               </Text>
-             </Table.Td>
+            <Table.Tr key={customer.customerId} className="tablerow">
+              {/* Clickable Customer Name */}
+              <Table.Td
+                style={{ paddingTop: "0.75rem", paddingBottom: "0.75rem" }}
+              >
+                <Text
+                  size="sm"
+                  style={{ cursor: "pointer", textDecoration: "underline" }}
+                  onClick={() => navigate(`/customers/${customer.customerId}`)}
+                >
+                  {customer.firstName} {customer.lastName}
+                </Text>
+              </Table.Td>
               <Table.Td>{customer.email}</Table.Td>
               <Table.Td>
                 {customer.lastOrderDate &&
                 customer.lastOrderDate !== "No orders"
-                  ? new Date(customer.lastOrderDate).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })
+                  ? new Date(customer.lastOrderDate).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    )
                   : "N/A"}
               </Table.Td>
               <Table.Td>{customer.numOfOrders}</Table.Td>

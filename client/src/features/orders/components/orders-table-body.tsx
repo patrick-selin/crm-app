@@ -1,26 +1,10 @@
 import { Table, Text } from "@mantine/core";
 import { SortableHeader } from "./sortable-header";
 import OrderTableRow from "./orders-table-row";
+import { Order } from "../../../schemas/order-schemas";
 
 interface OrdersTableBodyProps {
-  orders: {
-    orderId: string;
-    customerId: string;
-    customer: string;
-    totalAmount: string;
-    orderDate: string;
-    orderStatus: string;
-    items: {
-      orderItemId: string;
-      productId: string;
-      name: string;
-      category: string;
-      sku: string;
-      price: number;
-      productImage: string;
-      quantity: number;
-    }[];
-  }[];
+  orders: Order[];
   total: number;
   selectedOrders: string[];
   setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
@@ -84,7 +68,7 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
           {orders.map((order) => (
             <OrderTableRow
               key={order.orderId}
-              order={{ ...order, items: order.items || [] }}
+              order={order}
               selectedOrders={selectedOrders}
               setSelectedOrders={setSelectedOrders}
             />
