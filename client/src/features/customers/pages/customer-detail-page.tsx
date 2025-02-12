@@ -10,10 +10,14 @@ import { Title, Group, Loader, Flex, Button, Divider } from "@mantine/core";
 import { useCustomer, useCustomerOrders } from "../api/customers-queries";
 
 const CustomerDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { customerId } = useParams<{ customerId: string }>();
   const navigate = useNavigate();
-  const { data: customer, isLoading: isCustomerLoading } = useCustomer(id!);
-  const { data: orders, isLoading: isOrdersLoading } = useCustomerOrders(id!);
+  const { data: customer, isLoading: isCustomerLoading } = useCustomer(
+    customerId!
+  );
+  const { data: orders, isLoading: isOrdersLoading } = useCustomerOrders(
+    customerId!
+  );
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
@@ -28,12 +32,12 @@ const CustomerDetail = () => {
       <Title order={1}>
         Customer Page: {customer.firstName} {customer.lastName}
       </Title>
-      <Title order={4}>Customer ID: {id}</Title>
+      <Title order={4}>Customer ID: {customerId}</Title>
 
       <Flex gap="xl" justify="space-between" wrap="wrap" mt="md">
         <CustomerInfo customer={customer} />
         <Divider orientation="vertical" size="md" mt="xl" />
-        <CustomerOrders customerId={id!} orders={orders || []} />
+        <CustomerOrders orders={orders || []} />
       </Flex>
       <Group mt="lg">
         <Button onClick={() => setEditModalOpen(true)}>Edit</Button>

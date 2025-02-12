@@ -25,7 +25,6 @@ export const getOrders = async ({
     ...(startDate && { startDate }),
     ...(endDate && { endDate }),
   });
-
   // console.log("URL params:", params.toString());
 
   const response = await axiosInstance.get(`/orders?${params}`);
@@ -37,7 +36,20 @@ export const getOrdersSummary = async () => {
   return response.data;
 };
 
-export const getOrderById = async (orderId: string): Promise<OrderDetailResponse> => {
+export const getOrderById = async (
+  orderId: string
+): Promise<OrderDetailResponse> => {
   const response = await axiosInstance.get(`/orders/${orderId}`);
+  return response.data;
+};
+
+// maybe not needed anymore
+export const getOrderDetail = async (
+  customerId: string,
+  orderId: string
+): Promise<OrderDetailResponse> => {
+  const response = await axiosInstance.get(
+    `/customers/${customerId}/orders/${orderId}`
+  );
   return response.data;
 };

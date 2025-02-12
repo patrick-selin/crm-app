@@ -4,17 +4,16 @@ import AppLayout from "../layouts/app-layout";
 //
 import Dashboard from "../pages/dashboard";
 import Customers from "../pages/customers";
-import CustomerDetail from "../features/customers/pages/customer-detail-page";
-// import OrderDetailPage from "../features/customers/pages/order-detail-page";
+import CustomerDetailPage from "../features/customers/pages/customer-detail-page";
 import OrderDetailPage from "../features/orders/pages/order-detail-page";
-
+//
 import Orders from "../pages/orders";
 import Products from "../pages/products";
 import Profile from "../pages/profile";
 // import AdminPanel from "../pages/admin-panel";
 import SignIn from "../pages/sign-in";
 import Register from "../pages/register";
-import Welcome from "../pages/welcome"
+import Welcome from "../pages/welcome";
 //
 import ProtectedRoute from "./protected-route";
 // import AdminRoute from "./admin-route";
@@ -42,15 +41,15 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "customers/:id",
+        path: "customers/:customerId",
         element: (
           <ProtectedRoute>
-            <CustomerDetail />
+            <CustomerDetailPage />
           </ProtectedRoute>
         ),
       },
       {
-        path: "customers/:id/orders/:orderId",
+        path: "customers/:customerId/orders/:orderId",
         element: (
           <ProtectedRoute>
             <OrderDetailPage />
@@ -66,7 +65,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "orders/:id",
+        path: "orders/:orderId",
         element: (
           <ProtectedRoute>
             <OrderDetailPage />

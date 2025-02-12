@@ -26,8 +26,12 @@ export const OrderItemSchema = z.object({
   orderItemId: z.string().uuid(),
   orderId: z.string().uuid(),
   productId: z.string().uuid(),
-  quantity: z.number().int().positive(),
+  name: z.string(),
+  category: z.string().optional(),
+  sku: z.string(),
   price: z.number().nonnegative(),
+  productImage: z.string(),
+  quantity: z.number().int().positive(),
 });
 
 export const OrderDetailResponseSchema = z.object({

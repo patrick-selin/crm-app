@@ -7,7 +7,7 @@ import {
   CreateCustomerSchema,
   UpdateCustomerSchema,
 } from "../../../schemas/customer-schemas";
-import { Order, OrderDetailResponse } from "../../../schemas/order-schemas";
+import { Order } from "../../../schemas/order-schemas";
 
 export const getCustomers = async ({
   search = "",
@@ -65,16 +65,6 @@ export const getCustomerById = async (id: string): Promise<Customer> => {
 
 export const getCustomerOrders = async (id: string): Promise<Order[]> => {
   const response = await axiosInstance.get(`/customers/${id}/orders`);
-  return response.data;
-};
-
-export const getOrderDetail = async (
-  customerId: string,
-  orderId: string
-): Promise<OrderDetailResponse> => {
-  const response = await axiosInstance.get(
-    `/customers/${customerId}/orders/${orderId}`
-  );
   return response.data;
 };
 
