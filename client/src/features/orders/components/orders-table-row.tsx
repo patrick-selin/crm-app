@@ -1,45 +1,32 @@
 import { useState } from "react";
-import { useMantineTheme, useMantineColorScheme } from "@mantine/core";
-import { Table, Image, Text, Collapse, Button } from "@mantine/core";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router";
+import { useOrderItems } from "../api/orders-queries";
+import { useMantineTheme, useMantineColorScheme } from "@mantine/core";
+import { Table, Image, Text, Collapse, Button, Loader } from "@mantine/core";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import OrderStatusBadge from "./order-status-badge";
-import { OrderStatusType } from "../../../schemas/order-schemas";
+import { OrderStatusType, OrderItem, Order } from "../../../schemas/order-schemas";
 
 interface OrderTableRowProps {
-  order: {
-    orderId: string;
-    customerId: string;
-    customer: string;
-    totalAmount: string;
-    orderDate: string;
-    orderStatus: string;
-    items: {
-      orderItemId: string;
-      productId: string;
-      name: string;
-      category: string;
-      sku: string;
-      price: number;
-      productImage: string;
-      quantity: number;
-    }[];
-  };
+  order: Order & { customer: string };
   selectedOrders: string[];
   setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const OrderTableRow: React.FC<OrderTableRowProps> = ({
-  order,
-  selectedOrders,
-  setSelectedOrders,
-}) => {
+const OrderTableRow: React.FC<OrderTableRowProps> = ({ order, selectedOrders, setSelectedOrders }) => {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
-  const orderItems = order.items || [];
+
+  const { data: orderDetail, isLoading } = useOrderItems(
+    expanded ? order.orderId : undefined
+  );
 
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
+
+  console.log("Type of totalAmount:", typeof order.totalAmount, order.totalAmount);
+  console.log(typeof order.totalAmount, order.totalAmount);
+
 
   return (
     <>
@@ -75,7 +62,8 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
             {order.orderId}
           </Text>
         </Table.Td>
-        <Table.Td>${parseFloat(order.totalAmount).toFixed(2)}</Table.Td>
+        <Table.Td>{order.totalAmount}</Table.Td>
+        
         <Table.Td>{new Date(order.orderDate).toLocaleDateString()}</Table.Td>
         <Table.Td>
           <OrderStatusBadge
@@ -103,7 +91,7 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
           colSpan={7}
           style={{
             padding: 0,
-            marginleft: "1rem",
+            marginLeft: "1rem",
             backgroundColor:
               colorScheme === "dark"
                 ? theme.colors.dark[6]
@@ -111,20 +99,22 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
           }}
         >
           <Collapse in={expanded}>
-            <Table withRowBorders>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th style={{ paddingLeft: "1.5rem" }}>Image</Table.Th>
-                  <Table.Th>Product Name</Table.Th>
-                  <Table.Th>Category</Table.Th>
-                  <Table.Th>SKU</Table.Th>
-                  <Table.Th>Price</Table.Th>
-                  <Table.Th>Quantity</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {orderItems.length > 0 ? (
-                  orderItems.map((item) => (
+            {isLoading ? (
+              <Loader />
+            ) : orderDetail?.items && orderDetail.items.length > 0 ? (
+              <Table withRowBorders>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th style={{ paddingLeft: "1.5rem" }}>Image</Table.Th>
+                    <Table.Th>Product Name</Table.Th>
+                    <Table.Th>Category</Table.Th>
+                    <Table.Th>SKU</Table.Th>
+                    <Table.Th>Price</Table.Th>
+                    <Table.Th>Quantity</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                {orderDetail.items.map((item: OrderItem) => (
                     <Table.Tr key={item.orderItemId}>
                       <Table.Td style={{ paddingLeft: "1.5rem" }}>
                         <Image
@@ -140,26 +130,14 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
                       <Table.Td>${item.price.toFixed(2)}</Table.Td>
                       <Table.Td>{item.quantity}</Table.Td>
                     </Table.Tr>
-                  ))
-                ) : (
-                  <Table.Tr>
-                    <Table.Td colSpan={6} style={{ paddingLeft: "1.5rem" }}>
-                      <Text
-                        size="sm"
-                        style={{
-                          color:
-                            colorScheme === "dark"
-                              ? theme.colors.gray[3]
-                              : theme.colors.gray[8],
-                        }}
-                      >
-                        Order has no order items.
-                      </Text>
-                    </Table.Td>
-                  </Table.Tr>
-                )}
-              </Table.Tbody>
-            </Table>
+                  ))}
+                </Table.Tbody>
+              </Table>
+            ) : (
+              <Text size="sm" pl="sm">
+                Order has no order items.
+              </Text>
+            )}
           </Collapse>
         </Table.Td>
       </Table.Tr>

@@ -10,16 +10,6 @@ interface OrdersTableBodyProps {
     totalAmount: string;
     orderDate: string;
     orderStatus: string;
-    items: {
-      orderItemId: string;
-      productId: string;
-      name: string;
-      category: string;
-      sku: string;
-      price: number;
-      productImage: string;
-      quantity: number;
-    }[];
   }[];
   total: number;
   selectedOrders: string[];
@@ -84,7 +74,7 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
           {orders.map((order) => (
             <OrderTableRow
               key={order.orderId}
-              order={{ ...order, items: order.items || [] }}
+              order={order}
               selectedOrders={selectedOrders}
               setSelectedOrders={setSelectedOrders}
             />
