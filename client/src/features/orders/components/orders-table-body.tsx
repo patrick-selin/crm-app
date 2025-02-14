@@ -39,7 +39,7 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
       <Text size="sm" mb="sm" pl="sm">
         Showing {orders.length} of {total} orders
       </Text>
-      <Table withRowBorders withTableBorder>
+      <Table withRowBorders withTableBorder className="orders-table">
         <Table.Thead>
           <Table.Tr>
             <Table.Th>
