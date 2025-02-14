@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Tabs, Group, Title } from "@mantine/core";
 import OrdersTable from "../components/orders-table";
-import OrdersSummary from "../components/orders-summary";
+// import OrdersSummary from "../components/orders-summary";
 
 const OrdersPage = () => {
   const [activeTab, setActiveTab] = useState<string | null>("all");
@@ -17,14 +17,14 @@ const OrdersPage = () => {
       <Tabs value={activeTab} onChange={setActiveTab}>
         <Tabs.List>
           <Tabs.Tab value="all">Order Management</Tabs.Tab>
-          <Tabs.Tab value="summary">Orders Insights</Tabs.Tab>
+          {/* <Tabs.Tab value="summary">Orders Insights</Tabs.Tab> */}
         </Tabs.List>
         <Tabs.Panel value="all">
           <OrdersTable />
         </Tabs.Panel>
-        <Tabs.Panel value="summary">
+        {/* <Tabs.Panel value="summary">
           <OrdersSummary />
-        </Tabs.Panel>
+        </Tabs.Panel> */}
       </Tabs>
     </div>
   );
