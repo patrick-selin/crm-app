@@ -82,7 +82,6 @@ const CustomersSummaryTable = () => {
         <Table.Tbody>
           {customersSummary.data.map((customer) => (
             <Table.Tr key={customer.customerId} className="tablerow">
-              {/* Clickable Customer Name */}
               <Table.Td
                 style={{ paddingTop: "0.75rem", paddingBottom: "0.75rem" }}
               >

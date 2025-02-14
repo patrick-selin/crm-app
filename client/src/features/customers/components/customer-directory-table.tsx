@@ -82,7 +82,13 @@ const CustomersTable = () => {
               onClick={() => navigate(`/customers/${customer.customerId}`)}
             >
               <Table.Td>
-                {customer.firstName} {customer.lastName}
+                <Text
+                  size="sm"
+                  style={{ cursor: "pointer", textDecoration: "underline" }}
+                  onClick={() => navigate(`/customers/${customer.customerId}`)}
+                >
+                  {customer.firstName} {customer.lastName}
+                </Text>
               </Table.Td>
               <Table.Td>{customer.email}</Table.Td>
               <Table.Td>{customer.phone}</Table.Td>
