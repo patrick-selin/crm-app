@@ -27,8 +27,8 @@ const CustomersPage = () => {
       {/* Tabs */}
       <Tabs value={activeTab} onChange={setActiveTab}>
         <Tabs.List>
-          <Tabs.Tab value="summary">Customer Summary</Tabs.Tab>
-          <Tabs.Tab value="details">All Customers</Tabs.Tab>
+          <Tabs.Tab value="summary">Overview</Tabs.Tab>
+          <Tabs.Tab value="details">Customer Directory</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="summary">
           <CustomersSummaryTable />
