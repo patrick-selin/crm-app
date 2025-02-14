@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { Tabs, Button, Group, Modal, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import CustomersSummaryTable from "../components/customers-summary-table";
-import CustomersTable from "../components/customers-table";
+import CustomersSummaryTable from "../components/customer-overview-table";
+import CustomersTable from "../components/customer-directory-table";
 import AddCustomerModal from "../modals/add-customer-modal";
 
 const CustomersPage = () => {
@@ -27,8 +27,8 @@ const CustomersPage = () => {
       {/* Tabs */}
       <Tabs value={activeTab} onChange={setActiveTab}>
         <Tabs.List>
-          <Tabs.Tab value="summary">Customer Summary</Tabs.Tab>
-          <Tabs.Tab value="details">All Customers</Tabs.Tab>
+          <Tabs.Tab value="summary">Overview</Tabs.Tab>
+          <Tabs.Tab value="details">Customer Directory</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="summary">
           <CustomersSummaryTable />

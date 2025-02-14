@@ -5,10 +5,7 @@ import { useMantineTheme, useMantineColorScheme } from "@mantine/core";
 import { Table, Text, Collapse, Button, Loader } from "@mantine/core";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import OrderStatusBadge from "./order-status-badge";
-import {
-  OrderStatusType,
-  Order,
-} from "../../../schemas/order-schemas";
+import { OrderStatusType, Order } from "../../../schemas/order-schemas";
 import OrderItemsTable from "./orders-items-table";
 
 interface OrderTableRowProps {
@@ -24,14 +21,21 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
-  const { data: orderDetail, isLoading } = useOrderItems(expanded ? order.orderId : undefined);
+  const { data: orderDetail, isLoading } = useOrderItems(
+    expanded ? order.orderId : undefined
+  );
 
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
 
   return (
     <>
-      <Table.Tr key={order.orderId}>
+      <Table.Tr
+        key={order.orderId}
+        className={`tablerow ${
+          selectedOrders.includes(order.orderId) ? "selected" : ""
+        }`}
+      >
         <Table.Td>
           <input
             type="checkbox"
@@ -73,11 +77,15 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
         </Table.Td>
         <Table.Td>
           <Button
-            size="xs"
-            variant="light"
+            size="compact-xs"
+            variant="outline"
             onClick={() => setExpanded((prev) => !prev)}
           >
-            {expanded ? <ChevronUpIcon width={16} /> : <ChevronDownIcon width={16} />}
+            {expanded ? (
+              <ChevronUpIcon width={16} />
+            ) : (
+              <ChevronDownIcon width={16} />
+            )}
           </Button>
         </Table.Td>
       </Table.Tr>
@@ -89,11 +97,18 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
             style={{
               padding: 0,
               marginLeft: "1rem",
-              backgroundColor: colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[1],
+              backgroundColor:
+                colorScheme === "dark"
+                  ? theme.colors.dark[6]
+                  : theme.colors.gray[1],
             }}
           >
             <Collapse in={expanded}>
-              {isLoading ? <Loader /> : <OrderItemsTable items={orderDetail?.items || []} />}
+              {isLoading ? (
+                <Loader />
+              ) : (
+                <OrderItemsTable items={orderDetail?.items || []} />
+              )}
             </Collapse>
           </Table.Td>
         </Table.Tr>

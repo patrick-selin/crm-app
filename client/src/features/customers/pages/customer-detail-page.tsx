@@ -1,6 +1,6 @@
 // features/customers/customer-detail-page.tsx
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams } from "react-router";
 import CustomerInfo from "../components/customer-info";
 import CustomerOrders from "../components/customer-orders";
 import EditCustomerModal from "../components/edit-customer-modal";
@@ -8,10 +8,10 @@ import DeleteCustomerModal from "../components/delete-customer-button";
 import { Title, Group, Loader, Flex, Button, Divider } from "@mantine/core";
 
 import { useCustomer, useCustomerOrders } from "../api/customers-queries";
+import BackButton from "../../../components/back-button";
 
 const CustomerDetail = () => {
   const { customerId } = useParams<{ customerId: string }>();
-  const navigate = useNavigate();
   const { data: customer, isLoading: isCustomerLoading } = useCustomer(
     customerId!
   );
@@ -26,9 +26,7 @@ const CustomerDetail = () => {
 
   return (
     <div>
-      <Button mt="sm" variant="light" onClick={() => navigate(-1)}>
-        Back
-      </Button>
+      <BackButton />
       <Title order={1}>
         Customer Page: {customer.firstName} {customer.lastName}
       </Title>

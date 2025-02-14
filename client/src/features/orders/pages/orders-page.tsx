@@ -5,7 +5,6 @@ import OrdersTable from "../components/orders-table";
 import OrdersSummary from "../components/orders-summary";
 
 const OrdersPage = () => {
-
   const [activeTab, setActiveTab] = useState<string | null>("all");
 
   return (
@@ -17,8 +16,8 @@ const OrdersPage = () => {
       {/* Tabs */}
       <Tabs value={activeTab} onChange={setActiveTab}>
         <Tabs.List>
-          <Tabs.Tab value="all">All Orders</Tabs.Tab>
-          <Tabs.Tab value="summary">Orders Summary</Tabs.Tab>
+          <Tabs.Tab value="all">Order Management</Tabs.Tab>
+          <Tabs.Tab value="summary">Orders Insights</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="all">
           <OrdersTable />

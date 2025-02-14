@@ -23,16 +23,32 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
   onSort,
 }) => {
   // console.log(JSON.stringify(orders));
+  const allSelected =
+    orders.length > 0 && selectedOrders.length === orders.length;
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedOrders([]);
+    } else {
+      setSelectedOrders(orders.map((order) => order.orderId));
+    }
+  };
 
   return (
     <div>
       <Text size="sm" mb="sm" pl="sm">
         Showing {orders.length} of {total} orders
       </Text>
-      <Table withRowBorders withTableBorder>
+      <Table withRowBorders withTableBorder className="orders-table">
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>Select</Table.Th>
+            <Table.Th>
+              <input
+                type="checkbox"
+                checked={allSelected}
+                onChange={toggleSelectAll}
+              />
+            </Table.Th>
             <SortableHeader
               column="customer"
               label="Customer"

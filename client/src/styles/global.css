@@ -1,4 +1,3 @@
-
 :root {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -65,9 +64,16 @@ h3 {
   transition: background-color 0.2s ease-in-out;
 }
 
+/* Hover effect */
 .tablerow:hover {
-  background: var(--mantine-color-indigo-4);
+  background: var(--mantine-color-indigo-2);
   color: var(--hover-text);
   font-weight: bold;
 }
 
+/* Apply same color when a row is selected */
+.tablerow.selected {
+  background: var(--mantine-color-indigo-1) !important;
+  color: var(--hover-text);
+  font-weight: bold;
+}

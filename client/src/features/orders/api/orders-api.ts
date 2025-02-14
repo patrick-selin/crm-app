@@ -28,7 +28,6 @@ export const getOrders = async ({
   // console.log("URL params:", params.toString());
 
   const response = await axiosInstance.get(`/orders?${params}`);
-  console.log("API Response for Orders:", response.data);
   return response.data;
 };
 
