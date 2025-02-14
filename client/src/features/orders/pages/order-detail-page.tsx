@@ -2,6 +2,7 @@
 import { useParams } from "react-router";
 import { useOrderDetail } from "../../orders/api/orders-queries";
 import { Loader, Text, Title, Table, Image } from "@mantine/core";
+import BackButton from "../../../components/back-button";
 
 const OrderDetailPage = () => {
   const { orderId } = useParams<{ orderId: string }>();
@@ -20,6 +21,7 @@ const OrderDetailPage = () => {
 
   return (
     <div>
+      <BackButton/>
       <Title order={2}>Order Details</Title>
       <Text>Order ID: {order.orderId}</Text>
       <Text>Total Amount: ${order.totalAmount.toFixed(2)}</Text>
