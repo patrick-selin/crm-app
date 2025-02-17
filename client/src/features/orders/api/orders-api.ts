@@ -40,7 +40,7 @@ export const getOrderById = async (
   orderId: string
 ): Promise<OrderDetailResponse> => {
   const response = await axiosInstance.get(`/orders/${orderId}`);
-  console.log(`API Response for Order ${orderId}:`, response.data);
+  // console.log(`API Response for Order ${orderId}:`, response.data);
   return response.data;
 };
 
