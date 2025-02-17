@@ -9,12 +9,15 @@ import {
   LoadingOverlay,
   Divider,
   Table,
+  // notifications,
 } from "@mantine/core";
 import { Order, OrderStatusEnum } from "../../../schemas/order-schemas";
 import {
   DocumentArrowDownIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/solid";
+import { useUpdateOrderStatus } from "../api/orders-queries";
+import { notifications } from "@mantine/notifications";
 
 interface BulkActionsDrawerProps {
   selectedOrders: Order[];
@@ -22,7 +25,6 @@ interface BulkActionsDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   actionType: "update-status" | "generate-files";
-  onUpdateStatus: (status: string) => void;
   onGenerateCSV: (includeItems: boolean) => void;
   onGeneratePDF: (includeItems: boolean) => void;
 }
@@ -33,35 +35,47 @@ const BulkActionsDrawer: React.FC<BulkActionsDrawerProps> = ({
   isOpen,
   onClose,
   actionType,
-  onUpdateStatus,
   onGenerateCSV,
   onGeneratePDF,
 }) => {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [includeOrderItems, setIncludeOrderItems] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
+
+  const updateOrderStatus = useUpdateOrderStatus();
 
   const handleUpdateStatus = () => {
     if (!selectedStatus) return;
-    setIsProcessing(true);
-    onUpdateStatus(selectedStatus);
-    setTimeout(() => {
-      setIsProcessing(false);
-      setSelectedOrders([]);
-      onClose();
-    }, 1500);
+
+    updateOrderStatus.mutate(
+      {
+        orderIds: selectedOrders.map((order) => order.orderId),
+        newStatus: selectedStatus,
+      },
+      {
+        onSuccess: () => {
+          setSelectedOrders([]);
+          onClose();
+        },
+      }
+    );
   };
 
   const handleGenerateCSV = () => {
-    setIsProcessing(true);
     onGenerateCSV(includeOrderItems);
-    setTimeout(() => setIsProcessing(false), 1500);
+    notifications.show({
+      title: "CSV Generated",
+      message: "Your CSV file has been generated",
+      color: "blue",
+    });
   };
 
   const handleGeneratePDF = () => {
-    setIsProcessing(true);
     onGeneratePDF(includeOrderItems);
-    setTimeout(() => setIsProcessing(false), 1500);
+    notifications.show({
+      title: "PDF Generated",
+      message: "Your PDF file has been generated",
+      color: "blue",
+    });
   };
 
   return (
@@ -72,7 +86,7 @@ const BulkActionsDrawer: React.FC<BulkActionsDrawerProps> = ({
       position="right"
       size="lg"
     >
-      <LoadingOverlay visible={isProcessing} />
+      <LoadingOverlay visible={updateOrderStatus.isPending} />
 
       <Text size="md" mt="md" mb="sm">
         Selected Orders:
@@ -106,17 +120,17 @@ const BulkActionsDrawer: React.FC<BulkActionsDrawerProps> = ({
               label: status,
             }))}
             value={selectedStatus}
-            onChange={(value) => setSelectedStatus(value || "")}
-            disabled={isProcessing}
+            onChange={setSelectedStatus}
+            disabled={updateOrderStatus.isPending}
           />
           <Button
             mt="sm"
             fullWidth
             onClick={handleUpdateStatus}
-            disabled={!selectedStatus || isProcessing}
+            disabled={!selectedStatus || updateOrderStatus.isPending}
             leftSection={<CheckCircleIcon style={{ width: 20, height: 20 }} />}
           >
-            Update Status
+            {updateOrderStatus.isPending ? "Updating..." : "Update Status"}
           </Button>
         </>
       )}
@@ -136,7 +150,6 @@ const BulkActionsDrawer: React.FC<BulkActionsDrawerProps> = ({
             <Button
               fullWidth
               onClick={handleGenerateCSV}
-              disabled={isProcessing}
               leftSection={
                 <DocumentArrowDownIcon style={{ width: 20, height: 20 }} />
               }
@@ -147,7 +160,6 @@ const BulkActionsDrawer: React.FC<BulkActionsDrawerProps> = ({
               fullWidth
               color="red"
               onClick={handleGeneratePDF}
-              disabled={isProcessing}
               leftSection={
                 <DocumentArrowDownIcon style={{ width: 20, height: 20 }} />
               }

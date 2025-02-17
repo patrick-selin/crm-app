@@ -1,6 +1,6 @@
 // features/orders/orders-api.ts
 import axiosInstance from "../../../services/api-client";
-import { OrderDetailResponse } from "../../../schemas/order-schemas";
+import { OrderDetailResponse, OrderStatusUpdateSchema } from "../../../schemas/order-schemas";
 
 export const getOrders = async ({
   search = "",
@@ -52,5 +52,18 @@ export const getOrderDetail = async (
   const response = await axiosInstance.get(
     `/customers/${customerId}/orders/${orderId}`
   );
+  return response.data;
+};
+
+export const updateOrderStatus = async ({
+  orderIds,
+  newStatus,
+}: {
+  orderIds: string[];
+  newStatus: string;
+}) => {
+  OrderStatusUpdateSchema.parse({ orderIds, newStatus });
+
+  const response = await axiosInstance.put("/orders/status", { orderIds, newStatus });
   return response.data;
 };

@@ -2,8 +2,15 @@ import {
   useQuery,
   useInfiniteQuery,
   UseQueryResult,
+  useQueryClient,
+  useMutation,
 } from "@tanstack/react-query";
-import { getOrders, getOrdersSummary, getOrderById } from "./orders-api";
+import {
+  getOrders,
+  getOrdersSummary,
+  getOrderById,
+  updateOrderStatus,
+} from "./orders-api";
 import { OrderDetailResponse } from "../../../schemas/order-schemas";
 
 export const useOrdersInfinite = ({
@@ -56,5 +63,44 @@ export const useOrderItems = (orderId?: string) => {
     queryKey: ["orderItems", orderId],
     queryFn: () => getOrderById(orderId!),
     enabled: !!orderId,
+  });
+};
+
+export const useUpdateOrderStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateOrderStatus,
+
+    onMutate: async ({ orderIds, newStatus }) => {
+      await queryClient.cancelQueries({ queryKey: ["orders"] });
+
+      const previousOrders = queryClient.getQueryData(["orders"]);
+
+      // Optimistically update orders in cache
+      queryClient.setQueryData(["orders"], (oldOrders: any) => {
+        if (!oldOrders) return oldOrders;
+        return {
+          ...oldOrders,
+          data: oldOrders.data.map((order: any) =>
+            orderIds.includes(order.orderId)
+              ? { ...order, orderStatus: newStatus }
+              : order
+          ),
+        };
+      });
+
+      return { previousOrders };
+    },
+
+    onError: (_, __, context) => {
+      if (context?.previousOrders) {
+        queryClient.setQueryData(["orders"], context.previousOrders);
+      }
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
   });
 };

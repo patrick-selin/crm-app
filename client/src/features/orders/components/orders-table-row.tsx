@@ -9,7 +9,7 @@ import {
 import { Table, Text, Collapse, Button, Loader } from "@mantine/core";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import OrderStatusBadge from "./order-status-badge";
-import { OrderStatusType, Order } from "../../../schemas/order-schemas";
+import { OrderStatus, Order } from "../../../schemas/order-schemas";
 import OrderItemsTable from "./orders-items-table";
 
 interface OrderTableRowProps {
