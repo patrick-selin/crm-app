@@ -1,13 +1,12 @@
-import { Table, Text } from "@mantine/core";
+import { Checkbox, Table } from "@mantine/core";
 import { SortableHeader } from "./sortable-header";
 import OrderTableRow from "./orders-table-row";
 import { Order } from "../../../schemas/order-schemas";
 
 interface OrdersTableBodyProps {
   orders: Order[];
-  total: number;
-  selectedOrders: string[];
-  setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedOrders: Order[];
+  setSelectedOrders: React.Dispatch<React.SetStateAction<Order[]>>; 
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSort: (column: string) => void;
@@ -15,14 +14,12 @@ interface OrdersTableBodyProps {
 
 const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
   orders,
-  total,
   selectedOrders,
   setSelectedOrders,
   sortBy,
   sortOrder,
   onSort,
 }) => {
-  // console.log(JSON.stringify(orders));
   const allSelected =
     orders.length > 0 && selectedOrders.length === orders.length;
 
@@ -30,23 +27,21 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
     if (allSelected) {
       setSelectedOrders([]);
     } else {
-      setSelectedOrders(orders.map((order) => order.orderId));
+      // setSelectedOrders(orders.map((order) => order.orderId));
+      setSelectedOrders(orders);
     }
   };
 
   return (
     <div>
-      <Text size="sm" mb="sm" pl="sm">
-        Showing {orders.length} of {total} orders
-      </Text>
       <Table withRowBorders withTableBorder className="orders-table">
         <Table.Thead>
           <Table.Tr>
             <Table.Th>
-              <input
-                type="checkbox"
+            <Checkbox
                 checked={allSelected}
                 onChange={toggleSelectAll}
+                size="sm"
               />
             </Table.Th>
             <SortableHeader

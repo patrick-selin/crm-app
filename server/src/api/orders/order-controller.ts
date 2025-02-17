@@ -21,20 +21,22 @@ export const listOrders = async (
   }
 };
 
-export const getOrdersSummary = async (_req: Request, res: Response) => {
-  return res.json({
-    totalOrders: 250,
-    totalRevenue: 153928.5,
-    ordersPerMonth: [
-      { month: "January", count: 50, revenue: 30000.0 },
-      { month: "December", count: 40, revenue: 25000.0 },
-    ],
-    mostOrderedProducts: [
-      { productId: "123", name: "Laptop", totalSold: 150 },
-      { productId: "456", name: "Phone", totalSold: 100 },
-    ],
-  });
-};
+// placeholder json data, feature pending now
+// maybe make statics for order route or dashboard
+// export const getOrdersSummary = async (_req: Request, res: Response) => {
+//   return res.json({
+//     totalOrders: 250,
+//     totalRevenue: 153928.5,
+//     ordersPerMonth: [
+//       { month: "January", count: 50, revenue: 30000.0 },
+//       { month: "December", count: 40, revenue: 25000.0 },
+//     ],
+//     mostOrderedProducts: [
+//       { productId: "123", name: "Laptop", totalSold: 150 },
+//       { productId: "456", name: "Phone", totalSold: 100 },
+//     ],
+//   });
+// };
 
 export const getOrderDetails = async (req: Request, res: Response, next: NextFunction) => {
   try {

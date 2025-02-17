@@ -86,9 +86,18 @@ import {
           <div>
             <Title order={4}>Orders</Title>
             <Text size="sm">Backend: Node.js. Manage customer orders.</Text>
-            <Button variant="light" disabled style={{ margin: "0.5rem" }}>
-              Orders Coming Soon
-            </Button>
+            <Link
+              to="/orders"
+              style={{
+                textDecoration: "none",
+                marginTop: "0.5rem",
+                display: "inline-block",
+              }}
+            >
+              <Button variant="light" style={{ margin: "0.5rem" }}>
+                Go to Orders
+              </Button>
+            </Link>
           </div>
 
           <div>

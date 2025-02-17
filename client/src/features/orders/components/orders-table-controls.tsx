@@ -49,16 +49,6 @@ const OrderTableControls = forwardRef<
           />
 
           <DatesProvider settings={{ consistentWeeks: true }}>
-            {/* <MonthPickerInput
-              label="Pick month"
-              placeholder="Pick month"
-              type="range"
-              clearable
-              onChange={(value) => {
-                console.log("DatePickerInput changed:", value);
-                setDateRange(value);
-              }}
-            /> */}
             <DatePickerInput
               label="Pick date range"
               placeholder="Select date range"

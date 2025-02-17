@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useOrderItems } from "../api/orders-queries";
-import { useMantineTheme, useMantineColorScheme } from "@mantine/core";
+import {
+  useMantineTheme,
+  useMantineColorScheme,
+  Checkbox,
+} from "@mantine/core";
 import { Table, Text, Collapse, Button, Loader } from "@mantine/core";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import OrderStatusBadge from "./order-status-badge";
@@ -10,8 +14,8 @@ import OrderItemsTable from "./orders-items-table";
 
 interface OrderTableRowProps {
   order: Order & { customer: string };
-  selectedOrders: string[];
-  setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedOrders: Order[];
+  setSelectedOrders: React.Dispatch<React.SetStateAction<Order[]>>;
 }
 
 const OrderTableRow: React.FC<OrderTableRowProps> = ({
@@ -28,25 +32,29 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
 
+  const toggleSelect = () => {
+    setSelectedOrders((prev) =>
+      prev.some((o) => o.orderId === order.orderId)
+        ? prev.filter((o) => o.orderId !== order.orderId)
+        : [...prev, order]
+    );
+  };
+
   return (
     <>
       <Table.Tr
         key={order.orderId}
         className={`tablerow ${
-          selectedOrders.includes(order.orderId) ? "selected" : ""
+          selectedOrders.some((o) => o.orderId === order.orderId)
+            ? "selected"
+            : ""
         }`}
       >
         <Table.Td>
-          <input
-            type="checkbox"
-            checked={selectedOrders.includes(order.orderId)}
-            onChange={() => {
-              setSelectedOrders((prev) =>
-                prev.includes(order.orderId)
-                  ? prev.filter((id) => id !== order.orderId)
-                  : [...prev, order.orderId]
-              );
-            }}
+          <Checkbox
+            checked={selectedOrders.some((o) => o.orderId === order.orderId)}
+            onChange={toggleSelect}
+            size="sm"
           />
         </Table.Td>
         <Table.Td>
