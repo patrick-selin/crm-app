@@ -1,4 +1,4 @@
-import { Table } from "@mantine/core";
+import { Checkbox, Table } from "@mantine/core";
 import { SortableHeader } from "./sortable-header";
 import OrderTableRow from "./orders-table-row";
 import { Order } from "../../../schemas/order-schemas";
@@ -38,10 +38,10 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
         <Table.Thead>
           <Table.Tr>
             <Table.Th>
-              <input
-                type="checkbox"
+            <Checkbox
                 checked={allSelected}
                 onChange={toggleSelectAll}
+                size="sm"
               />
             </Table.Th>
             <SortableHeader

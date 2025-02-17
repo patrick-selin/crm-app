@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useOrderItems } from "../api/orders-queries";
-import { useMantineTheme, useMantineColorScheme } from "@mantine/core";
+import {
+  useMantineTheme,
+  useMantineColorScheme,
+  Checkbox,
+} from "@mantine/core";
 import { Table, Text, Collapse, Button, Loader } from "@mantine/core";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import OrderStatusBadge from "./order-status-badge";
@@ -47,10 +51,10 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
         }`}
       >
         <Table.Td>
-        <input
-            type="checkbox"
+          <Checkbox
             checked={selectedOrders.some((o) => o.orderId === order.orderId)}
             onChange={toggleSelect}
+            size="sm"
           />
         </Table.Td>
         <Table.Td>

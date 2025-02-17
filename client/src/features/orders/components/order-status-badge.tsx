@@ -29,44 +29,48 @@ const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({
   const orderStatuses =
     OrderStatusEnum.options as (typeof OrderStatusEnum._type)[];
 
-  return (
-    <Menu withinPortal>
-      <Menu.Target>
-        <Badge
-          color={statusColors[status]}
-        //   fullWidth
-          autoContrast
-          rightSection={
-            <ActionIcon size="xs" variant="transparent">
-              <ChevronDownIcon
-                width={14}
-                height={14}
-                stroke="black"
-                strokeWidth={2}
-              />
-            </ActionIcon>
-          }
-          styles={{
-            root: {
-              minWidth: 120,   
-              textAlign: 'right',
-              alignItems: 'center',
-              cursor: 'pointer',
-            },
-          }}
-        >
-          {status}
-        </Badge>
-      </Menu.Target>
-      <Menu.Dropdown>
-        {orderStatuses.map((s) => (
-          <Menu.Item key={s} onClick={() => handleStatusChange(s)}>
-            {s}
-          </Menu.Item>
-        ))}
-      </Menu.Dropdown>
-    </Menu>
-  );
-};
-
-export default OrderStatusBadge;
+    return (
+      <Menu withinPortal disabled={status === "Canceled"}>
+        <Menu.Target>
+          <Badge
+            color={statusColors[status]}
+            autoContrast
+            rightSection={
+              status !== "Canceled" && (
+                <ActionIcon size="xs" variant="transparent">
+                  <ChevronDownIcon
+                    width={14}
+                    height={14}
+                    stroke="black"
+                    strokeWidth={2}
+                  />
+                </ActionIcon>
+              )
+            }
+            styles={{
+              root: {
+                minWidth: 120,
+                textAlign: "right",
+                alignItems: "center",
+                cursor: status === "Canceled" ? "not-allowed" : "pointer",
+                opacity: status === "Canceled" ? 0.6 : 1, // Gray out if disabled
+              },
+            }}
+          >
+            {status}
+          </Badge>
+        </Menu.Target>
+        {status !== "Canceled" && (
+          <Menu.Dropdown>
+            {orderStatuses.map((s) => (
+              <Menu.Item key={s} onClick={() => handleStatusChange(s)}>
+                {s}
+              </Menu.Item>
+            ))}
+          </Menu.Dropdown>
+        )}
+      </Menu>
+    );
+  };
+  
+  export default OrderStatusBadge;
