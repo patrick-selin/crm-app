@@ -19,12 +19,12 @@ orderRoutes.get(
 );
 
 // Orders highlight summary
-orderRoutes.get(
-  "/summary",
-  authenticateJWT,
-  validateQuery(OrderQuerySchema),
-  orderController.getOrdersSummary
-);
+// orderRoutes.get(
+//   "/summary",
+//   authenticateJWT,
+//   validateQuery(OrderQuerySchema),
+//   orderController.getOrdersSummary
+// );
 
 orderRoutes.get(
   "/:id",

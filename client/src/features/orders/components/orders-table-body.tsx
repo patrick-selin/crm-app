@@ -1,11 +1,10 @@
-import { Table, Text } from "@mantine/core";
+import { Table } from "@mantine/core";
 import { SortableHeader } from "./sortable-header";
 import OrderTableRow from "./orders-table-row";
 import { Order } from "../../../schemas/order-schemas";
 
 interface OrdersTableBodyProps {
   orders: Order[];
-  total: number;
   selectedOrders: string[];
   setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
   sortBy: string;
@@ -15,14 +14,12 @@ interface OrdersTableBodyProps {
 
 const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
   orders,
-  total,
   selectedOrders,
   setSelectedOrders,
   sortBy,
   sortOrder,
   onSort,
 }) => {
-  // console.log(JSON.stringify(orders));
   const allSelected =
     orders.length > 0 && selectedOrders.length === orders.length;
 
@@ -36,9 +33,6 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
 
   return (
     <div>
-      <Text size="sm" mb="sm" pl="sm">
-        Showing {orders.length} of {total} orders
-      </Text>
       <Table withRowBorders withTableBorder className="orders-table">
         <Table.Thead>
           <Table.Tr>

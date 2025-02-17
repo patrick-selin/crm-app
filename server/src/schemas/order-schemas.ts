@@ -1,5 +1,5 @@
 // shared/schemas/order-schemas.ts
-import { z } from "zod";
+import { optional, z } from "zod";
 
 export const OrderStatusEnum = z.enum(["Pending", "Processing", "Completed", "Canceled"]);
 
@@ -7,6 +7,7 @@ export const OrderStatusEnum = z.enum(["Pending", "Processing", "Completed", "Ca
 export const OrderSchema = z.object({
   orderId: z.string().uuid(),
   customerId: z.string().uuid(),
+  // customer: z.string().optional(),
   totalAmount: z.number().nonnegative(),  
   orderStatus: OrderStatusEnum,
   orderDate: z.date(),
@@ -17,14 +18,6 @@ export const OrderSchema = z.object({
 export const UpdateOrderStatusSchema = z.object({
   orderStatus: OrderStatusEnum,
 });
-
-
-// export const PaginatedOrdersSchema = z.object({
-//   orders: z.array(OrderSchema),
-//   total: z.number().nonnegative(),
-//   page: z.number().min(1),
-//   limit: z.number().positive(),
-// });
 
 export const CustomerOrderIdSchema = z.object({
   orderId: z.string().uuid(),

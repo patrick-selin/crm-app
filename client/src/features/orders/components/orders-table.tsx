@@ -1,11 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { Text, Button, Group, Loader } from "@mantine/core";
+import { Text, Button, Group, Loader, Tooltip } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useOrdersInfinite } from "../api/orders-queries";
 import OrderTableControls from "./orders-table-controls";
 import OrdersTableBody from "./orders-table-body";
-import BulkActionsControls from "./bulk-action-controls";
+import BulkActionsDrawer from "./bulk-actions-drawer";
 import { useDisclosure } from "@mantine/hooks";
+import {
+  DocumentArrowDownIcon,
+  CheckCircleIcon,
+} from "@heroicons/react/24/outline";
 
 const OrdersTable = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -17,7 +21,10 @@ const OrdersTable = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [limit, setLimit] = useState<number>(10);
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
-  const [modalOpened, { open, close }] = useDisclosure(false);
+  const [bulkActionType, setBulkActionType] = useState<
+    "update-status" | "generate-files"
+  >("update-status");
+  const [bulkDrawerOpen, { open, close }] = useDisclosure(false);
 
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -40,8 +47,6 @@ const OrdersTable = () => {
 
   const orders = data?.pages.flatMap((page) => page.data) || [];
 
-  // When the user types (searchInput changes), ensure the search input stays focused.
-  // Not working, loses the focus after re-render. Remember to debug.
   useEffect(() => {
     if (
       searchInputRef.current &&
@@ -68,6 +73,13 @@ const OrdersTable = () => {
     });
   };
 
+  const openBulkActionsDrawer = (
+    action: "update-status" | "generate-files"
+  ) => {
+    setBulkActionType(action);
+    open();
+  };
+
   if (isLoading) return <Loader color="blue" />;
   if (error) return <Text>Error fetching orders.</Text>;
 
@@ -82,6 +94,41 @@ const OrdersTable = () => {
         limit={limit}
         onLimitChange={setLimit}
       />
+
+      <Group justify="space-between" align="center" mb="sm">
+        <Text size="sm" pl="sm">
+          Showing {orders.length} of {data?.pages[0]?.total || 0} orders
+        </Text>
+
+        <Group>
+          <Tooltip label="Select Orders to Update Order Status">
+            <Button
+              leftSection={
+                <CheckCircleIcon style={{ width: 20, height: 20 }} />
+              }
+              onClick={() => openBulkActionsDrawer("update-status")}
+              disabled={selectedOrders.length === 0}
+              variant="outline"
+            >
+              Bulk Update Status
+            </Button>
+          </Tooltip>
+
+          <Tooltip label="Select Orders to Generate Files">
+            <Button
+              leftSection={
+                <DocumentArrowDownIcon style={{ width: 20, height: 20 }} />
+              }
+              onClick={() => openBulkActionsDrawer("generate-files")}
+              disabled={selectedOrders.length === 0}
+              color="orange"
+              variant="outline"
+            >
+              Generate CSV / PDF
+            </Button>
+          </Tooltip>
+        </Group>
+      </Group>
 
       <OrdersTableBody
         orders={orders.map((o) => ({
@@ -106,12 +153,18 @@ const OrdersTable = () => {
         )}
       </Group>
 
-      <BulkActionsControls
+      <BulkActionsDrawer
         selectedOrders={selectedOrders}
         setSelectedOrders={setSelectedOrders}
-        modalOpened={modalOpened}
-        open={open}
-        close={close}
+        isOpen={bulkDrawerOpen}
+        onClose={close}
+
+        onGenerateCSV={(includeItems) =>
+          console.log("Generating CSV, Include Items:", includeItems)
+        }
+        onGeneratePDF={(includeItems) =>
+          console.log("Generating PDF, Include Items:", includeItems)
+        }
       />
     </div>
   );

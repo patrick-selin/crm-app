@@ -7,7 +7,7 @@ export const OrderStatusEnum = z.enum(["Pending", "Processing", "Completed", "Ca
 export const OrderSchema = z.object({
   orderId: z.string().uuid(),
   customerId: z.string().uuid(),
-  customer: z.string(),
+  // customer: z.string().optional(),
   totalAmount: z.number().nonnegative(), 
   orderStatus: OrderStatusEnum,
   orderDate: z.date(),

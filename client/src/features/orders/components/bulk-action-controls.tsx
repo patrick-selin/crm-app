@@ -1,4 +1,6 @@
-import { Button, Modal, Text, Group } from "@mantine/core";
+import { Button, Tooltip, Group } from "@mantine/core";
+import { DocumentArrowDownIcon } from "@heroicons/react/24/solid";
+import BulkActionsDrawer from "./bulk-actions-drawer";
 
 interface BulkActionsControlsProps {
   selectedOrders: string[];
@@ -10,42 +12,36 @@ interface BulkActionsControlsProps {
 
 const BulkActionsControls: React.FC<BulkActionsControlsProps> = ({
   selectedOrders,
-  setSelectedOrders,
   modalOpened,
   open,
   close,
 }) => {
   return (
     <>
-      <Button
-        mt="md"
-        color="red"
-        disabled={!selectedOrders.length}
-        onClick={open}
-      >
-        Bulk Cancel Orders
-      </Button>
-
-      <Modal opened={modalOpened} onClose={close} title="Confirm Bulk Action">
-        <Text>
-          Are you sure you want to cancel {selectedOrders.length} orders?
-        </Text>
-        <Group mt="md">
+      <Group align="apart" mt="md">
+        <Tooltip
+          label="Select at least one order to generate files"
+          disabled={selectedOrders.length > 0}
+        >
           <Button
-            color="red"
-            onClick={() => {
-              console.log("Cancelled orders:", selectedOrders);
-              setSelectedOrders([]);
-              close();
-            }}
+            leftSection={<DocumentArrowDownIcon className="w-5 h-5" />}
+            onClick={open}
+            disabled={selectedOrders.length === 0}
           >
-            Confirm
+            Generate Files
           </Button>
-          <Button variant="default" onClick={close}>
-            Cancel
-          </Button>
-        </Group>
-      </Modal>
+        </Tooltip>
+      </Group>
+
+      <BulkActionsDrawer
+        selectedOrders={selectedOrders}
+        setSelectedOrders={() => {}}
+        isOpen={modalOpened}
+        onClose={close}
+        onUpdateStatus={() => {}}
+        onGenerateCSV={() => {}}
+        onGeneratePDF={() => {}}
+      />
     </>
   );
 };
