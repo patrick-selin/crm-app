@@ -8,16 +8,17 @@ import {
   Group,
   LoadingOverlay,
   Divider,
+  Table,
 } from "@mantine/core";
-import { OrderStatusEnum } from "../../../schemas/order-schemas";
+import { Order, OrderStatusEnum } from "../../../schemas/order-schemas";
 import {
   DocumentArrowDownIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/solid";
 
 interface BulkActionsDrawerProps {
-  selectedOrders: string[];
-  setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedOrders: Order[];
+  setSelectedOrders: React.Dispatch<React.SetStateAction<Order[]>>;
   isOpen: boolean;
   onClose: () => void;
   actionType: "update-status" | "generate-files";
@@ -73,9 +74,27 @@ const BulkActionsDrawer: React.FC<BulkActionsDrawerProps> = ({
     >
       <LoadingOverlay visible={isProcessing} />
 
-      <Text size="sm" mb="sm">
-        Selected Orders: {selectedOrders.length}
+      <Text size="md" mt="md" mb="sm">
+        Selected Orders:
       </Text>
+      <Table striped mb="xl">
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Order ID</Table.Th>
+            <Table.Th>Status</Table.Th>
+            <Table.Th>Total Amount</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {selectedOrders.map((order) => (
+            <Table.Tr key={order.orderId}>
+              <Table.Td>{order.orderId}</Table.Td>
+              <Table.Td>{order.orderStatus}</Table.Td>
+              <Table.Td>${order.totalAmount}</Table.Td>
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      </Table>
 
       {actionType === "update-status" && (
         <>

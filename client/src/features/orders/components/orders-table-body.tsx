@@ -5,8 +5,8 @@ import { Order } from "../../../schemas/order-schemas";
 
 interface OrdersTableBodyProps {
   orders: Order[];
-  selectedOrders: string[];
-  setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedOrders: Order[];
+  setSelectedOrders: React.Dispatch<React.SetStateAction<Order[]>>; 
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSort: (column: string) => void;
@@ -27,7 +27,8 @@ const OrdersTableBody: React.FC<OrdersTableBodyProps> = ({
     if (allSelected) {
       setSelectedOrders([]);
     } else {
-      setSelectedOrders(orders.map((order) => order.orderId));
+      // setSelectedOrders(orders.map((order) => order.orderId));
+      setSelectedOrders(orders);
     }
   };
 

@@ -10,6 +10,7 @@ import {
   DocumentArrowDownIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
+import { Order } from "../../../schemas/order-schemas";
 
 const OrdersTable = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -20,7 +21,8 @@ const OrdersTable = () => {
   const [sortBy, setSortBy] = useState<string>("orderDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [limit, setLimit] = useState<number>(10);
-  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  // const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [selectedOrders, setSelectedOrders] = useState<Order[]>([]);
   const [bulkActionType, setBulkActionType] = useState<
     "update-status" | "generate-files"
   >("update-status");
