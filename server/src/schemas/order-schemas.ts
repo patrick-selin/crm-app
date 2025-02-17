@@ -1,5 +1,5 @@
 // shared/schemas/order-schemas.ts
-import { optional, z } from "zod";
+import { z } from "zod";
 
 export const OrderStatusEnum = z.enum(["Pending", "Processing", "Completed", "Canceled"]);
 
