@@ -15,10 +15,6 @@ export const OrderSchema = z.object({
   updatedAt: z.date(),
 });
 
-export const UpdateOrderStatusSchema = z.object({
-  orderStatus: OrderStatusEnum,
-});
-
 export const OrderIdSchema = z.object({
   orderId: z.string().uuid(),
 });

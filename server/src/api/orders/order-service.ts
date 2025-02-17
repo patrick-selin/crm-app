@@ -1,10 +1,10 @@
 import { db } from "../../db/db";
-import { sql, eq, and } from "drizzle-orm";
-import { orders } from "../../db/schemas/orders";
+import { sql, eq, and, inArray } from "drizzle-orm";
+import { orders, orderStatusEnum } from "../../db/schemas/orders";
 import { orderItems } from "../../db/schemas/order-items";
 import { products } from "../../db/schemas/products";
 import { customers } from "../../db/schemas/customers";
-import { OrderSchema, OrderItemSchema } from "../../schemas/order-schemas";
+import { OrderSchema, OrderItemSchema, OrderStatus } from "../../schemas/order-schemas";
 import logger from "../../utils/logger";
 import {
   parseSorting,
@@ -12,6 +12,7 @@ import {
   createSearchAndFilterConditions,
   buildDateConditions,
 } from "../../utils/query-helpers";
+import { BadRequestError, NotFoundError } from "../../utils/errors/app-errors";
 
 export const getOrders = async ({
   search,
@@ -156,4 +157,56 @@ export const getOrderDetails = async (orderId: string) => {
     order: OrderSchema.parse(processedOrder),
     items: processedItems.map((item) => OrderItemSchema.parse(item)),
   };
+};
+
+
+const validTransitions: Record<OrderStatus, OrderStatus[]> = {
+  Pending: ["Processing", "Canceled"],
+  Processing: ["Completed", "Canceled", "Pending"],
+  Completed: [],
+  Canceled: [],
+};
+
+export const updateOrderStatus = async (
+  orderIds: string[],
+  newStatus: OrderStatus
+) => {
+  logger.info("Service: Updating order status");
+
+  if (!orderStatusEnum.enumValues.includes(newStatus)) {
+    throw new BadRequestError(`Invalid status provided: ${newStatus}`);
+  }
+
+  const existingOrders = await db
+    .select({ orderId: orders.orderId, orderStatus: orders.orderStatus })
+    .from(orders)
+    .where(inArray(orders.orderId, orderIds));
+
+  if (existingOrders.length === 0) {
+    throw new NotFoundError("Orders not found", "No matching orders found.");
+  }
+
+  for (const order of existingOrders) {
+    if (order.orderStatus === "Canceled") {
+      throw new BadRequestError(
+        `Order ${order.orderId} is canceled and cannot be updated`
+      );
+    }
+
+    if (!validTransitions[order.orderStatus].includes(newStatus)) {
+      throw new BadRequestError(
+        `Invalid status transition: ${order.orderStatus} → ${newStatus}`
+      );
+    }
+  }
+
+  const updatedOrders = await db
+    .update(orders)
+    .set({ orderStatus: newStatus })
+    .where(inArray(orders.orderId, orderIds))
+    .returning({ orderId: orders.orderId }); 
+
+  logger.info(`Updated ${updatedOrders.length} orders to status ${newStatus}`);
+
+  return { updatedCount: updatedOrders.length };
 };

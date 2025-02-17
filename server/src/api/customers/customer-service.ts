@@ -261,16 +261,6 @@ export const getCustomerOrderDetails = async (
   };
 };
 
-// TEMP-------
-// export const getOrdersByCustomerId = async (customerId: string) => {
-//   logger.info(`Service: Fetching orders for customer ID = ${customerId}`);
-//   return await db
-//     .select()
-//     .from(orders)
-//     .where(eq(orders.customerId, customerId));
-// };
-// -------
-
 export const addCustomer = async (customerData: unknown) => {
   try {
     logger.info("Service: Creating a new customer...");
