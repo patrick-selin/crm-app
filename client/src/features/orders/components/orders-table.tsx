@@ -135,7 +135,7 @@ const OrdersTable = () => {
           ...o,
           items: o.items ?? [],
         }))}
-        total={data?.pages[0]?.total || 0}
+        // total={data?.pages[0]?.total || 0}
         selectedOrders={selectedOrders}
         setSelectedOrders={setSelectedOrders}
         sortBy={sortBy}
@@ -158,7 +158,8 @@ const OrdersTable = () => {
         setSelectedOrders={setSelectedOrders}
         isOpen={bulkDrawerOpen}
         onClose={close}
-
+        actionType={bulkActionType}
+        onUpdateStatus={(status) => console.log("Updating status to:", status)}
         onGenerateCSV={(includeItems) =>
           console.log("Generating CSV, Include Items:", includeItems)
         }
