@@ -10,7 +10,7 @@ import {
   DocumentArrowDownIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
-import { Order } from "../../../schemas/order-schemas";
+import { Order, OrderStatus } from "../../../schemas/order-schemas";
 
 const OrdersTable = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -84,7 +84,7 @@ const OrdersTable = () => {
     open();
   };
 
-  const handleBulkUpdateStatus = (newStatus: string) => {
+  const handleBulkUpdateStatus = (newStatus: OrderStatus) => {
     updateOrderStatus.mutate({
       orderIds: selectedOrders.map((o) => o.orderId),
       newStatus,

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AxiosError } from "axios";
 import {
   Drawer,
   Button,
@@ -11,7 +12,11 @@ import {
   Table,
   // notifications,
 } from "@mantine/core";
-import { Order, OrderStatusEnum } from "../../../schemas/order-schemas";
+import {
+  Order,
+  OrderStatus,
+  OrderStatusEnum,
+} from "../../../schemas/order-schemas";
 import {
   DocumentArrowDownIcon,
   CheckCircleIcon,
@@ -25,6 +30,7 @@ interface BulkActionsDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   actionType: "update-status" | "generate-files";
+  onUpdateStatus: (newStatus: OrderStatus) => void;
   onGenerateCSV: (includeItems: boolean) => void;
   onGeneratePDF: (includeItems: boolean) => void;
 }
@@ -44,16 +50,20 @@ const BulkActionsDrawer: React.FC<BulkActionsDrawerProps> = ({
   const updateOrderStatus = useUpdateOrderStatus();
 
   const handleUpdateStatus = () => {
-    if (!selectedStatus) return;
+    if (
+      !selectedStatus ||
+      !OrderStatusEnum.options.includes(selectedStatus as OrderStatus)
+    )
+      return;
 
     updateOrderStatus.mutate(
       {
         orderIds: selectedOrders.map((order) => order.orderId),
-        newStatus: selectedStatus,
+        newStatus: selectedStatus as OrderStatus,
       },
       {
         onSuccess: (data) => {
-          const updatedCount = data.updatedCount ?? 0;
+          const updatedCount = data?.updatedCount ?? 0;
 
           notifications.show({
             title: "Success",
@@ -64,22 +74,24 @@ const BulkActionsDrawer: React.FC<BulkActionsDrawerProps> = ({
           setSelectedOrders([]);
           onClose();
         },
-        onError: (error: any) => {
+        onError: (error: unknown) => {
           let errorMessage = "Failed to update order status.";
 
-          if (error.response) {
-            const { status, data } = error.response;
+          if (error instanceof AxiosError && error.response) {
+            const { status, data } = error.response as {
+              status: number;
+              data?: { message?: string };
+            };
 
-            if (status === 400) {
-              errorMessage =
-                data.message ||
-                "Invalid status change. Please check the allowed transitions.";
-            } else if (status === 404) {
-              errorMessage = "Some or all selected orders were not found.";
-            } else if (status === 403) {
-              errorMessage =
-                "You do not have permission to perform this action.";
-            }
+            errorMessage =
+              data?.message ??
+              (status === 400
+                ? "Invalid status change. Please check the allowed transitions."
+                : status === 404
+                ? "Some or all selected orders were not found."
+                : status === 403
+                ? "You do not have permission to perform this action."
+                : "Something went wrong.");
           }
 
           notifications.show({
@@ -152,7 +164,7 @@ const BulkActionsDrawer: React.FC<BulkActionsDrawerProps> = ({
               label: status,
             }))}
             value={selectedStatus}
-            onChange={setSelectedStatus}
+            onChange={(value) => setSelectedStatus(value as OrderStatus)}
             disabled={updateOrderStatus.isPending}
           />
           <Button

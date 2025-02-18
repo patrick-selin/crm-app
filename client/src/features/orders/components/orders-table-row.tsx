@@ -9,7 +9,7 @@ import {
 import { Table, Text, Collapse, Button, Loader } from "@mantine/core";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import OrderStatusBadge from "./order-status-badge";
-import { OrderStatus, Order } from "../../../schemas/order-schemas";
+import { Order } from "../../../schemas/order-schemas";
 import OrderItemsTable from "./orders-items-table";
 
 interface OrderTableRowProps {
@@ -80,7 +80,7 @@ const OrderTableRow: React.FC<OrderTableRowProps> = ({
         <Table.Td>
           <OrderStatusBadge
             orderId={order.orderId}
-            initialStatus={order.orderStatus as OrderStatusType}
+            initialStatus={order.orderStatus}
           />
         </Table.Td>
         <Table.Td>

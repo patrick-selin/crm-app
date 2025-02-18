@@ -1,10 +1,11 @@
 import { Button, Tooltip, Group } from "@mantine/core";
 import { DocumentArrowDownIcon } from "@heroicons/react/24/solid";
 import BulkActionsDrawer from "./bulk-actions-drawer";
+import { Order } from "../../../schemas/order-schemas";
 
 interface BulkActionsControlsProps {
-  selectedOrders: string[];
-  setSelectedOrders: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedOrders: Order[];
+  setSelectedOrders: React.Dispatch<React.SetStateAction<Order[]>>;
   modalOpened: boolean;
   open: () => void;
   close: () => void;
@@ -38,6 +39,7 @@ const BulkActionsControls: React.FC<BulkActionsControlsProps> = ({
         setSelectedOrders={() => {}}
         isOpen={modalOpened}
         onClose={close}
+        actionType="generate-files" 
         onUpdateStatus={() => {}}
         onGenerateCSV={() => {}}
         onGeneratePDF={() => {}}

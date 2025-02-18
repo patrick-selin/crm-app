@@ -4,6 +4,7 @@ import { OrderStatusEnum, OrderStatus } from "../../../schemas/order-schemas";
 import { useUpdateOrderStatus } from "../api/orders-queries";
 import { notifications } from "@mantine/notifications";
 import { useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 const statusColors: Record<OrderStatus, string> = {
   Pending: "blue",
@@ -25,8 +26,12 @@ const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({
   const updateOrderStatus = useUpdateOrderStatus();
 
   const currentStatus =
-    queryClient.getQueryData<{ data: { orderId: string; orderStatus: OrderStatus }[] }>(["orders"])
-      ?.data.find((order) => order.orderId === orderId)?.orderStatus || initialStatus;
+    queryClient
+      .getQueryData<{ data: { orderId: string; orderStatus: OrderStatus }[] }>([
+        "orders",
+      ])
+      ?.data.find((order) => order.orderId === orderId)?.orderStatus ||
+    initialStatus;
 
   const handleStatusChange = (newStatus: OrderStatus) => {
     if (newStatus === currentStatus) return;
@@ -43,21 +48,24 @@ const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({
 
           queryClient.invalidateQueries({ queryKey: ["orders"] });
         },
-        onError: (error: any) => {
+        onError: (error: unknown) => {
           let errorMessage = "Failed to update order status.";
 
-          if (error.response) {
-            const { status, data } = error.response;
+          if (error instanceof AxiosError && error.response) {
+            const { status, data } = error.response as {
+              status: number;
+              data?: { message?: string };
+            };
 
-            if (status === 400) {
-              errorMessage =
-                data.message ||
-                "Invalid status change. Please check the allowed transitions.";
-            } else if (status === 404) {
-              errorMessage = "The order was not found.";
-            } else if (status === 403) {
-              errorMessage = "You do not have permission to update this order.";
-            }
+            errorMessage =
+              data?.message ??
+              (status === 400
+                ? "Invalid status change. Please check the allowed transitions."
+                : status === 404
+                ? "Some or all selected orders were not found."
+                : status === 403
+                ? "You do not have permission to perform this action."
+                : "Something went wrong.");
           }
 
           notifications.show({
