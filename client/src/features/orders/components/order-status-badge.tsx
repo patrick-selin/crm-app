@@ -24,13 +24,9 @@ const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({
   const queryClient = useQueryClient();
   const updateOrderStatus = useUpdateOrderStatus();
 
-  const cachedOrders = queryClient.getQueryData(["orders"]) as {
-    data: { orderId: string; orderStatus: OrderStatus }[];
-  };
-
   const currentStatus =
-    cachedOrders?.data.find((order) => order.orderId === orderId)
-      ?.orderStatus || initialStatus;
+    queryClient.getQueryData<{ data: { orderId: string; orderStatus: OrderStatus }[] }>(["orders"])
+      ?.data.find((order) => order.orderId === orderId)?.orderStatus || initialStatus;
 
   const handleStatusChange = (newStatus: OrderStatus) => {
     if (newStatus === currentStatus) return;
@@ -38,10 +34,35 @@ const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({
     updateOrderStatus.mutate(
       { orderIds: [orderId], newStatus },
       {
-        onError: (error) => {
+        onSuccess: () => {
+          notifications.show({
+            title: "Success",
+            message: `Order status updated to "${newStatus}"`,
+            color: "green",
+          });
+
+          queryClient.invalidateQueries({ queryKey: ["orders"] });
+        },
+        onError: (error: any) => {
+          let errorMessage = "Failed to update order status.";
+
+          if (error.response) {
+            const { status, data } = error.response;
+
+            if (status === 400) {
+              errorMessage =
+                data.message ||
+                "Invalid status change. Please check the allowed transitions.";
+            } else if (status === 404) {
+              errorMessage = "The order was not found.";
+            } else if (status === 403) {
+              errorMessage = "You do not have permission to update this order.";
+            }
+          }
+
           notifications.show({
             title: "Error",
-            message: `Failed to update order status: ${error.message}`,
+            message: errorMessage,
             color: "red",
           });
         },
