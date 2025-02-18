@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Text, Button, Group, Loader, Tooltip } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { useOrdersInfinite } from "../api/orders-queries";
+import { useOrdersInfinite, useUpdateOrderStatus } from "../api/orders-queries";
 import OrderTableControls from "./orders-table-controls";
 import OrdersTableBody from "./orders-table-body";
 import BulkActionsDrawer from "./bulk-actions-drawer";
@@ -10,7 +10,7 @@ import {
   DocumentArrowDownIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
-import { Order } from "../../../schemas/order-schemas";
+import { Order, OrderStatus } from "../../../schemas/order-schemas";
 
 const OrdersTable = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -32,6 +32,8 @@ const OrdersTable = () => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const [debouncedSearch] = useDebouncedValue(searchInput, 500);
+
+  const updateOrderStatus = useUpdateOrderStatus();
 
   const {
     data,
@@ -80,6 +82,13 @@ const OrdersTable = () => {
   ) => {
     setBulkActionType(action);
     open();
+  };
+
+  const handleBulkUpdateStatus = (newStatus: OrderStatus) => {
+    updateOrderStatus.mutate({
+      orderIds: selectedOrders.map((o) => o.orderId),
+      newStatus,
+    });
   };
 
   if (isLoading) return <Loader color="blue" />;
@@ -161,7 +170,7 @@ const OrdersTable = () => {
         isOpen={bulkDrawerOpen}
         onClose={close}
         actionType={bulkActionType}
-        onUpdateStatus={(status) => console.log("Updating status to:", status)}
+        onUpdateStatus={handleBulkUpdateStatus}
         onGenerateCSV={(includeItems) =>
           console.log("Generating CSV, Include Items:", includeItems)
         }

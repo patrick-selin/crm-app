@@ -149,25 +149,6 @@ export const getCustomerOrderDetails = async (
   }
 };
 
-// TEMP-------
-// export const listCustomerOrders = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     logger.info("Controller invoked: listCustomerOrders");
-//     const { customerId } = req.params;
-
-//     const orders = await customerService.getOrdersByCustomerId(customerId);
-//     res.status(200).json(orders);
-//   } catch (error) {
-//     logger.error("Controller error in listCustomerOrders:", { error });
-//     next(error);
-//   }
-// };
-// -------
-
 export const createCustomer = async (
   req: Request,
   res: Response,

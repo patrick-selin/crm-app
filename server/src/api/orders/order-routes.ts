@@ -5,8 +5,9 @@ import * as orderController from "./order-controller";
 import {
   validateQuery,
   validateParams,
+  validateBody
 } from "../../middleware/validate-request";
-import { OrderQuerySchema, OrderIdSchema } from "../../schemas/order-schemas";
+import { OrderQuerySchema, OrderIdSchema, OrderStatusUpdateSchema } from "../../schemas/order-schemas";
 
 const orderRoutes = Router();
 
@@ -32,5 +33,13 @@ orderRoutes.get(
   validateParams(OrderIdSchema),
   orderController.getOrderDetails
 );
+
+orderRoutes.put(
+  "/status",
+  authenticateJWT,
+  validateBody(OrderStatusUpdateSchema),
+  orderController.updateOrderStatus
+);
+
 
 export default orderRoutes;

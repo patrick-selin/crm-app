@@ -55,3 +55,20 @@ export const getOrderDetails = async (req: Request, res: Response, next: NextFun
     next(error);
   }
 };
+
+export const updateOrderStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    logger.info("Controller invoked: updateOrderStatus");
+    const { orderIds, newStatus } = req.body;
+    
+    const result = await orderService.updateOrderStatus(orderIds, newStatus);
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
