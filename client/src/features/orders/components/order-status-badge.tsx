@@ -1,11 +1,11 @@
-import { useState } from "react";
 import { Badge, Menu, ActionIcon } from "@mantine/core";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { OrderStatusEnum, OrderStatus } from "../../../schemas/order-schemas";
 import { useUpdateOrderStatus } from "../api/orders-queries";
 import { notifications } from "@mantine/notifications";
+import { useQueryClient } from "@tanstack/react-query";
 
-const statusColors: Record<typeof OrderStatusEnum._type, string> = {
+const statusColors: Record<OrderStatus, string> = {
   Pending: "blue",
   Processing: "orange",
   Completed: "green",
@@ -21,46 +21,42 @@ const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({
   orderId,
   initialStatus,
 }) => {
-  const [status, setStatus] = useState<OrderStatus>(initialStatus);
+  const queryClient = useQueryClient();
   const updateOrderStatus = useUpdateOrderStatus();
 
+  const cachedOrders = queryClient.getQueryData(["orders"]) as {
+    data: { orderId: string; orderStatus: OrderStatus }[];
+  };
 
-  
+  const currentStatus =
+    cachedOrders?.data.find((order) => order.orderId === orderId)
+      ?.orderStatus || initialStatus;
+
   const handleStatusChange = (newStatus: OrderStatus) => {
-    if (newStatus === status) return;
-
-    setStatus(newStatus);
+    if (newStatus === currentStatus) return;
 
     updateOrderStatus.mutate(
       { orderIds: [orderId], newStatus },
       {
-        onSuccess: () => {
-          notifications.show({
-            title: "Success",
-            message: `Order ${orderId} updated to ${newStatus}`,
-            color: "green",
-          });
-        },
         onError: (error) => {
           notifications.show({
             title: "Error",
             message: `Failed to update order status: ${error.message}`,
             color: "red",
           });
-          setStatus(initialStatus);
         },
       }
     );
   };
 
   return (
-    <Menu withinPortal disabled={status === "Canceled"}>
+    <Menu withinPortal disabled={currentStatus === "Canceled"}>
       <Menu.Target>
         <Badge
-          color={statusColors[status]}
+          color={statusColors[currentStatus]}
           autoContrast
           rightSection={
-            status !== "Canceled" && (
+            currentStatus !== "Canceled" && (
               <ActionIcon size="xs" variant="transparent">
                 <ChevronDownIcon
                   width={14}
@@ -76,23 +72,23 @@ const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({
               minWidth: 120,
               textAlign: "right",
               alignItems: "center",
-              cursor: status === "Canceled" ? "not-allowed" : "pointer",
-              opacity: status === "Canceled" ? 0.6 : 1,
+              cursor: currentStatus === "Canceled" ? "not-allowed" : "pointer",
+              opacity: currentStatus === "Canceled" ? 0.6 : 1,
             },
           }}
         >
-          {status}
+          {currentStatus}
         </Badge>
       </Menu.Target>
 
-      {status !== "Canceled" && (
+      {currentStatus !== "Canceled" && (
         <Menu.Dropdown>
-          {OrderStatusEnum.options.map((s) => (
+          {OrderStatusEnum.options.map((status) => (
             <Menu.Item
-              key={s}
-              onClick={() => handleStatusChange(s as OrderStatus)}
+              key={status}
+              onClick={() => handleStatusChange(status as OrderStatus)}
             >
-              {s}
+              {status}
             </Menu.Item>
           ))}
         </Menu.Dropdown>

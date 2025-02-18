@@ -52,9 +52,41 @@ const BulkActionsDrawer: React.FC<BulkActionsDrawerProps> = ({
         newStatus: selectedStatus,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          const updatedCount = data.updatedCount ?? 0;
+
+          notifications.show({
+            title: "Success",
+            message: `Successfully updated ${updatedCount} order(s) to "${selectedStatus}"`,
+            color: "green",
+          });
+
           setSelectedOrders([]);
           onClose();
+        },
+        onError: (error: any) => {
+          let errorMessage = "Failed to update order status.";
+
+          if (error.response) {
+            const { status, data } = error.response;
+
+            if (status === 400) {
+              errorMessage =
+                data.message ||
+                "Invalid status change. Please check the allowed transitions.";
+            } else if (status === 404) {
+              errorMessage = "Some or all selected orders were not found.";
+            } else if (status === 403) {
+              errorMessage =
+                "You do not have permission to perform this action.";
+            }
+          }
+
+          notifications.show({
+            title: "Error",
+            message: errorMessage,
+            color: "red",
+          });
         },
       }
     );
