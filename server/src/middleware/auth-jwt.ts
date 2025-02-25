@@ -35,13 +35,9 @@ export const authenticateJWT = (
   }
 
   try {
-    // Verify JWT token
     const decoded = jwt.verify(token, config.JWT_SECRET) as jwt.JwtPayload;
-
-    // Validate payload structure using Zod schema
     const validatedPayload = JwtPayloadSchema.parse(decoded);
 
-    // Attach validated user info to the request object
     req.user = validatedPayload;
 
     return next();
@@ -80,8 +76,6 @@ export const authenticateJWT = (
       );
     }
 
-    // Log and forward unexpected errors
-    console.error("Unexpected error in JWT authentication:", error);
     return next(error);
   }
 };
