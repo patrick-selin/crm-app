@@ -29,20 +29,20 @@ services:
     volumes:
       - ./spring-server/crm-app:/app
 
-  spring-test:
-    container_name: crm-app-spring-test
-    build:
-      context: ./spring-server/crm-app
-      dockerfile: Dockerfile.dev
-    depends_on:
-      - database-sql
-    env_file:
-      - spring-server/crm-app/.env.development
-    command: ./mvnw test
-    volumes:
-      - ./spring-server/crm-app:/app
-    environment:
-      SPRING_PROFILES_ACTIVE: test
+  # spring-test:
+  #   container_name: crm-app-spring-test
+  #   build:
+  #     context: ./spring-server/crm-app
+  #     dockerfile: Dockerfile.dev
+  #   depends_on:
+  #     - database-sql
+  #   env_file:
+  #     - spring-server/crm-app/.env.development
+  #   command: ./mvnw test
+  #   volumes:
+  #     - ./spring-server/crm-app:/app
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: test
 
   database-sql:
     container_name: crm-app-postgresql-db
@@ -118,6 +118,23 @@ services:
       - server
       - client
       - spring-server
+
+  report-generator:
+    container_name: crm-app-report-generator
+    build:
+      context: ../crm-app-report-generator-service
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../crm-app-report-generator-service/src:/app
+      - /app/tmp
+      - ../crm-app/development.env.dev:/app/.env
+    env_file:
+      - server/.env.development  
+    depends_on:
+      - database-sql
+    
 
 volumes:
   postgres_data:
